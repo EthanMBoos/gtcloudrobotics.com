@@ -4,172 +4,75 @@ hide:
 - toc
 ---
 
-# Get started
+# What is GT Cloud Robotics?
+A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building open-architecture systems that work with any autonomous robotics platform — land, air, or sea.
 
-For full documentation visit [zensical.org](https://zensical.org/docs/).
+Most software systems are trapped in a single domain. Drone GCS software rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats. This fragmentation forces developers to waste months on repetitive integration or maintain entirely separate codebases for every new vehicle they introduce. It’s a "siloing" problem where the most basic tasks take months due to rigid initial design.
 
-## Commands
+The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/docs/PROTOCOL.md) is a fresh take on what a modern, heterogeneous robotic fleet needs to thrive. We built this from first principles, utilizing a **core protocol and extension architecture** that eliminates the need for ecosystem-wide changes. The beauty of it is that you don’t need everyone else to change; they just need to adjust their protobuf to wrap cleanly into our system once. From there, they’re part of the ecosystem forever.
 
-* [`zensical new`][new] - Create a new project
-* [`zensical serve`][serve] - Start local web server
-* [`zensical build`][build] - Build your site
+```text
+                        VEHICLE ↔ GATEWAY                    GATEWAY ↔ UI
+                       (protobuf/UDP multicast)              (JSON/WebSocket)
 
-  [new]: https://zensical.org/docs/usage/new/
-  [serve]: https://zensical.org/docs/usage/preview/
-  [build]: https://zensical.org/docs/usage/build/
-
-## Examples
-
-### Admonitions
-
-> Go to [documentation](https://zensical.org/docs/authoring/admonitions/)
-
-!!! note
-
-    This is a **note** admonition. Use it to provide helpful information.
-
-!!! warning
-
-    This is a **warning** admonition. Be careful!
-
-### Details
-
-> Go to [documentation](https://zensical.org/docs/authoring/admonitions/#collapsible-blocks)
-
-??? info "Click to expand for more info"
-
-    This content is hidden until you click to expand it.
-    Great for FAQs or long explanations.
-
-## Code Blocks
-
-> Go to [documentation](https://zensical.org/docs/authoring/code-blocks/)
-
-``` python hl_lines="2" title="Code blocks"
-def greet(name):
-    print(f"Hello, {name}!") # (1)!
-
-greet("Python")
+┌─────────────┐                           ┌─────────────┐                    ┌─────────────┐
+│   Vehicle   │                           │   Gateway   │                    │     UI      │
+└──────┬──────┘                           └──────┬──────┘                    └──────┬──────┘
+       │                                         │                                  │
+       │◀───── GatewayHeartbeat (1/sec) ─────────│                                  │
+       │                                         │◀────────── hello ────────────────│
+       │                                         │─────────── welcome ─────────────▶│
+       │                                         │            (fleet, manifests,    │
+       │                                         │             availableExtensions) │
+       │                                         │                                  │
+       │────── VehicleTelemetry ────────────────▶│─────────── telemetry ───────────▶│
+       │────── Heartbeat (capabilities) ────────▶│                                  │
+       │                                         │                                  │
+       │◀───── Command ──────────────────────────│◀────────── command ──────────────│
+       │────── CommandAck ──────────────────────▶│─────────── command_ack ─────────▶│
 ```
 
-1.  > Go to [documentation](https://zensical.org/docs/authoring/code-blocks/#code-annotations)
+At the heart of the framework is a gateway using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
 
-    Code annotations allow to attach notes to lines of code.
+!!! tip "Still in beta, still useful"
 
-Code can also be highlighted inline: `#!python print("Hello, Python!")`.
+    [OpenC2](https://github.com/EthanMBoos/OpenC2) is in beta but already stable enough to back multi-domain research — stop fighting protocols and focus on autonomy.
 
-## Content tabs
+Learn more about our work:
 
-> Go to [documentation](https://zensical.org/docs/authoring/content-tabs/)
+<div class="grid cards" markdown>
 
-=== "Python"
+-   :lucide-book-open:{ .lg .middle } **Course Home**
 
-    ``` python
-    print("Hello from Python!")
-    ```
+    ---
 
-=== "Rust"
+    Start here for an overview of the course structure, schedule, and expectations.
 
-    ``` rs
-    println!("Hello from Rust!");
-    ```
+    [:octicons-arrow-right-24: Go to course](course-home.md)
 
-## Diagrams
+-   :lucide-route:{ .lg .middle } **OpenC2 Protocol**
 
-> Go to [documentation](https://zensical.org/docs/authoring/diagrams/)
+    ---
 
-``` mermaid
-graph LR
-  A[Start] --> B{Error?};
-  B -->|Yes| C[Hmm...];
-  C --> D[Debug];
-  D --> B;
-  B ---->|No| E[Yay!];
-```
+    Dive into the envelope protocol and extension architecture powering the gateway.
 
-## Footnotes
+    [:octicons-arrow-right-24: Read the spec](openc2.md)
 
-> Go to [documentation](https://zensical.org/docs/authoring/footnotes/)
+-   :lucide-cpu:{ .lg .middle } **Technologies**
 
-Here's a sentence with a footnote.[^1]
+    ---
 
-Hover it, to see a tooltip.
+    The cloud-native tooling, messaging patterns, and frameworks we build on.
 
-[^1]: This is the footnote.
+    [:octicons-arrow-right-24: See the stack](technologies.md)
 
+-   :lucide-layers:{ .lg .middle } **Modular Autonomy Framework**
 
-## Formatting
+    ---
 
-> Go to [documentation](https://zensical.org/docs/authoring/formatting/)
+    How MAF composes behaviors, planners, and controllers across heterogeneous platforms.
 
-- ==This was marked (highlight)==
-- ^^This was inserted (underline)^^
-- ~~This was deleted (strikethrough)~~
-- H~2~O
-- A^T^A
-- ++ctrl+alt+del++
+    [:octicons-arrow-right-24: Learn more](maf.md)
 
-## Icons, Emojis
+</div>
 
-> Go to [documentation](https://zensical.org/docs/authoring/icons-emojis/)
-
-* :sparkles: `:sparkles:`
-* :rocket: `:rocket:`
-* :tada: `:tada:`
-* :memo: `:memo:`
-* :eyes: `:eyes:`
-
-## Maths
-
-> Go to [documentation](https://zensical.org/docs/authoring/math/)
-
-$$
-\cos x=\sum_{k=0}^{\infty}\frac{(-1)^k}{(2k)!}x^{2k}
-$$
-
-!!! warning "Needs configuration"
-    Note that MathJax is included via a `script` tag on this page and is not
-    configured in the generated default configuration to avoid including it
-    in a pages that do not need it. See the documentation for details on how
-    to configure it on all your pages if they are more Maths-heavy than these
-    simple starter pages.
-
-<script id="MathJax-script" src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [["\\(", "\\)"]],
-      displayMath: [["\\[", "\\]"]],
-      processEscapes: true,
-      processEnvironments: true
-    },
-    options: {
-      ignoreHtmlClass: ".*|",
-      processHtmlClass: "arithmatex"
-    }
-  };
-
-  document$.subscribe(() => {
-    MathJax.startup.output.clearCache()
-    MathJax.typesetClear()
-    MathJax.texReset()
-    MathJax.typesetPromise()
-  })
-</script>
-
-## Task Lists
-
-> Go to [documentation](https://zensical.org/docs/authoring/lists/#using-task-lists)
-
-* [x] Install Zensical
-* [x] Configure `zensical.toml`
-* [x] Write amazing documentation
-* [ ] Deploy anywhere
-
-## Tooltips
-
-> Go to [documentation](https://zensical.org/docs/authoring/tooltips/)
-
-[Hover me][example]
-
-  [example]: https://example.com "I'm a tooltip!"
