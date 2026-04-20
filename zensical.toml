@@ -17,7 +17,8 @@ site_name = "GT Cloud Robotics"
 # meaningful description of the site content for use by search engines.
 #
 # Read more: https://zensical.org/docs/setup/basics/#site_description
-site_description = "A Georgia Tech Vertically Integrated Projects course focused on automonous robotics systems."
+site_description = "A Georgia Tech VIP course building autonomous robotics systems
+that leverage cloud native tooling and design patterns."
 
 # The site_author attribute. This is used in the HTML head element.
 #
@@ -27,7 +28,7 @@ site_author = "Ethan M Boos"
 # The site_url is the canonical URL for your site. When building online
 # documentation you should set this.
 # Read more: https://zensical.org/docs/setup/basics/#site_url
-#site_url = "https://www.gtcloudrobotics.com/"
+site_url = "https://gtcloudrobotics.com/"
 
 # The copyright notice appears in the page footer and can contain an HTML
 # fragment.
