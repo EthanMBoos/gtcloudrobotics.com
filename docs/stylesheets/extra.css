@@ -31,10 +31,12 @@
   margin: 0;
 }
 
-/* Lock home page to the viewport — no scrolling, no overflow */
+/* Lock home page to the viewport — no scrolling, no overflow, no bounce */
+html:has(body.home-page),
 body.home-page {
   overflow: hidden;
   height: 100vh;
+  overscroll-behavior: none;
 }
 
 /* Hide theme toggle on home page */
