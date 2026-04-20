@@ -7,9 +7,11 @@ hide:
 # What is GT Cloud Robotics?
 A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building open-architecture systems that work with any autonomous robotics platform — land, air, or sea.
 
-Most software systems are trapped in a single domain. Drone GCS software rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats. This fragmentation forces developers to waste months on repetitive integration or maintain entirely separate codebases for every new vehicle they introduce. It’s a "siloing" problem where the most basic tasks take months due to rigid initial design.
+Most software systems are trapped in a single domain. Drone GCS software rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats. This fragmentation forces developers to waste months on repetitive integration or maintain entirely separate codebases for every new vehicle they introduce.
 
-The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/docs/PROTOCOL.md) is a fresh take on what a modern, heterogeneous robotic fleet needs to thrive. We built this from first principles, utilizing a **core protocol and extension architecture** that eliminates the need for ecosystem-wide changes. The beauty of it is that you don’t need everyone else to change; they just need to adjust their protobuf to wrap cleanly into our system once. From there, they’re part of the ecosystem forever.
+The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/docs/PROTOCOL.md) takes a different approach: a **core protocol with an extension architecture**. Other systems only need to wrap their protobuf to plug in — once that's done, they're part of the ecosystem permanently.
+
+At the heart of the framework is a gateway using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
 
 ```text
                         VEHICLE ↔ GATEWAY                    GATEWAY ↔ UI
@@ -32,13 +34,11 @@ The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/doc
        │────── CommandAck ──────────────────────▶│─────────── command_ack ─────────▶│
 ```
 
-At the heart of the framework is a gateway using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
-
 !!! tip "Still in beta, still useful"
 
     [OpenC2](https://github.com/EthanMBoos/OpenC2) is in beta but already stable enough to back multi-domain research — stop fighting protocols and focus on autonomy.
 
-Learn more about our work:
+## Explore
 
 <div class="grid cards" markdown>
 
