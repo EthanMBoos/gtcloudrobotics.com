@@ -1,0 +1,59 @@
+.md-content:has(.hero-section) .md-content__inner {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+.hero-section {
+  background: url('../assets/images/hero-bg.png') center top / cover no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3rem 3rem 4rem;
+  z-index: 1;
+}
+
+.hero-section h1 {
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  margin: 0 0 0.5rem;
+}
+
+.hero-section p {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Lock home page to the viewport — no scrolling, no overflow */
+body.home-page {
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Hide theme toggle on home page */
+body.home-page .md-header__option {
+  display: none;
+}
+
+/* Transparent header + tabs on home page */
+body.home-page .md-header,
+body.home-page .md-header::before,
+body.home-page .md-tabs {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Hide footer only on the home page */
+body.home-page .md-footer {
+  display: none;
+}
