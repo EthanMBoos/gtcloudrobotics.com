@@ -4,6 +4,13 @@
   max-width: 100%;
 }
 
+/* When TOC is hidden, keep the sidebar's space reserved so content doesn't stretch */
+.md-sidebar--secondary[hidden] {
+  display: block !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .hero-section {
   background: url('../assets/images/hero-bg.png') center top / cover no-repeat;
   position: fixed;

@@ -1,10 +1,8 @@
 ---
 icon: lucide/rocket
-hide:
-- toc
 ---
 
-# Get started
+# Course Home
 
 For full documentation visit [zensical.org](https://zensical.org/docs/).
 

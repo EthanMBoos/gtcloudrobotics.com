@@ -49,6 +49,7 @@ nav = [
   {"Home" = "index.md"},
   {"About" = "about.md"},
   {"Robotics Course" = [
+     "course-home.md",
      "robot-math.md",
      "control-systems.md",
      "path-planning.md",
