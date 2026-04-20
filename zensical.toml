@@ -55,7 +55,7 @@ nav = [
      "sim-vs-real.md",
      "technologies.md"
   ]},
-  {"OpenC2" = "openc2.md"},
+  {"OpenC2 Interface" = "openc2.md"},
   {"Modular Autonomy Framework" = "maf.md"}
 ]
 

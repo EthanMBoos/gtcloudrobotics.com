@@ -18,17 +18,58 @@
   z-index: 1;
 }
 
+/* Hide permalink anchor on hero heading */
+.hero-section .headerlink {
+  display: none !important;
+}
+
 .hero-section h1 {
   color: #fff;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.75rem;
 }
 
 .hero-section p {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-  font-size: 1.1rem;
-  margin: 0;
+  font-size: 0.9rem;
+  max-width: 36rem;
+  margin: 0 0 1.25rem;
+}
+
+/* Buttons on the hero */
+.hero-section .md-button {
+  color: #fff;
+  border-color: #fff;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.hero-section .md-button:hover,
+.hero-section .md-button:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+  color: #fff;
+}
+
+.hero-section .md-button--primary {
+  background-color: #ff4088;
+  border-color: #ff4088;
+  color: #fff;
+}
+
+.hero-section .md-button--primary:hover,
+.hero-section .md-button--primary:focus {
+  background-color: #ff66a3;
+  border-color: #ff66a3;
+  color: #fff;
 }
 
 /* Lock home page to the viewport — no scrolling, no overflow, no bounce */
