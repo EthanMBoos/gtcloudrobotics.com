@@ -17,8 +17,7 @@ site_name = "GT Cloud Robotics"
 # meaningful description of the site content for use by search engines.
 #
 # Read more: https://zensical.org/docs/setup/basics/#site_description
-site_description = "A Georgia Tech VIP course building autonomous robotics systems
-that leverage cloud native tooling and design patterns."
+site_description = "A Georgia Tech VIP course building autonomous robotics systems that leverage cloud native tooling and design patterns."
 
 # The site_author attribute. This is used in the HTML head element.
 #
