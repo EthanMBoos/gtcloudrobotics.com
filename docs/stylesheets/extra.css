@@ -127,3 +127,8 @@ body.home-page .md-footer {
 .md-footer-meta {
   display: none;
 }
+
+/* Logo: white version on dark/slate (which includes the home page) */
+[data-md-color-scheme="slate"] .md-logo img {
+  content: url('../assets/images/logo-white.svg');
+}
