@@ -122,3 +122,8 @@ body.home-page .md-tabs__link:hover {
 body.home-page .md-footer {
   display: none;
 }
+
+/* Hide "Made with Zensical" on all pages */
+.md-copyright {
+  display: none;
+}
