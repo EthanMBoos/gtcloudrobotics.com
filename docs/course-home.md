@@ -14,7 +14,26 @@ GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
 
 Complete five assignments on CodeGrade over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format mirrors a take-home technical interview — a scoped problem, tests you need to pass, and automated grading — because that's where a lot of you will see problems like these next. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
 
-Assignments span the course's sub-specialties (path planning, control systems, robot math, sim-to-real, etc.), and you don't have to do all of them. Pick the five that line up with where you want your robotics career to go — if you're aiming at motion planning, weight your selection there; if controls is your thing, do the controls-heavy ones.
+Assignments span real robotics problems — core sub-specialties and the software skills that support them — applied, not academic. Two are required; pick three more to match where you want your robotics career to go.
+
+**Required (do both):**
+
+1. C++ CLI tooling: CMake fundamentals and the workflow to spin up a useful utility from scratch — a staple technical-interview exercise.
+2. Simulation & sim-to-real: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
+
+**Electives (pick 3):** *listed in natural learning order — jump around to whatever matches your interests.*
+
+3. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
+4. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
+5. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
+6. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
+7. Path & motion planning: generating feasible trajectories through space and time.
+8. Behavior architectures & autonomy: composing behavior with state machines, behavior trees, and planners.
+9. Learning-based methods: when to reach for RL or imitation learning — and when not to.
+10. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
+
+
+If you're aiming at motion planning, weight your electives there; if controls is your thing, do the controls-heavy ones. Goal is that your five feel cohesive for your trajectory, not scattershot.
 
 ## 2. One substantive merge into a project repo
 
