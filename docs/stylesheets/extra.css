@@ -84,6 +84,7 @@ html:has(body.home-page),
 body.home-page {
   overflow: hidden;
   height: 100vh;
+  height: 100dvh;
   overscroll-behavior: none;
 }
 
