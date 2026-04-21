@@ -11,8 +11,19 @@
   pointer-events: none;
 }
 
-.hero-section {
+body.home-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100lvh;
   background: url('../assets/images/hero-bg.png') center top / cover no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-section {
   position: fixed;
   top: 0;
   left: 0;
