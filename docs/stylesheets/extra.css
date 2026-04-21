@@ -47,6 +47,13 @@
   margin: 0 0 1.25rem;
 }
 
+/* Hide the hero tagline paragraph on mobile (but keep the button paragraph) */
+@media (max-width: 768px) {
+  .hero-section p:not(:has(.md-button)) {
+    display: none;
+  }
+}
+
 /* Buttons on the hero */
 .hero-section .md-button {
   color: #fff;
