@@ -10,18 +10,18 @@ icon: lucide/book-open
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech, so — like all VIP courses — it's graded pass/fail. There are two requirements, and both are built to mirror how you'll actually work as a robotics engineer: one tests that you can solve scoped technical problems, and the other tests that you can ship real code into a real codebase.
 
-## 1. Five CodeGrade assignments
+## 1. Three CodeGrade assignments
 
-Complete five assignments on CodeGrade over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format mirrors a take-home technical interview — a scoped problem, tests you need to pass, and automated grading — because that's where a lot of you will see problems like these next. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
+Complete three assignments on CodeGrade over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format mirrors a take-home technical interview — a scoped problem, tests you need to pass, and automated grading — because that's where a lot of you will see problems like these next. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
 
-Assignments span real robotics problems — core sub-specialties and the software skills that support them — applied, not academic. Two are required; pick three more to match where you want your robotics career to go.
+Assignments span real robotics problems — core sub-specialties and the software skills that support them — applied, not academic. Two are required; pick one more to match where you want your robotics career to go.
 
 **Required (do both):**
 
 1. C++ CLI tooling: CMake fundamentals and the workflow to spin up a useful utility from scratch — a staple technical-interview exercise.
 2. Simulation & sim-to-real: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
 
-**Electives (pick 3):** *listed in natural learning order — jump around to whatever matches your interests.*
+**Electives (pick 1):** *listed in natural learning order — jump around to whatever matches your interests.*
 
 3. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
 4. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
