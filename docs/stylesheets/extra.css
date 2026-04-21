@@ -49,9 +49,6 @@
 
 /* Hide the hero tagline paragraph on mobile (but keep the button paragraph) */
 @media (max-width: 768px) {
-  .hero-section {
-    padding: 3rem 1rem 4rem;
-  }
   .hero-section p:not(:has(.md-button)) {
     display: none;
   }
