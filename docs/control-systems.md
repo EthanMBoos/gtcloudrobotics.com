@@ -4,4 +4,5 @@ icon: lucide/activity
 
 # Control Systems
 
-Page content in progress. 
+!!! warning "Page under construction"
+    This page is a placeholder and hasn't been written yet. Check back later for content.
