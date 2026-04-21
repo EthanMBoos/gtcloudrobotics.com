@@ -48,7 +48,7 @@ Land one pull request into the `main` branch of one of the active course reposit
 
 !!! tip "Start the PR early"
 
-    The merge requirement is where most of the real learning happens, and it's also where students most often underestimate scope. Pick your issue in the first few weeks so review cycles don't stack up at the end of the term.
+    The merge requirement is where most of the real learning happens, and it's easy to underestimate the scope. Pick your issue in the first few weeks so review cycles don't stack up at the end of the term.
 
 ## Course logistics
 
