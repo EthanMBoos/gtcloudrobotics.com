@@ -86,7 +86,6 @@ body.home-page {
   height: 100vh;
   height: 100dvh;
   overscroll-behavior: none;
-  background-color: #2d2347;
 }
 
 /* Hide theme toggle on home page */
