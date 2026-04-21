@@ -33,7 +33,7 @@ Assignments span real robotics problems — core sub-specialties and the softwar
 10. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
 
 
-If you're aiming at motion planning, weight your electives there; if controls is your thing, do the controls-heavy ones. Goal is that your five feel cohesive for your trajectory, not scattershot.
+Pick the elective that matches where you want your robotics career to go. If you take this course across multiple semesters, you can't repeat electives — and since VIP is typically a three-semester commitment, you'll end up covering most of the tracks by the time you're done.
 
 ## 2. One substantive merge into a project repo
 
