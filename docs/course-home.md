@@ -40,7 +40,7 @@ If you're aiming at motion planning, weight your electives there; if controls is
 Land one pull request into the `main` branch of one of the active course repositories:
 
 - **[OpenC2](https://github.com/EthanMBoos/OpenC2)** — operator UI (Electron + React)
-- **OpenC2-Field** — field-side operator tooling
+- **[OpenC2-Field](https://github.com/EthanMBoos/OpenC2-Field)** — field-side operator tooling
 - **[openc2-gateway](https://github.com/EthanMBoos/openc2-gateway)** — Go gateway and envelope protocol
 - **[maf_aerial](https://github.com/EthanMBoos/maf_aerial)** — aerial MAF implementation (C++, PX4 / MAVLink)
 
