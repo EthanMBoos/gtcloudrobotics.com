@@ -6,8 +6,10 @@ hide:
 
 # OpenC2 Interface
 
-![OpenC2 operator UI](assets/images/OpenC2Preview.png)
-<caption>OpenC2 operator UI — 3D mission planning and fleet monitoring.</caption>
+<figure markdown="span">
+  ![OpenC2 operator UI](assets/images/OpenC2Preview.png)
+  <figcaption>OpenC2 operator UI — 3D mission planning and fleet monitoring.</figcaption>
+</figure>
 
 **OpenC2** is an open-architecture command and control system for heterogeneous robotic fleets — pairing an Electron + React [operator UI](https://github.com/EthanMBoos/OpenC2) with a Go [gateway](https://github.com/EthanMBoos/openc2-gateway) that bridges vehicles over a protobuf envelope protocol.
 

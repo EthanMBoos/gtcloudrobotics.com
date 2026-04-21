@@ -6,8 +6,10 @@ hide:
 
 # Modular Autonomy Framework
 
-![Starling reference platform](assets/images/starling.png)
-<caption>ModalAI Starling 2 — initial target platform for the MAF system deployment.</caption>
+<figure markdown="span">
+  ![Starling reference platform](assets/images/starling.png)
+  <figcaption>ModalAI Starling 2 — initial target platform for MAF deployment.</figcaption>
+</figure>
 
 **MAF** is a pure C++ onboard autonomy framework — no ROS, no middleware bloat, just direct autopilot control with behavior tree orchestration. [MAF Aerial](https://github.com/EthanMBoos/maf_aerial) is the first domain implementation, targeting PX4 via MAVLink.
 
