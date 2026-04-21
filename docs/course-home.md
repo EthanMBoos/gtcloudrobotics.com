@@ -33,7 +33,7 @@ Assignments span real robotics problems — core sub-specialties and the softwar
 10. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
 
 
-Pick the elective that matches where you want your robotics career to go. If you take this course again in future semesters, the required pair only applies your first term — from there you'll pick 3 new assignments each time. Since VIP is typically a three-semester commitment, you'll end up covering nearly every track by the time you're done.
+Pick the elective that matches where you want your robotics career to go. If you take this course again in future semesters, the required pair only applies your first term — from there you'll pick 3 new assignments each time. Since VIP is typically a three-semester commitment, you'll end up covering nearly every option by the time you're done.
 
 ## 2. One substantive merge into a project repo
 
