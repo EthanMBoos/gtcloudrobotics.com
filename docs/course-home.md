@@ -23,8 +23,8 @@ Assignments span real robotics problems — core sub-specialties and the softwar
 
 **Electives (pick 3):** *listed in natural learning order — jump around to whatever matches your interests.*
 
-3. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
-4. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
+3. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
+4. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
 5. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
 6. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
 7. Path & motion planning: generating feasible trajectories through space and time.
