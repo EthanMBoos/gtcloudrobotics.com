@@ -50,11 +50,9 @@ nav = [
   {"About" = "about.md"},
   {"Robotics Course" = [
      "course-home.md",
-     "robot-math.md",
-     "control-systems.md",
-     "path-planning.md",
-     "sim-vs-real.md",
-     "technologies.md"
+     "cpp-cli-tooling.md",
+     "progressive-testing.md",
+     "system-design.md"
   ]},
   {"OpenC2 Interface" = "openc2.md"},
   {"Modular Autonomy Framework" = "maf.md"}

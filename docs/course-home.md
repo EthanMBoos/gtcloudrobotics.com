@@ -18,24 +18,30 @@ Complete three assignments over the semester. These aren't synthetic homework �
 
 Accept each assignment through the [GitHub Classroom](https://classroom.github.com/classrooms/250684703-gtcloudrobotics-classroom) link — this creates your personal repo under the [gtcloudrobotics](https://github.com/gtcloudrobotics) org. Each repo ships with a GitHub Actions workflow that runs the test suite on every push, and the results auto-report to the instructor dashboard as your grade. **There's no separate submission step; pushing commits is the submission.** Check the **Actions** tab on your repo to see pass/fail.
 
-**Required (do both):**
+### First semester — all three required
 
-1. C++ CLI tooling: CMake fundamentals and the workflow to spin up a useful utility from scratch — a staple technical-interview exercise.
-2. Simulation & sim-to-real: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
+1. C++ CLI tooling: CMake fundamentals and the workflow to spin up a useful utility from scratch.
+2. System design: the top-level view of a robotics stack — how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
+3. Progressive testing: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
 
-**Electives (pick 1):** *listed in natural learning order — jump around to whatever matches your interests.*
+### Returning semesters — pick any three
 
-3. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
-4. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
-5. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
-6. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
-7. Path & motion planning: generating feasible trajectories through space and time.
-8. Behavior architectures & autonomy: composing behavior with state machines, behavior trees, and planners.
-9. Learning-based methods: when to reach for RL or imitation learning — and when not to.
-10. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
+*Listed in natural learning order; jump around to whatever matches your interests.*
 
+!!! note "Still in development — available Spring 2027"
 
-Pick the elective that matches where you want your robotics career to go. If you take this course again in future semesters, the required pair only applies your first term — from there you'll pick 3 new assignments each time. Since VIP is typically a three-semester commitment, you'll end up covering nearly every option by the time you're done.
+    These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
+
+1. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
+2. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
+3. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
+4. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
+5. Path & motion planning: generating feasible trajectories through space and time.
+6. Behavior architectures & autonomy: composing behavior with state machines, behavior trees, and planners.
+7. Learning-based methods: when to reach for RL or imitation learning — and when not to.
+8. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
+
+Pick assignments that match where you want your robotics career to go. VIP is typically a three-semester commitment, so between the required first-semester set and two rounds of electives, you'll end up covering nearly every option by the time you're done.
 
 ## 2. One substantive merge into a project repo
 

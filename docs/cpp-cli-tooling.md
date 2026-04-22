@@ -1,8 +1,8 @@
 ---
-icon: lucide/activity
+icon: lucide/terminal
 ---
 
-# Control Systems
+# C++ CLI Tooling
 
 !!! warning "Page under construction"
     This page is a placeholder and hasn't been written yet. Check back later for content.
