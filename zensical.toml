@@ -51,7 +51,7 @@ nav = [
   {"Robotics Course" = [
      "course-home.md",
      "cpp-cli-tooling.md",
-      "system-design.md"
+     "system-design.md"
      "progressive-testing.md",
   ]},
   {"OpenC2 Interface" = "openc2.md"},
