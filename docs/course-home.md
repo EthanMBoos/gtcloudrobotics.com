@@ -20,9 +20,9 @@ Accept each assignment through the [GitHub Classroom](https://classroom.github.c
 
 ### First semester — all three required
 
-1. C++ CLI tooling: CMake fundamentals and the workflow to spin up a useful utility from scratch.
-2. System design: the top-level view of a robotics stack — how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
-3. Progressive testing: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
+1. [C++ CLI tooling](cpp-cli-tooling.md): CMake fundamentals and the workflow to spin up a useful utility from scratch.
+2. [System design](system-design.md): the top-level view of a robotics stack — how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
+3. [Progressive testing](progressive-testing.md): walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
 
 ### Returning semesters — pick any three
 
