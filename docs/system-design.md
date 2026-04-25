@@ -26,6 +26,34 @@ A robot is rarely a single sense–think–act loop. High-level mission logic ma
 
 The exact rates vary across robots, but the overall pattern does not: control runs fastest, estimation follows the dynamics, perception is bounded by sensors and compute, and planning and mission logic run more slowly because they reason over longer horizons. Those differences come from physics, latency, and system requirements, not coding style.
 
+This is also why you can't just call the slow layer from inside the fast one. A controller running at 1 kHz cannot block on a 30 Hz perception update — it would miss 32 of its own deadlines waiting. The usual pattern is a **shared latest-value slot**: the slow producer writes whenever it has something new, the fast consumer reads the most recent value without blocking, and a timestamp lets the consumer notice when the value is stale.
+
+```cpp
+struct Stamped { Pose value; double t_sec; };
+std::atomic<Stamped> latest_pose;  // written by perception, read by controller
+
+// Perception thread @ 30 Hz
+void perception_loop() {
+    while (running) {
+        Pose p = run_perception();
+        latest_pose.store({p, now()});
+        sleep_until_next_tick(30);
+    }
+}
+
+// Controller thread @ 1 kHz
+void controller_loop() {
+    while (running) {
+        Stamped s = latest_pose.load();              // never blocks
+        if (now() - s.t_sec > 0.1) enter_safe_mode(); // freshness check
+        else send_command(compute(s.value));
+        sleep_until_next_tick(1000);
+    }
+}
+```
+
+The controller never waits on perception, but it also never silently uses a half-second-old pose — the timestamp is what makes the decoupling safe.
+
 Two distinctions matter early. Perception is not estimation: detecting a lane marker is different from estimating vehicle pose. And planning is not control: deciding where to go is different from generating the fast actuator commands that make the robot follow that decision.
 
 ---

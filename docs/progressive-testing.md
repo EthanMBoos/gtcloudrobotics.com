@@ -52,6 +52,35 @@ HIL is where you catch:
 
 HIL should be smaller and more selective than SIL. You are not repeating every software test. You are checking the assumptions that only become visible once a real interface is involved.
 
+A concrete failure mode HIL exists to catch — picture the satellite from the [C++ CLI tooling assignment](cpp-cli-tooling.md) with two redundant temperature sensors, averaged each step, with a fault flag if the average exceeds 80 °C. A reasonable first pass at the monitor:
+
+```python
+class ThermalMonitor:
+    def __init__(self, a, b, max_c=80.0):
+        self.a, self.b, self.max_c = a, b, max_c
+        self.state = "NOMINAL"
+    def tick(self):
+        avg = (self.a.read() + self.b.read()) / 2
+        if avg > self.max_c:
+            self.state = "THERMAL_SAFE_MODE"
+        else:
+            self.state = "NOMINAL"
+```
+
+The SIL test passes — feed it two healthy sensors, average is fine, state is `NOMINAL`. Ship it. Then on the bench, sensor A's driver hits a known failure mode where the device stops responding and the driver silently returns its last cached reading instead of raising an error. The monitor's trace from the HIL run looks like this:
+
+```
+t=0.0s  A=42.1  B=43.0  avg=42.6  state=NOMINAL
+t=1.0s  A=42.1  B=58.7  avg=50.4  state=NOMINAL   <-- A is frozen
+t=2.0s  A=42.1  B=74.4  avg=58.3  state=NOMINAL
+t=3.0s  A=42.1  B=91.2  avg=66.7  state=NOMINAL   <-- satellite is cooked
+```
+
+The average never crosses 80 °C because the dead sensor is dragging it down. Two redundant sensors, and the redundancy made things *worse* — it masked the failure instead of catching it. The SIL test was right about the code it tested; it just tested the wrong code. The fake sensor never froze the way real ones do, so the failure mode the monitor needed to handle was invisible until hardware.
+
+!!! tip "Reproduce the bug, then fix it"
+    The [companion Colab notebook](https://colab.research.google.com/github/EthanMBoos/gtcloudrobotics.com/blob/main/notebooks/sil-hil-safe-mode.ipynb) walks through reproducing this run, diagnosing it from the trace, and fixing the monitor to check each sensor's freshness *before* averaging. There's a stubbed-out `tick()` for you to fill in, and a new SIL test that would have caught the bug from day one — once you know a failure mode exists in the real world, the cheapest place to catch it forever is back in software.
+
 ---
 
 ## 4. Hardware Tests Are The Final Authority, Not The First Line Of Defense
