@@ -16,19 +16,18 @@ At the heart of the framework is a gateway using an **envelope protocol** — co
 ```text
                         VEHICLE ↔ GATEWAY                    GATEWAY ↔ UI
                        (protobuf/UDP multicast)              (JSON/WebSocket)
-
+                       
 ┌─────────────┐                           ┌─────────────┐                    ┌─────────────┐
 │   Vehicle   │                           │   Gateway   │                    │     UI      │
 └──────┬──────┘                           └──────┬──────┘                    └──────┬──────┘
        │                                         │                                  │
-       │◀───── GatewayHeartbeat (1/sec) ─────────│                                  │
        │                                         │◀────────── hello ────────────────│
        │                                         │─────────── welcome ─────────────▶│
        │                                         │            (fleet, manifests,    │
        │                                         │             availableExtensions) │
        │                                         │                                  │
        │────── VehicleTelemetry ────────────────▶│─────────── telemetry ───────────▶│
-       │────── Heartbeat (capabilities) ────────▶│                                  │
+       │────── Heartbeat (capabilities) ────────▶│─────────── heartbeat ───────────▶│
        │                                         │                                  │
        │◀───── Command ──────────────────────────│◀────────── command ──────────────│
        │────── CommandAck ──────────────────────▶│─────────── command_ack ─────────▶│
