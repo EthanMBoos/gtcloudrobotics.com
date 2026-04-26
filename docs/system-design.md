@@ -74,6 +74,18 @@ controller -> map internals
 
 Good boundaries let you replace a camera, planner, or estimator without rewriting the rest of the stack. Bad boundaries create hidden coupling: a planner reaches into sensor internals, a UI writes actuator commands directly, or a controller depends on map-building details it should never know about. This is why robotics diagrams matter. They are not decoration; they expose ownership boundaries.
 
+At the code level, those same boundaries are function signatures. The planner asks for exactly what it needs and nothing else:
+
+```python
+# Clean — depends on a typed world model.
+def plan(world: WorldModel, goal: Goal) -> Trajectory: ...
+
+# Leaky — depends on three layers the planner should never know about.
+def plan(world, camera_driver, imu_serial_port, ros_node): ...
+```
+
+The leaky version is no longer a planner — it's a planner-plus-half-the-driver-stack, and swapping the camera or rewiring the IMU now breaks the planning logic. The clean version doesn't care where its `WorldModel` came from: a stereo camera, a lidar, a simulator, or a recorded log. That's the same property that makes [progressive testing](progressive-testing.md) tractable — the planner that runs in SIL is literally the same planner that runs on the robot.
+
 ---
 
 ## 3. Rate, Latency, And Freshness Budgets
