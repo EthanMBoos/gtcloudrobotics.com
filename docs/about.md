@@ -9,13 +9,11 @@ A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team bu
 
 Most software systems are trapped in a single domain. Drone GCS software rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats. This fragmentation forces developers to waste months on repetitive integration or maintain entirely separate codebases for every new vehicle they introduce.
 
-Our approach treats this as a *composition* problem at every layer of the stack — protocol, on-vehicle runtime, and behavior architecture — rather than a problem to solve once at the protocol layer and inherit everywhere else. Three pieces compose into one heterogeneous-fleet stack:
+The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/docs/PROTOCOL.md) takes a different approach: **a core protocol with an extension architecture**. Other systems only need to wrap their protobuf to plug in — once that's done, they're part of the ecosystem permanently. The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build.
 
-- **Protocol layer.** The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/docs/PROTOCOL.md) — a core protocol with an extension architecture. Other systems only need to wrap their protobuf to plug in — once that's done, they're part of the ecosystem permanently.
-- **On-vehicle runtime.** A coarse-grained C++ runtime ([MAF](maf.md)) that runs the same binary under SITL and on resource-constrained hardware, without the middleware tax distributed runtimes impose on tightly-coupled single-host autonomy.
-- **Behavior architecture.** Standalone BehaviorTree.CPP nodes plus a layered config hierarchy (defaults → domain → environment → platform → vehicle), so the same behavior code retargets across aerial, ground, and marine domains by configuration rather than by forking.
+At the heart of the framework is a gateway using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
 
-At the heart of the protocol layer is a gateway using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
+For teams that want more than just the protocol, we also publish the rest of the stack as independently usable pieces: a coarse-grained on-vehicle C++ runtime ([MAF](maf.md)) designed to fit the CPU and memory budgets typical of embedded autonomy targets — without the middleware tax distributed runtimes impose on tightly-coupled single-host autonomy, and a behavior architecture (standalone BehaviorTree.CPP nodes + a layered config hierarchy) that gives custom per-vehicle logic an obvious place to live and gives shared logic an equally obvious place to be promoted to — so extending the system stays clean as more vehicles and behaviors are implemented. Adopt one, two, or all three.
 
 ```text
                         VEHICLE ↔ GATEWAY                    GATEWAY ↔ UI
