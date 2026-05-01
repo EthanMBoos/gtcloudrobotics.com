@@ -4,7 +4,7 @@ hide:
 - toc
 ---
 
-# Tower Interface
+# Tower C2
 
 <figure markdown="span">
   ![Tower operator UI](assets/images/TowerPreview.png)
