@@ -6,9 +6,7 @@ hide:
 
 # Pidgin Protocol
 
-**Pidgin** is an **envelope protocol** for heterogeneous robotic fleets — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
-
-The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build. Other systems only need to wrap their protobuf to plug in; once that's done, they're part of the ecosystem permanently.
+**Pidgin** is the wire contract between vehicles, `tower-server`, and operator clients. It keeps a small stable core for fields every fleet needs, then layers versioned extensions on top so a Husky, quadrotor, and BlueBoat can share one operator surface without pretending they are the same machine.
 
 ```text
                       VEHICLE ↔ TOWER-SERVER                TOWER-SERVER ↔ UI
@@ -30,6 +28,75 @@ The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt
        │────── CommandAck ──────────────────────▶│─────────── command_ack ─────────▶│
 ```
 
+## What Lives in the Core Envelope
+
+Pidgin's base schema is intentionally small. The core message types carry the parts that are universal across domains:
+
+- `VehicleTelemetry` for location, heading, speed, status, environment, and sequence data.
+- `Heartbeat` for liveness plus advertised capabilities like supported commands, sensors, and extensions.
+- `Command` for operator actions sent toward a vehicle.
+- `CommandAck` for the command lifecycle: accepted, rejected, timeout, completed, or failed.
+- `hello` and `welcome` for client bootstrap, including the current fleet snapshot and extension metadata.
+
+That split matters operationally. Telemetry tells the UI what the vehicle is doing now. Heartbeats tell the UI what the vehicle is capable of doing at all. Commands are validated against those capabilities before they are forwarded.
+
+## Why Extensions Work
+
+Pidgin does not try to flatten every robot into one giant schema. Instead, it uses a stable envelope with versioned extension payloads:
+
+1. The core proto carries the fields that should mean the same thing for every vehicle.
+2. Vehicle-specific data rides in an `extensions` map keyed by namespace, such as `husky` or `camera`.
+3. Each extension payload is versioned independently, so one project can evolve without forcing a protocol fork.
+4. The server decodes those payloads into JSON for the UI, which keeps the browser free of protobuf runtime and extension-specific binary handling.
+
+In practice, that means a ground vehicle can publish bumper state and drive mode while an aircraft publishes payload or gimbal data, and both still show up in the same fleet model.
+
+```json
+{
+       "type": "telemetry",
+       "vehicleId": "husky-01",
+       "data": {
+              "environment": "ground",
+              "supportedExtensions": ["husky"],
+              "extensions": {
+                     "husky": {
+                            "_version": 1,
+                            "driveMode": "AUTONOMOUS",
+                            "eStopActive": false,
+                            "batteryVoltage": 25.6
+                     }
+              }
+       }
+}
+```
+
+## Capabilities Are First-Class
+
+One of the most important protocol choices is that vehicles explicitly advertise what they support instead of forcing the UI to guess.
+
+- A stationary sensor node should not show `goto`.
+- A fixed-wing aircraft may reject `stop` because that concept is unsafe or meaningless.
+- A Husky may support only a subset of extension actions such as `setDriveMode` and `triggerEStop`.
+
+Pidgin handles that with capability data in heartbeat messages. The server uses those capabilities to validate commands, and the UI uses the same data to decide which controls to render. The result is a tighter operator experience: fewer dead buttons, fewer silent failures, and clearer reasons when a command is rejected.
+
+## Server as the Translation Boundary
+
+Vehicles speak protobuf on multicast. Operator clients receive JSON over WebSocket. `tower-server` is the translation boundary between those two worlds.
+
+- It registers the extension codecs compiled into the server.
+- It publishes `availableExtensions` and manifests in the `welcome` message.
+- It decodes extension telemetry into readable JSON.
+- It rejects unknown namespaces or unsupported actions without breaking the rest of the telemetry stream.
+
+That makes the server the source of truth for what extensions exist, while each vehicle remains the source of truth for which of those extensions it actually implements.
+
+## Integration Contract
+
+Pidgin is designed so the protocol scales without turning the server into a zoo of one-off bridges. Teams integrate by translating their robot state into `VehicleTelemetry` and `Heartbeat`, then emitting Pidgin on the multicast groups. If they want command support, they subscribe to the command channel and relay those actions back into their stack.
+
+The consequence is deliberate: the server stays pure Pidgin, ownership stays clear, and adding a new platform is mostly translation work at the edge instead of central bridge maintenance in the middle.
+
 !!! tip "Dive deeper"
 
-    Read the full [pidgin protocol spec](https://github.com/EthanMBoos/tower-server/blob/main/docs/PROTOCOL.md) on GitHub.
+              Read the full [pidgin protocol spec](https://github.com/EthanMBoos/tower-server/blob/main/docs/PROTOCOL.md) and the [extension architecture notes](https://github.com/EthanMBoos/tower-server/blob/main/docs/EXTENSIBILITY.md) on GitHub.
