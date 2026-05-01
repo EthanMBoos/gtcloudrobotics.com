@@ -57,7 +57,8 @@ nav = [
      "system-design.md",
      "progressive-testing.md",
   ]},
-  {"Tower Interface" = "tower.md"},
+  {"Tower C2" = "tower.md"},
+  {"Pidgin Protocol" = "pidgin.md"},
   {"Modular Autonomy Framework" = "maf.md"}
 ]
 
