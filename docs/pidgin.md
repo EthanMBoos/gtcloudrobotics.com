@@ -6,7 +6,7 @@ hide:
 
 # Pidgin Protocol
 
-**Pidgin** is the wire contract between vehicles, `tower-server`, and operator clients. It keeps a small stable core for fields every fleet needs, then layers versioned extensions on top so a Husky, quadrotor, and BlueBoat can share one operator surface without pretending they are the same machine.
+**Pidgin** is the wire contract between vehicles, `tower-server`, and operator clients. It keeps a small stable core for fields every fleet needs, then layers versioned extensions on top so a ground robot, quadrotor, fixed-wing aircraft, and marine vessel can share one operator surface without pretending they are the same machine.
 
 ```text
                       VEHICLE ↔ TOWER-SERVER                TOWER-SERVER ↔ UI
@@ -49,21 +49,23 @@ Pidgin does not try to flatten every robot into one giant schema. Instead, it us
 3. Each extension payload is versioned independently, so one project can evolve without forcing a protocol fork.
 4. The server decodes those payloads into JSON for the UI, which keeps the browser free of protobuf runtime and extension-specific binary handling.
 
-In practice, that means a ground vehicle can publish bumper state and drive mode while an aircraft publishes payload or gimbal data, and both still show up in the same fleet model.
+In practice, that means a vehicle like the ModalAI Starling 2 can publish flight-specific state through its extension payload while still fitting the same fleet model as a ground or marine robot.
 
 ```json
 {
        "type": "telemetry",
-       "vehicleId": "husky-01",
+       "vehicleId": "starling-02",
        "data": {
-              "environment": "ground",
-              "supportedExtensions": ["husky"],
+              "environment": "air",
+              "supportedExtensions": ["starling"],
               "extensions": {
-                     "husky": {
+                     "starling": {
                             "_version": 1,
-                            "driveMode": "AUTONOMOUS",
-                            "eStopActive": false,
-                            "batteryVoltage": 25.6
+                            "flightMode": "OFFBOARD",
+                            "missionState": "TRANSIT",
+                            "batteryPercent": 68,
+                            "linkQuality": 0.91,
+                            "windEstimateMs": 4.2
                      }
               }
        }
