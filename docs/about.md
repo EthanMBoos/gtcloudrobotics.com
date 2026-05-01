@@ -11,18 +11,18 @@ Most software systems are trapped in a single domain. Drone GCS software rarely 
 
 Our approach treats this as a *composition* problem at every layer of the stack — protocol, on-vehicle runtime, and behavior architecture — rather than something to solve once at the protocol layer and inherit everywhere else. Three pieces compose into one heterogeneous-fleet stack, but each is independently adoptable:
 
-- **Protocol layer.** The [OpenC2 protocol](https://github.com/EthanMBoos/openc2-gateway/blob/main/docs/PROTOCOL.md) — a core protocol with an extension architecture. Other systems only need to wrap their protobuf to plug in; once that's done, they're part of the ecosystem permanently. The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build.
+- **Protocol layer.** The [pidgin protocol](https://github.com/EthanMBoos/tower-server/blob/main/docs/PROTOCOL.md) — a core protocol with an extension architecture. Other systems only need to wrap their protobuf to plug in; once that's done, they're part of the ecosystem permanently. The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build.
 - **On-vehicle runtime.** A coarse-grained C++ runtime ([MAF](maf.md)) designed to fit the CPU and memory budgets typical of embedded autonomy targets, without the middleware tax distributed runtimes impose on tightly-coupled single-host autonomy.
 - **Behavior architecture.** Standalone BehaviorTree.CPP nodes plus a layered config hierarchy that give custom per-vehicle logic an obvious place to live and shared logic an equally obvious place to be promoted to — so extending the system stays clean as more vehicles and behaviors are implemented.
 
-At the heart of the protocol layer is a gateway using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
+At the heart of the protocol layer is tower-server using an **envelope protocol** — common fields like position, heading, and status, plus extension payloads for vehicle-specific data. Adding a new platform (Skydio, Husky, BlueBoat) means writing one extension, not forking the codebase.
 
 ```text
-                        VEHICLE ↔ GATEWAY                    GATEWAY ↔ UI
+                      VEHICLE ↔ TOWER-SERVER                TOWER-SERVER ↔ UI
                        (protobuf/UDP multicast)              (JSON/WebSocket)
                        
 ┌─────────────┐                           ┌─────────────┐                    ┌─────────────┐
-│   Vehicle   │                           │   Gateway   │                    │     UI      │
+│   Vehicle   │                           │    Server   │                    │     UI      │
 └──────┬──────┘                           └──────┬──────┘                    └──────┬──────┘
        │                                         │                                  │
        │                                         │◀────────── hello ────────────────│
@@ -39,7 +39,7 @@ At the heart of the protocol layer is a gateway using an **envelope protocol** �
 
 !!! tip "Still in beta, still useful"
 
-    [OpenC2](https://github.com/EthanMBoos/OpenC2) is in beta but already stable enough to back multi-domain research — stop fighting protocols and focus on autonomy.
+    [Tower](https://github.com/EthanMBoos/Tower) is in beta but already stable enough to back multi-domain research — stop fighting protocols and focus on autonomy.
 
 ## Explore
 
@@ -53,13 +53,13 @@ At the heart of the protocol layer is a gateway using an **envelope protocol** �
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
--   :lucide-route:{ .lg .middle } **OpenC2 Protocol**
+-   :lucide-route:{ .lg .middle } **Pidgin Protocol**
 
     ---
 
-    Dive into the envelope protocol and extension architecture powering the gateway.
+    Dive into the envelope protocol and extension architecture powering tower-server.
 
-    [:octicons-arrow-right-24: Read the spec](openc2.md)
+    [:octicons-arrow-right-24: Read the spec](tower.md)
 
 -   :lucide-cpu:{ .lg .middle } **Technologies**
 

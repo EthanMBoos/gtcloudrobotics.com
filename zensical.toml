@@ -57,7 +57,7 @@ nav = [
      "system-design.md",
      "progressive-testing.md",
   ]},
-  {"OpenC2 Interface" = "openc2.md"},
+  {"Tower Interface" = "tower.md"},
   {"Modular Autonomy Framework" = "maf.md"}
 ]
 

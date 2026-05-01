@@ -47,9 +47,9 @@ Pick assignments that match where you want your robotics career to go. VIP is ty
 
 Land one pull request into the `main` branch of one of the active course repositories:
 
-- **[OpenC2](https://github.com/EthanMBoos/OpenC2)** — operator UI (Electron + React)
-- **[OpenC2-Field](https://github.com/EthanMBoos/OpenC2-Field)** — field-side operator tooling
-- **[openc2-gateway](https://github.com/EthanMBoos/openc2-gateway)** — Go gateway and envelope protocol
+- **[Tower](https://github.com/EthanMBoos/Tower)** — operator UI (Electron + React)
+- **[Tower-Field](https://github.com/EthanMBoos/Tower-Field)** — field-side operator tooling
+- **[tower-server](https://github.com/EthanMBoos/tower-server)** — Go server and pidgin envelope protocol
 - **[maf_aerial](https://github.com/EthanMBoos/maf_aerial)** — aerial MAF implementation (C++, PX4 / MAVLink)
 
 "Substantive" means something that required you to understand a subsystem — not a button swap or a typo fix. A list of candidate issues and features will be posted at the start of the semester; or you can propose your own idea and get it scoped before you start.
