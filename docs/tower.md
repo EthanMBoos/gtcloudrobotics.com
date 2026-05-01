@@ -18,7 +18,7 @@ The UI handles 3D mission planning, fleet monitoring, and LLM-assisted operation
 ```text
 ┌──────────────┐    UDP multicast    ┌──────────────┐    WebSocket     ┌──────────────┐
 │   Vehicles   │ ◀─────────────────▶ │ tower-server │ ◀───────────────▶│  Operator UI │
-│   protobuf   │                     │   (Go)       │   JSON frames    │  (Electron)  │
+│   protobuf   │                     │     (Go)     │   JSON frames    │  (Electron)  │
 └──────────────┘                     └──────────────┘                  └──────────────┘
 ```
 
