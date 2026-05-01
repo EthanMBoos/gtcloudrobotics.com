@@ -12,7 +12,7 @@ Most software systems are trapped in a single domain. Drone GCS software rarely 
 Our approach treats this as a *composition* problem at every layer of the stack — protocol, on-vehicle runtime, and behavior architecture — rather than something to solve once at the protocol layer and inherit everywhere else. Three pieces compose into one heterogeneous-fleet stack, but each is independently adoptable:
 
 - **Protocol layer.** The [pidgin protocol](pidgin.md) — a core protocol with an extension architecture. Other systems only need to wrap their protobuf to plug in; once that's done, they're part of the ecosystem permanently. The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build.
-- **On-vehicle runtime.** A coarse-grained C++ runtime ([MAF](maf.md)) designed to fit the CPU and memory budgets typical of embedded autonomy targets, without the middleware tax distributed runtimes impose on tightly-coupled single-host autonomy.
+- **On-vehicle runtime.** A C++ mission and integration layer ([MAF](maf.md)) built around a small set of MAF-owned contracts at the autopilot boundary — explicit C++ loops own behavior, so the live middleware graph never becomes the application model and the contract stays stable as vehicles and transports change.
 - **Behavior architecture.** Standalone BehaviorTree.CPP nodes plus a layered config hierarchy that give custom per-vehicle logic an obvious place to live and shared logic an equally obvious place to be promoted to — so extending the system stays clean as more vehicles and behaviors are implemented.
 
 !!! tip "Still in beta, still useful"
@@ -31,13 +31,13 @@ Our approach treats this as a *composition* problem at every layer of the stack 
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
--   :lucide-route:{ .lg .middle } **Pidgin Protocol**
+-   :lucide-radio-tower:{ .lg .middle } **Tower C2**
 
     ---
 
-    Dive into the envelope protocol and extension architecture powering tower-server.
+    The operator UI and tower-server bridge — 3D mission planning and fleet monitoring across heterogeneous vehicles.
 
-    [:octicons-arrow-right-24: Read the spec](pidgin.md)
+    [:octicons-arrow-right-24: See Tower](tower.md)
 
 -   :lucide-cpu:{ .lg .middle } **Technologies**
 
