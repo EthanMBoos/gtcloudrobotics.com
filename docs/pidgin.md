@@ -99,4 +99,4 @@ The consequence is deliberate: the server stays pure Pidgin, ownership stays cle
 
 !!! tip "Dive deeper"
 
-              Read the full [pidgin protocol spec](https://github.com/EthanMBoos/tower-server/blob/main/docs/PROTOCOL.md) and the [extension architecture notes](https://github.com/EthanMBoos/tower-server/blob/main/docs/EXTENSIBILITY.md) on GitHub.
+       Read the full [pidgin protocol spec](https://github.com/EthanMBoos/tower-server/blob/main/docs/PROTOCOL.md) and the [extension architecture notes](https://github.com/EthanMBoos/tower-server/blob/main/docs/EXTENSIBILITY.md) on GitHub.
