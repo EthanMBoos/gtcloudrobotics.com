@@ -8,7 +8,7 @@ icon: lucide/rocket
 
 # Autonomous Robotics Systems,<br>Infrastructure, & Behavior Architecture
 
-A Georgia Tech VIP course building autonomous robotics systems<br>that leverage cloud native tooling and design patterns.
+A Georgia Tech VIP course building open-architecture infrastructure<br>for fielding modern, learned robot autonomy.
 
 [Get started](about.md){ .md-button .md-button--primary }
 [Learn more](about.md){ .md-button }

@@ -5,15 +5,18 @@ hide:
 ---
 
 # What is GT Cloud Robotics?
-A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building open-architecture systems that work with any autonomous robotics platform — land, air, or sea.
+A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building open-architecture infrastructure for fielding modern, learned robot autonomy.
 
-Most software systems are trapped in a single domain. Drone GCS software rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats. This fragmentation forces developers to waste months on repetitive integration or maintain entirely separate codebases for every new vehicle they introduce.
+Robot autonomy is becoming more capable and more opaque at the same time. Hand-coded behavior trees are giving way to learned policies; learned policies are giving way to monolithic models that decode motor commands directly from pre-trained video. Policy capability is scaling faster than our ability to verify it — so certifying the whole stack stops being the right question. The right one is what *contract* sits between the opaque parts and the parts you trust, and whether that contract holds when what's above it changes.
 
-Our approach treats this as a *composition* problem at every layer of the stack — protocol, on-vehicle runtime, and behavior architecture — rather than something to solve once at the protocol layer and inherit everywhere else. Three pieces compose into one heterogeneous-fleet stack, but each is independently adoptable:
+We treat this as a *composition* problem at two layers — and the same architectural argument shows up at both:
 
-- **Protocol layer.** The [pidgin protocol](pidgin.md) — a core protocol with an extension architecture. Other systems only need to wrap their protobuf to plug in; once that's done, they're part of the ecosystem permanently. The protocol stands on its own: any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build.
-- **On-vehicle runtime.** A C++ mission and integration layer ([MAF](maf.md)) built around a small set of MAF-owned contracts at the autopilot boundary — explicit C++ loops own behavior, so the live middleware graph never becomes the application model and the contract stays stable as vehicles and transports change.
-- **Behavior architecture.** Standalone BehaviorTree.CPP nodes plus a layered config hierarchy that give custom per-vehicle logic an obvious place to live and shared logic an equally obvious place to be promoted to — so extending the system stays clean as more vehicles and behaviors are implemented.
+- **Across platforms.** [Tower and the pidgin protocol](tower.md) compose heterogeneous vehicles into a single fleet through a capability-aware Physical API. Vehicles advertise what they can do; tower-server validates commands against those capabilities; new vehicle types plug in as protobuf extensions without touching the core. The protocol stands on its own — any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build.
+- **Within a platform.** [MAF](maf.md) is a C++ on-vehicle runtime built around an *authority-boundary contract* between high-level autonomy and the certified low-level autopilot. ArduPilot owns vehicle control; MAF owns mission sequencing; a runtime monitor enforces what crosses the boundary. The contract is *scale-invariant* — whether commands come from a hand-coded behavior tree, a single learned BT node, or a monolithic policy replacing the entire autonomy layer, the enforcement substrate, recording schema, and operational properties are the same.
+
+The load-bearing idea is the same at both levels: small, durable contracts at the seams that stay stable as vehicles, transports, and autonomy components change. The authority boundary in particular is what makes learned policies fieldable without verifying them — by constraining what crosses the boundary, isolating failures when the policy crashes, and attributing fault class from recordings when the vehicle crashes.
+
+The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the same authority split is intended for later aerial vehicles.
 
 !!! tip "Still in beta, still useful"
 
