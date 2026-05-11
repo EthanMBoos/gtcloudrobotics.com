@@ -32,14 +32,16 @@ Accept each assignment through the [GitHub Classroom](https://classroom.github.c
 
     These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
 
-1. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
-2. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
-3. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
-4. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
-5. Path & motion planning: generating feasible trajectories through space and time.
-6. Behavior architectures & autonomy: composing behavior with state machines, behavior trees, and planners.
-7. Learning-based methods: when to reach for RL or imitation learning — and when not to.
-8. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
+4. Time alignment: getting clocks and timestamps to agree across processes, nodes, and networks — the foundation of any multi-sensor or distributed system.
+5. Hardware basics: every layer of a robot — sensors (IMUs, GPS, lidar, radar, cameras, encoders); motors (DC, BLDC, stepper, servo); buses (I2C, SPI, CAN, Ethernet); compute (MCUs vs. SBCs); and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
+6. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
+7. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
+8. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
+9. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
+10. Path & motion planning: generating feasible trajectories through space and time.
+11. Behavior architectures & autonomy: composing behavior with state machines, behavior trees, and planners.
+12. Learning-based methods: when to reach for RL or imitation learning — and when not to.
+13. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
 
 Pick assignments that match where you want your robotics career to go. VIP is typically a three-semester commitment, so between the required first-semester set and two rounds of electives, you'll end up covering nearly every option by the time you're done.
 
