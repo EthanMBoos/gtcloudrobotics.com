@@ -111,6 +111,20 @@ The final question in any system design is not just "how does this work when eve
 
 This is where safety authority becomes explicit. A well-designed system makes clear which module can command a stop, which inputs are optional, and which failures require an immediate fallback. Some faults should trigger a controlled stop; others should degrade performance while keeping the robot stable. The point is not to avoid failure entirely, but to make sure failure leads to known behavior instead of surprises.
 
+One concrete example makes the interaction between layers easier to see. Picture a small indoor delivery robot moving medicine between rooms in a hospital:
+
+| Module | Input | Output | Rate | If It Fails... |
+| --- | --- | --- | --- | --- |
+| Mission manager | operator request, task queue | next delivery goal | 1 Hz | robot stops taking new jobs |
+| Planner | map, current pose, goal | short-horizon path | 5 Hz | robot can briefly hold last safe plan |
+| Perception | depth camera, lidar | obstacle tracks, free space | 15 Hz | world model goes stale quickly |
+| Estimator | wheel odometry, IMU, landmarks | robot pose and velocity | 100 Hz | every downstream decision gets worse |
+| Controller | latest pose, target trajectory | wheel velocity commands | 200 Hz | tracking degrades immediately |
+
+When everything is healthy, the mission manager picks the next room, the planner turns that into a path through the hall, perception marks carts and people as obstacles, the estimator keeps the robot localized, and the controller tracks the path.
+
+Now break one thing: the depth camera freezes for 300 ms. A well-designed system does **not** let that failure blur across the whole stack. Perception stops publishing fresh obstacle updates. The planner can keep its last path for a moment, but only within a freshness budget. The controller keeps running from the latest valid trajectory instead of blocking. If perception stays stale past the allowed timeout, safety authority escalates: either the planner commands a stop because the world model is stale, or a supervisor module forces safe mode directly. That is system design in practice: not just drawing boxes, but deciding which module can keep going, for how long, and who is allowed to say "stop."
+
 ---
 
 ## Assignment

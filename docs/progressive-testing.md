@@ -99,6 +99,74 @@ If a bug could have been found in SIL, finding it on the robot is not proof of r
 
 ---
 
+## 5. Don't Let Hardware Patches Poison The Core
+
+The earlier HIL example showed the *test* half of the discipline: when hardware reveals a failure mode, roll that mode back into your SIL suite so you catch it for free from then on. This section is about the *fix* half — where in the code the patch lives decides whether the codebase survives. Real platforms come with quirks: a sensor that needs a 50 ms warmup after `init()`, a firmware bug that returns `-127` once every few thousand reads, a serial port that drops the first byte after a reconnect. Each gets discovered the hard way during HIL or bench testing, usually under pressure.
+
+The tempting move is to patch the bug where it surfaced. If the monitor saw a bad reading, fix the monitor. A week of that and the clean SIL-tested logic from earlier in this lesson looks like:
+
+```python
+class ThermalMonitor:
+    def tick(self):
+        # Sensor A: warmup or first reads are garbage (issue #847)
+        if not self.warmed and time.time() - self.boot < 0.05:
+            return
+        self.warmed = True
+        a = self.a.read()
+        b = self.b.read()
+        # Sensor B firmware drops -127 occasionally — vendor fix "next quarter"
+        if b == -127:
+            b = self.last_b
+        self.last_b = b
+        # Hardware rev B has a slower ADC; widen the freshness window
+        budget = 0.2 if self.rev == "B" else 0.1
+        ...
+```
+
+Every patch is locally justified. Together they have eaten the architecture. The monitor now knows what hardware revision it is on, which sensor has which firmware bug, and how long a specific ADC takes to settle. Swapping a sensor, running this code in SIL, or porting it to a new platform all just got harder. Worse, the SIL test still passes — it doesn't know about any of these conditions either, so the safety net you built has quietly stopped covering the code that actually ships.
+
+The fix is the same boundary discipline that [system design](system-design.md#2-interfaces-are-the-real-architecture) and [thin shell, fat core](cpp-cli-tooling.md#5-thin-shell-fat-core) already argued for: give each sensor a thin **adapter** whose only job is to present a clean `.read()` to the rest of the code and absorb the device's quirks behind it.
+
+```python
+class SensorA:
+    """Adapter: absorbs the 50 ms post-init warmup."""
+    def read(self):
+        if not self.warm:
+            time.sleep(0.05)
+            self.warm = True
+        return self._device.read()
+
+class SensorB:
+    """Adapter: hides the firmware's -127 glitch by holding the last valid reading."""
+    def read(self):
+        v = self._device.read()
+        if v == -127:
+            return self.last_valid
+        self.last_valid = v
+        return v
+```
+
+With every quirk now hidden behind a `.read()`, the monitor returns to the version from earlier in this lesson:
+
+```python
+class ThermalMonitor:
+    def tick(self):
+        avg = (self.a.read() + self.b.read()) / 2
+        if avg > self.max_c:
+            self.state = "THERMAL_SAFE_MODE"
+        else:
+            self.state = "NOMINAL"
+```
+
+Its SIL test doesn't change either — the fakes that stood in for `self.a` and `self.b` are still simple objects with a `.read()` method. And now that we know `-127` glitches and warmup delays are real failure modes, a *new* fake sensor can simulate them, so those bugs are catchable in software from here forward. The patches still exist, but they live at the layer that actually knows about the hardware.
+
+A rule of thumb: if a fix mentions a hardware revision, a firmware version, a vendor ticket, or a specific serial number, it does not belong in the planner, the controller, or the monitor. It belongs at the interface, behind a name that says what it is.
+
+!!! tip "Defend the adapters with SIL"
+    The [companion Colab notebook](https://colab.research.google.com/github/EthanMBoos/gtcloudrobotics.com/blob/main/notebooks/hardware-patch-quarantine.ipynb) takes the adapter pattern from this section as given and asks you to build the half this page doesn't show — the SIL fakes that mimic the *real* hardware failure modes (`-127` glitches mid-stream, garbage on first read) and the assertions that prove each adapter strips them. By the end you've turned two bench-only failures into two tests you can re-run locally — no hardware required.
+
+---
+
 ## Assignment
 
 !!! warning "Assignment under construction"
