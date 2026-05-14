@@ -8,7 +8,7 @@ Every sensor reading on a robot is a pair: *what* was measured, and *when*. The 
 
 If two modules disagree on what "now" means by even a few tens of milliseconds, the data they produce no longer describes the same world. Downstream fusion and control still produce confident outputs — about a scene that never existed. **Time alignment is the discipline of keeping that gap closed** across every clock, timestamp, and processing delay on the robot.
 
-The trickiest of these bugs live *inside a single robot*. The autopilot, mission computer, perception nodes, and sensor firmware each have their own clocks. None agree; none are wrong in their own frame. Cross-link alignment between robots is a related but separate problem with well-known distributed-systems answers (NTP, PTP, minimum-RTT filtering); this lesson focuses on the on-robot case where the silent bugs hide.
+The trickiest of these bugs live *inside a single robot*. The autopilot, mission computer, perception nodes, and sensor firmware each have their own clocks. None agree; none are wrong in their own frame.
 
 ---
 

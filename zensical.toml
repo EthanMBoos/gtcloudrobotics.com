@@ -56,6 +56,7 @@ nav = [
      "cpp-cli-tooling.md",
      "system-design.md",
      "progressive-testing.md",
+     "time-alignment.md",
   ]},
   {"Tower C2" = "tower.md"},
   {"Pidgin Protocol" = "pidgin.md"},
