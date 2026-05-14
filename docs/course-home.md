@@ -32,8 +32,8 @@ Accept each assignment through the [GitHub Classroom](https://classroom.github.c
 
     These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
 
-4. Time alignment: getting clocks and timestamps to agree across processes, nodes, and networks — the foundation of any multi-sensor or distributed system.
-5. Hardware basics: every layer of a robot — sensors (IMUs, GPS, lidar, radar, cameras, encoders); motors (DC, BLDC, stepper, servo); buses (I2C, SPI, CAN, Ethernet); compute (MCUs vs. SBCs); and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
+4. Hardware basics: every layer of a robot — sensors (IMUs, GPS, lidar, radar, cameras, encoders); motors (DC, BLDC, stepper, servo); buses (I2C, SPI, CAN, Ethernet); compute (MCUs vs. SBCs); and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
+5. [Time alignment](time-alignment.md): making every clock and timestamp on a single robot agree — the foundation that sensor fusion, state estimation, and control loops silently depend on.
 6. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
 7. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
 8. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
