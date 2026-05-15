@@ -124,42 +124,16 @@ Re-characterize whenever you change a detection model, swap a sensor, refactor a
 
 ## 5. Characterize Cold, Loaded, Long, And Live
 
-The Characterization blocks in §§2–4 say *what* to measure. They don't say *under what conditions*, and the answer is "all of them, in a specific order." Each condition reveals a different class of bug. Bench numbers from an idle robot are a starting point, not a finish line.
+The Characterization blocks in §§2–4 say *what* to measure. They don't say *under what conditions*, and the answer is "all of them." Bench numbers from an idle robot are a starting point, not a finish line.
 
-**Stage 1: Cold, composed.** Power the robot on, run nothing else, measure each stage in isolation. The camera adapter alone with `t_in`/`t_out` instrumentation. The detection model alone against synthetic frames. The autopilot offset estimator left running for a minute. The lidar pipeline alone against a still scene.
+Four conditions, each revealing a different class of bug:
 
-Sum the per-stage medians and 99th-percentiles into a composed end-to-end budget. This number is the *floor* — the latency the robot can hit when nothing else is happening, which is the latency the robot will never actually see in flight. Still useful: a stage that eats half the budget cold is something to fix before any later test is meaningful.
+- **Cold.** One stage at a time, nothing else running. Establishes the *floor* — the latency the robot can hit when nothing competes, which is the latency it will never actually see in flight. Still useful as a sanity check: a stage that already eats half the §4 budget cold is something to fix before any later test is meaningful.
+- **Loaded.** Everything on at once — GPU saturated with inference, every sensor streaming at full rate, motors spinning at flight-realistic current. Medians drift up a few percent; tails drift up *a lot*. A 200 ms median might load to 220 ms while its 99th percentile jumps from 280 ms to 600 ms. The loaded 99th is the real number §4 has to absorb, not the cold one.
+- **Endurance.** Run the loaded system longer than a real mission. Thermal throttling, memory leaks, oscillator drift, growing middleware state, and slow disk I/O all widen the tail over time — and cold/loaded testing misses every one. Acceptance criterion: monotonic stability. If the tail is creeping upward over the run, there's a leak and the budget will eventually fail to close.
+- **Live.** Once deployed, the same metrics become health signals. Each adapter reports its latency and timestamp statistics at 1 Hz, and watchdogs alarm when the running 99th percentile approaches the §4 budget, when a publisher goes stale, or when the §2 offset estimator's residuals grow. Catch degradation before the budget actually violates, so degraded modes have time to engage.
 
-**Stage 2: Loaded — full system under realistic conditions.** Turn everything on at once:
-
-- GPU saturated with detection inference
-- Planner, controller, logger threads all consuming their CPU share
-- Every sensor streaming at full rate
-- Autopilot serial link carrying parameter updates and telemetry alongside `TIMESYNC`
-- Motors spinning at flight-realistic current (ESC switching couples into nearby buses through ground noise and can shift serial timing by milliseconds — this one matters more than it sounds)
-
-Re-run the per-stage characterization with all of this happening simultaneously. Medians drift up a few percent; tails drift up *a lot*. A 200 ms median that loads to 220 ms might see its 99th percentile jump from 280 ms to 600 ms. The tail is what the §4 budget has to absorb, so this is the test that produces your real number. If the loaded 99th percentile blows the standoff envelope, find the stage whose tail expanded and fix it — don't ignore it because the median looks fine.
-
-**Stage 3: Endurance — what fails after hours.** Run the loaded system for the length of a real mission, then longer than any single mission. Log the same end-to-end budget metric continuously. The failure modes here aren't subtle once you know to look:
-
-- **Thermal throttling** kicks in after 20–40 minutes of sustained compute, widening every compute-bound stage.
-- **Memory leaks** raise OS scheduling latency as swap pressure builds, before anything OOMs.
-- **Disk I/O** slows once log files grow past a few GB, if any stage touches disk synchronously.
-- **Oscillator drift** accumulates as crystals warm up — and warm differently in different parts of the robot, so the §2 estimator works harder as the run gets longer.
-- **DDS/Zenoh discovery state** grows, adding overhead to the publish path.
-- **Kernel socket buffers** fill if any consumer fell behind once and never recovered.
-
-The acceptance criterion is monotonic stability. If the tail is creeping upward over the run, there's a leak somewhere and the budget will eventually fail to close. Cold and loaded characterization won't catch this — it has to be measured over time.
-
-**Stage 4: Runtime monitoring — catching failures on a live robot.** Once deployed, the same metrics become health signals. Every adapter reports its latency and timestamp statistics at 1 Hz, and three watchdogs catch the failure modes the prior stages told you to expect:
-
-- **Latency tail.** Alarm when the running 99th-percentile crosses a fraction of the §4 budget — *before* the budget is actually violated, so degraded modes have time to engage.
-- **Staleness.** Alarm when `now() - t_publish` exceeds the producer's expected period by more than a small multiple. The sensor stopped publishing or its driver hung.
-- **Offset-estimator health.** Alarm when the §2 estimator's residual variance grows. A module's clock has started behaving differently — drift, glitch, failing crystal — and the rest of the stack needs to know before its outputs go bad.
-
-The alarms feed into the same monitor pattern as any other safety invariant: degrade gracefully, log everything, prefer "fail loud" over "fail wrong."
-
-A robot through all four stages doesn't have a *fixed* characterization. It has a known healthy operating envelope and a runtime check that catches departures from it. Each skipped stage has a specific cost: skip stage 2 and load will kill you; skip stage 3 and the robot that demoed perfectly will fail on the first long mission; skip stage 4 and a slowly-failing sensor will produce confidently wrong outputs until something obvious breaks downstream.
+A system has a known healthy operating envelope only after it's been characterized under the conditions it will actually run in. Each skipped stage has a specific cost: skip *loaded* and load will kill you; skip *endurance* and a robot that demoed perfectly will fail on the first long mission; skip *live* and a slowly-failing sensor will produce confidently wrong outputs until something obvious breaks downstream.
 
 ---
 
