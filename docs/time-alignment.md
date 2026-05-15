@@ -154,7 +154,7 @@ The `Header.stamp` convention exists, but nothing enforces it. A node that stamp
 Production teams converge on bypassing ROS 2 on the latency-critical path while keeping it for everything else:
 
 - At the [Indy Autonomous Challenge](https://www.rti.com/blog/the-indy-autonomous-challenge-achieving-extreme-performance-with-ros-2), the winning team (TUM) ran a [lidar driver calling the DDS API directly](https://www.electronicdesign.com/markets/automation/article/21258792/real-time-innovations-rti-ros-and-dds-making-the-most-out-of-your-software-framework) beneath ROS 2, cutting transport latency by up to 90% without breaking compatibility with the rest of the stack.
-- A study on a production L4 vehicle running Autoware.Universe replaced intra-process DDS with a [shared-memory transport (SIM)](https://arxiv.org/pdf/2510.11448) and saw perception-to-decision latency drop from ~522 ms to ~290 ms — enough to shorten emergency braking distance by four meters at 40 mph.
+- A study on a production L4 vehicle running Autoware Universe replaced intra-process DDS with a [shared-memory transport (SIM)](https://arxiv.org/pdf/2510.11448) and saw perception-to-decision latency drop from ~522 ms to ~290 ms — enough to shorten emergency braking distance by four meters at 40 mph.
 
 These aren't exotic workarounds. They're what closing a real §4 budget looks like.
 
