@@ -21,17 +21,7 @@ The initial backend is ArduPilot over MAVLink. The adapter is pluggable: `maf_ar
 
 !!! note "Initial hardware target"
 
-    The initial demonstration runs entirely in ArduPilot Rover SITL with Gazebo. Hardware target is a Clearpath Husky running ArduPilot Rover firmware — picked over Husky's native ROS interface to make the single-writer property structural instead of conventional, at the cost of giving up the platform's stock ROS stack. The tradeoff is discussed below.
-
-## Why MAVLink, Not cmd_vel
-
-The obvious adoption path for a ground-robot framework is to publish `geometry_msgs/Twist` on `/cmd_vel` and inherit the entire ROS-native ecosystem — Husky, Jackal, Warthog, AgileX, TurtleBot — for free. MAF doesn't, and the reason is the same reason the framework exists.
-
-ROS topics are multi-writer by design. Any node on the graph can publish to `/cmd_vel`, and the base controller takes commands from whoever shouts loudest. You can't make ROS single-writer through architecture; you can only make it single-writer through convention. The whole point of MAF is that convention isn't enough for learned policies — the boundary has to actually hold. With a MAVLink backend, only `maf_ardupilot_adapter` links against the autopilot transport, so bypass is a link-time error rather than a runtime hope.
-
-The layer below also matters. ArduPilot ships with geofence, RTL, EKF failure handling, and a decade of failsafe engineering. The base controller behind `cmd_vel` typically ships with none of that. A boundary is only as strong as what sits on the other side of it.
-
-MAF gives up easy adoption to keep the property. A future `maf_ros_cmd_vel_adapter` may ship as a weaker-guarantees mode for community use, clearly documented as such — but the strong-boundary version is what the framework is built around.
+    The initial demonstration runs entirely in ArduPilot Rover SITL with Gazebo. The hardware target pairs a ground robot running ArduPilot Rover firmware with an Nvidia Jetson Orin hosting the autonomy and inference stack, demonstrated SITL-first and then hardware-in-the-loop on the Orin to validate latency, crash isolation, and recording flush under conditions that don't resolve in software.
 
 ## The Authority Boundary
 
@@ -68,16 +58,34 @@ Inside a single vehicle, the seam that matters runs between high-level autonomy 
 
 The contract doesn't depend on what sits above it. Whether the policy is 10M parameters or 10B, hand-coded or learned, the monitor, adapter, recording schema, and admission step stay the same. What changes at scale is what's plausible to put above the boundary — a 10B-parameter VLA replaces what used to be an entire planning stack — not how the boundary is enforced. The trusted surface stays small while the policy above can scale arbitrarily, which is the whole point.
 
-## Fault Attribution
+## Process Layout and Crash Isolation
 
-When a vehicle fails, the recorder captures four streams: the goal-context input flowing into the autonomy layer, the command-stream output flowing back out, the monitor decisions with the specific invariant evaluated and the full active invariant set, and the post-monitor adapter commands. With those four, faults attribute into one of four classes from the artifacts alone:
+MAF ships as two processes per vehicle. The mission runtime and adapter live in `maf_rover`; recording lives in a separate `maf_recorder` process. Crash isolation is structural — a learned-policy segfault in `maf_rover` can't take the recorder down with it, and the recording schema is flushed on crash for post-hoc fault attribution.
 
-- **(A) Input fault.** Malformed, stale, or out-of-spec state data driving the policy. Sub-case: in-spec but from a domain the policy wasn't trained on.
-- **(B) Output fault.** The policy emitted NaN, Inf, out-of-bounds, or frozen output.
-- **(C) Monitor fault.** The monitor passed a command it shouldn't have. Split into C1 (the invariant set didn't cover this case) and C2 (the invariant existed and the monitor failed to enforce it) by checking the recorded active invariant set against the recorded decision.
-- **(D) Controller-layer fault.** The trusted controller misbehaved on a command the rest of the stack handled correctly.
+```text
+┌────────────────────────────────────────────────────┐  ┌──────────────────────┐
+│  maf_rover  (process 1)                            │  │  maf_recorder        │
+│                                                    │  │  (process 2)         │
+│  ┌─────────────┐     ┌─────────────┐               │  │                      │
+│  │  Mission BT │ ──▶ │   Monitor   │ ──────────────┼──┼─▶  Recording sink    │
+│  │  + nodes    │     │             │               │  │   • crash-flushed    │
+│  └─────────────┘     └──────┬──────┘               │  │   • fault-class meta │
+│                             │ approved only        │  │   • session ID       │
+│                             ▼                      │  │                      │
+│                      ┌─────────────┐               │  └──────────────────────┘
+│                      │   Adapter   │               │
+│                      │ (single     │               │
+│                      │  writer)    │               │
+│                      └──────┬──────┘               │
+└─────────────────────────────┼──────────────────────┘
+                              │ MAVLink
+                              ▼
+                         ArduPilot
+```
 
-Recordings carry platform identity and pidgin session context, so the same artifacts support cross-platform causal-event reconstruction at fleet scale, not just single-vehicle replay. The cmd_vel path can't match this: without single-writer enforcement and a fully recorded boundary, fault class isn't recoverable from artifacts, and the post-incident investigation turns into a debugging session against operator memory.
+Only `maf_ardupilot_adapter` links against the controller transport, so bypass is architecturally impossible rather than merely prohibited. Bypass attempts surface at link time, not at runtime.
+
+Zenoh is the current default transport between modules where the in-process boundary doesn't reach — perception edges, ROS bridges, distributed sensors. Transport is an adapter; the contract boundary stays stable across transport substitutions.
 
 ## Three Levels of Contracts
 
@@ -111,48 +119,53 @@ The monitor is the enforcement point. It sees every command before it reaches th
 - **Rate-of-change limits.** Per-step deltas exceeding what the platform can physically execute. Catches discontinuous output and sample-to-sample jumps from numerical instability.
 - **Temporal-window invariants.** Sequences of individually in-bounds commands that are collectively dangerous: oscillatory heading patterns producing traction loss, sustained max-rate commands producing displacement past geofences, jerk patterns exceeding mechanical tolerance. Catches distribution-shifted policies that emit well-formed but contextually wrong commands.
 
-What the monitor *can't* catch is also baked into the architecture: a policy producing physically valid, sequentially reasonable commands that execute the wrong plan — a hallucinated-plan failure — looks the same on the wire as a correct one. The boundary still gives you crash isolation, complete recording, and fallback on downstream symptoms (geofence violation, controller intervention), but that failure class is where architectural fault isolation hands off to ML-interpretability layers above.
+What the monitor *can't* catch is also baked into the architecture: a policy producing physically valid, sequentially reasonable commands that execute the wrong plan — a hallucinated-plan failure — looks the same on the wire as a correct one. The boundary still gives you crash isolation, complete recording, and fallback on downstream symptoms (geofence violation, controller intervention), but the failure class itself hands off to the layer above.
 
-## Process Layout and Crash Isolation
-
-MAF ships as two processes per vehicle. The mission runtime and adapter live in `maf_rover`; recording lives in a separate `maf_recorder` process. Crash isolation is structural — a learned-policy segfault in `maf_rover` can't take the recorder down with it, and the recording schema is flushed on crash for post-hoc fault attribution.
+That layer is a **behavioral monitor** running at the policy-semantics layer: temporal consistency over action distributions (Sentinel-style), VLM-based judgments about whether the task is making progress, or out-of-distribution scoring on the policy's outputs. It doesn't gate commands; it raises a signal on a slower clock when the policy is no longer behaving like itself.
 
 ```text
-┌────────────────────────────────────────────────────┐  ┌──────────────────────┐
-│  maf_rover  (process 1)                            │  │  maf_recorder        │
-│                                                    │  │  (process 2)         │
-│  ┌─────────────┐     ┌─────────────┐               │  │                      │
-│  │  Mission BT │ ──▶ │   Monitor   │ ──────────────┼──┼─▶  Recording sink    │
-│  │  + nodes    │     │             │               │  │   • crash-flushed    │
-│  └─────────────┘     └──────┬──────┘               │  │   • fault-class meta │
-│                             │ approved only        │  │   • session ID       │
-│                             ▼                      │  │                      │
-│                      ┌─────────────┐               │  └──────────────────────┘
-│                      │   Adapter   │               │
-│                      │ (single     │               │
-│                      │  writer)    │               │
-│                      └──────┬──────┘               │
-└─────────────────────────────┼──────────────────────┘
-                              │ MAVLink
-                              ▼
-                         ArduPilot
+                            policy command stream
+                                     │
+                   ┌─────────────────┼─────────────────┐
+                   ▼                                   ▼
+   ┌──────────────────────────────┐   ┌──────────────────────────────┐
+   │  Architectural-boundary      │   │  Behavioral monitor          │
+   │  monitor  (MAF)              │   │                              │
+   │                              │   │  • temporal action           │
+   │  • per-sample bounds         │   │    consistency (Sentinel)    │
+   │  • rate-of-change limits     │   │  • VLM task-progress         │
+   │  • temporal-window           │   │    detection                 │
+   │    invariants                │   │  • out-of-distribution       │
+   │                              │   │    scoring on outputs        │
+   │  "is this command            │   │  "is this policy still       │
+   │   structurally allowed"      │   │   doing the task"            │
+   └──────────────┬───────────────┘   └──────────────────────────────┘
+                  │ approved commands only
+                  ▼
+            adapter / controller
 ```
 
-Only `maf_ardupilot_adapter` links against the controller transport, so bypass is architecturally impossible rather than merely prohibited. Bypass attempts surface at link time, not at runtime.
+What each layer catches depends on what the policy emits. A conservative policy with strong reward shaping produces smooth, low-variance commands well inside the structural bounds — the architectural monitor rarely trips, and almost every catchable failure has to come from the behavioral layer. An aggressive policy trained with a time-optimal objective produces boundary-hugging, high-variance commands — the architectural monitor catches plenty, but the *kinds* of failures it catches and misses shift.
 
-Zenoh is the current default transport between modules where the in-process boundary doesn't reach — perception edges, ROS bridges, distributed sensors. Transport is an adapter; the contract boundary stays stable across transport substitutions.
+The partition between the two layers is a function of the policy's command distribution, not a fixed property of the monitors. Treating it as fixed — "the architectural layer handles X, the behavioral layer handles Y" — is the mistake. For any given policy the four catch fractions (architectural-only, behavioral-only, both, neither) literally partition the failure space, and the shape of that partition moves as the command distribution does.
+
+The most important of those four is the **uncatchable residual** — failures neither layer can see. A policy producing physically valid, sequentially reasonable, task-coherent commands that execute the *wrong plan* is invisible to both layers by construction: the architectural monitor sees in-bounds commands; the behavioral monitor sees consistent action sequences and apparent task progress. This is the explicit boundary of runtime monitoring as a category. Closing it requires a layer above runtime monitoring — formal verification of plan structure, interpretability of policy internals, or constrained policy training. Runtime monitoring's job is to bound what it can bound and to make the residual auditable from the recordings.
+
+Honest framing: this is robotics-policy behavioral monitoring at the command interface. It is not LLM safety, not RLHF supervision, not interpretability of policy internals. The category boundary stays narrow on purpose.
+
+## Fault Attribution
+
+The point of recording the full active invariant set with every command isn't bookkeeping — it's making fault attribution decidable from disk rather than from operator memory. The recorded streams (goal-context input, command-stream output, monitor decisions, post-monitor adapter commands) partition causally into input, output, monitor, and controller-layer faults. The interesting case is the monitor's own, which usually requires a postmortem judgment call: did no applicable invariant exist for this case, or did one exist and the monitor fail to enforce it? With the active invariant set recorded alongside the decision, that question collapses to a check against artifacts the recorder already wrote down.
+
+Recordings also carry platform identity and pidgin session context, so the same artifacts reconstruct causal-event ordering across vehicles at fleet scale, not just single-vehicle replay. On hardware, frame-level capture of goal context, commands, monitor decisions with the active invariant set, post-monitor adapter commands, inference latency per artifact and power mode, and provenance tags lets the same recording double as an **observability surface for deployed learned components**, not only a fault-attribution artifact — one object, multiple uses.
 
 ## Hardened ONNX Admission
 
-Learned components are untrusted. An ONNX artifact goes through a hardened admission step before integration, treating the model file as an external binary payload rather than a trusted dependency:
+Learned components are untrusted, and the admission step treats an ONNX artifact like an external binary payload rather than a trusted dependency. Structural checks at admission cover what the runtime monitor can't see in advance: input and output schemas against the contract, declared output range against the monitor's invariants, dry-run latency against the control-loop deadline, and a cryptographic hash for integrity. None of that claims the policy is correct; it claims the policy meets the structural preconditions of the boundary it's about to cross.
 
-- **Schema validation.** Input shape and dtype, output shape and dtype, against the contract the monitor expects. Mismatches fail admission.
-- **Output-range verification.** Static check that the policy's declared output range is compatible with the monitor's invariants — no point admitting a model whose declared output range exceeds bounds the monitor will reject every step.
-- **Latency bounding.** Dry-run inference against the control-loop deadline. Boundary cases — artifacts that pass dry-run but miss deadlines under load — are characterized, not assumed away.
-- **Hash verification.** Integrity, not safety. Confirms the artifact hasn't been tampered with in transit.
-- **Provenance record with domain-mismatch detection.** Pre-training domain tags, fine-tuning stages and data sources, simulator identity (engine + version, or world-model checkpoint identity for neural simulators), and dataset versions. Pre-training and fine-tuning tags are kept separate, because when pre-training is 99.9% egocentric video and fine-tuning is 0.1% teleop, generalization is governed by the pre-training distribution. Mismatch between pre-training tags and the deployment context's declared domain is surfaced at admission as a flag — not automatic rejection, but a refusal to deploy silently.
+The methodologically novel piece is the provenance record, and specifically the separation of pre-training tags from fine-tuning tags. When pre-training is 99.9% egocentric video and fine-tuning is 0.1% teleop, generalization is governed by the pre-training distribution — collapsing those into a single "training domain" field silently hides the dominant statistical regime. Provenance also captures simulator identity, including world-model checkpoint identity for neural simulators whose failure modes are entangled with the policy's. Mismatch between pre-training tags and the deployment context's declared domain surfaces at admission as a flag rather than an automatic rejection: a refusal to deploy *silently*, while leaving the call to whoever has context the admission protocol doesn't.
 
-Admission checks structural compatibility, not behavioral safety. It doesn't claim the policy is correct; it claims the policy meets the preconditions of the boundary it's about to cross.
+On hardware, the admission protocol gains a quantization-aware path: artifacts compile through **TensorRT** in INT8 or FP8 form, the dry-run repeats against the quantized engine, and latency is reported in real-time-systems terms — **worst-case execution time** and **deadline-miss rate under load** rather than averages — across multiple Jetson Orin power modes (15W, 30W, MAXN). An artifact that passes admission in FP32 but fails quantized output-range verification under thermal throttling doesn't get to deploy quantized, and that decision is recorded alongside the artifact's provenance.
 
 ## Where MAF Sits in the Stack
 
