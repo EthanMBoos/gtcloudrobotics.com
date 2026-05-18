@@ -49,7 +49,6 @@ nav = [
   {"Home" = "index.md"},
   {"About" = [
     "about.md",
-    "technologies.md",
   ]},
   {"Robotics Course" = [
      "course-home.md",

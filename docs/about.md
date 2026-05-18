@@ -58,13 +58,5 @@ The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the
 
     [:octicons-arrow-right-24: Learn more](maf.md)
 
--   :lucide-cpu:{ .lg .middle } **Technologies**
-
-    ---
-
-    The cloud-native tooling, messaging patterns, and frameworks we build on.
-
-    [:octicons-arrow-right-24: See the stack](technologies.md)
-
 </div>
 
