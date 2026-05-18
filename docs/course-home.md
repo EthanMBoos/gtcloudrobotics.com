@@ -16,8 +16,6 @@ GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
 
 Complete three assignments over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format mirrors a take-home technical interview — a scoped problem, tests you need to pass, and automated grading — because that's where a lot of you will see problems like these next. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
 
-Each assignment lives as a public template repo in the [gtcloudrobotics](https://github.com/gtcloudrobotics) org. To start, click **Use this template** to create your own copy under your GitHub account, then clone and push. Each repo ships with a GitHub Actions workflow that runs the test suite on every push. **There's no separate submission step; pushing commits is the submission.** Check the **Actions** tab on your repo to see pass/fail. Enrolled GT students: send me your GitHub username at the start of the semester so I can match your repo to your grade.
-
 ### First semester — all three required
 
 1. **[C++ CLI tooling](cpp-cli-tooling.md)**: CMake fundamentals and the workflow to spin up a useful utility from scratch.
@@ -63,6 +61,8 @@ Land one pull request into the `main` branch of one of the active course reposit
 ## Course logistics
 
 **Weekly sync — Wednesdays at 5 PM, in person.** We meet every week in Klaus. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time. This is the main place to get unstuck on assignments, talk through PR scope, and generally get feedback on your work.
+
+**Send me your GitHub username at the start of the semester.** That's how your assignment repos get matched to your grade — there's no other submission step.
 
 **AI tools are fair game.** Copilot, Claude, Cursor — use whatever makes you productive. That's how the industry actually works, and pretending otherwise doesn't prepare you for it. The rule is simple: ==you are accountable for every line of code you commit or submit==. If I see unexplained complexity or a block of code that doesn't feel like yours, I'll ask you to walk me through it. If you can't explain what it does and why, I'll ask you to rewrite it and submit a written explanation of the new code.
 
