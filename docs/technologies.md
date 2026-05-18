@@ -12,7 +12,7 @@ This page is intentionally a design-decisions summary, not a dependency dump. Ea
 | `Tower` | Electron, React, TypeScript, Zustand, MapLibre, deck.gl | Desktop mission planner with a hybrid MapLibre/deck.gl renderer built for dense 3D editing on GPU-equipped hardware |
 | `Tower-Field` | React, TypeScript, Vite, PWA, Leaflet, Leaflet.draw | Browser-first field interface with swappable basemaps, transparent overlay deployment, and touch-first operation on low-compute devices |
 | `tower-server` | Go, protobuf, UDP multicast, WebSocket, JSON | Protocol bridge between multicast protobuf (vehicles) and WebSocket JSON (UI), shipped as a single binary |
-| `maf_rover` | C++20, ArduPilot, BehaviorTree.CPP, MAVLink, Zenoh, ONNX, MCAP, Docker | Contract-driven onboard runtime keeping ArduPilot as vehicle authority, plain C++ as the application model, and ONNX as the artifact contract for learned components |
+| `MAF` | C++20, ArduPilot, BehaviorTree.CPP, MAVLink, Zenoh, ONNX, MCAP, Docker | Contract-driven onboard runtime keeping ArduPilot as vehicle authority, plain C++ as the application model, and ONNX as the artifact contract for learned components |
 
 ## Tower
 
@@ -36,7 +36,7 @@ Browser-first packaging matters for the same reason. A PWA avoids native bridge 
 
 The technology mix follows directly: **protobuf** on the vehicle side (compact, schema-evolved, multicast-friendly), **JSON over WebSocket** on the browser side (no protobuf runtime in the browser, no extension-specific binary handling), with Go handling the translation in between and the per-vehicle bookkeeping (sequence-number deduplication, capability tracking, command admission) the [pidgin protocol](pidgin.md) requires.
 
-## maf_rover
+## MAF
 
 The onboard autonomy runtime is closer to mission authority and control-adjacent timing than to UI or protocol bridging, so the stack reflects those constraints directly. See [MAF](maf.md) for the architectural argument; this section is the technology rationale.
 
