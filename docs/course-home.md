@@ -10,13 +10,13 @@ icon: lucide/book-open
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech, so — like all VIP courses — it's graded pass/fail. There are two requirements, and both are built to mirror how you'll actually work as a robotics engineer: one tests that you can solve scoped technical problems, and the other tests that you can ship real code into a real codebase.
 
-**Not a GT student?** The material is open. All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) — click **Use this template** on any of them and push commits; the autograder runs on every push via GitHub Actions, same as for enrolled students, and you can see pass/fail in the Actions tab. PRs into the project repos (section 2) are welcome from anyone too — open an issue on the target repo first to scope the work. Anything below about Classroom, the weekly sync, or semester pacing is enrolled-specific.
+**The course is fully open.** All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) and the same path works whether you're enrolled at GT or not — click **Use this template** on any assignment repo and push commits; the autograder runs on every push via GitHub Actions, and you can see pass/fail in the Actions tab. PRs into the project repos (section 2) are welcome from anyone — open an issue on the target repo first to scope the work. Anything below about the weekly sync or semester pacing is enrolled-specific.
 
 ## 1. Three autograded assignments
 
 Complete three assignments over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format mirrors a take-home technical interview — a scoped problem, tests you need to pass, and automated grading — because that's where a lot of you will see problems like these next. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
 
-Accept each assignment through the [GitHub Classroom](https://classroom.github.com/classrooms/250684703-gtcloudrobotics-classroom) link — this creates your personal repo under the [gtcloudrobotics](https://github.com/gtcloudrobotics) org. Each repo ships with a GitHub Actions workflow that runs the test suite on every push, and the results auto-report to the instructor dashboard as your grade. **There's no separate submission step; pushing commits is the submission.** Check the **Actions** tab on your repo to see pass/fail.
+Each assignment lives as a public template repo in the [gtcloudrobotics](https://github.com/gtcloudrobotics) org. To start, click **Use this template** to create your own copy under your GitHub account, then clone and push. Each repo ships with a GitHub Actions workflow that runs the test suite on every push. **There's no separate submission step; pushing commits is the submission.** Check the **Actions** tab on your repo to see pass/fail. Enrolled GT students: send me your GitHub username at the start of the semester so I can match your repo to your grade.
 
 ### First semester — all three required
 
@@ -52,7 +52,7 @@ Land one pull request into the `main` branch of one of the active course reposit
 - **[Tower](https://github.com/EthanMBoos/Tower)** — operator UI (Electron + React)
 - **[Tower-Field](https://github.com/EthanMBoos/Tower-Field)** — field-side operator tooling
 - **[tower-server](https://github.com/EthanMBoos/tower-server)** — Go server and pidgin envelope protocol
-- **[maf_aerial](https://github.com/EthanMBoos/maf_aerial)** — aerial MAF implementation (C++, PX4 / MAVLink)
+- **[MAF](https://github.com/EthanMBoos/MAF)** — MAF implementation (C++, Ardupilot / MAVLink)
 
 "Substantive" means something that required you to understand a subsystem — not a button swap or a typo fix. A list of candidate issues and features will be posted at the start of the semester; or you can propose your own idea and get it scoped before you start.
 
