@@ -164,10 +164,3 @@ A rule of thumb: if a fix mentions a hardware revision, a firmware version, a ve
 
 !!! tip "Defend the adapters with SIL"
     The [companion Colab notebook](https://colab.research.google.com/github/EthanMBoos/gtcloudrobotics.com/blob/main/notebooks/hardware-patch-quarantine.ipynb) takes the adapter pattern from this section as given and asks you to build the half this page doesn't show — the SIL fakes that mimic the *real* hardware failure modes (`-127` glitches mid-stream, garbage on first read) and the assertions that prove each adapter strips them. By the end you've turned two bench-only failures into two tests you can re-run locally — no hardware required.
-
----
-
-## Assignment
-
-!!! warning "Assignment under construction"
-    This stub is a placeholder and hasn't been written yet. Check back later for content.
