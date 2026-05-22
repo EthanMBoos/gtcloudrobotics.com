@@ -6,173 +6,140 @@ hide:
 
 # Modular Autonomy Framework
 
-Learned policies are about to start writing commands directly to robots that can hurt people or destroy expensive things — VLAs, whole-layer learned controllers, world-model-conditioned planners. The working answer in the field for "is this safe to field" is sim evaluation plus hope. That's not enough. What makes a learned policy fieldable isn't verifying the policy itself; it's specifying and enforcing what's allowed to cross the seam between the policy and the trusted control layer below it.
+Autonomous robots are increasingly commanded by systems that are hard to reason about — learned policies, whole-layer planners, AI nodes in behavior trees. The field answer for "is this safe to deploy" is simulation evaluation plus hope. MAF's answer is a typed, auditable authority boundary that every command must cross, regardless of what produced it.
 
-**MAF** is a C++ mission and integration runtime built around that seam. A runtime monitor decides what commands cross it, a single-writer adapter is the only module in the system permitted to write to the controller, and a crash-isolated recorder captures enough state that fault class is recoverable from the artifacts alone. The certified surface stays small while the policy above it can scale arbitrarily.
+**MAF** is a C++ mission execution runtime built around that boundary. A runtime monitor decides what commands are allowed through. A single-writer adapter is the only module permitted to write to the controller. Every decision is logged with enough context to reconstruct what happened and why — from logs alone, without operator memory.
 
-The initial backend is ArduPilot over MAVLink. The adapter is pluggable: `maf_ardupilot_adapter` is the first of a planned family that will include drive-by-wire and other trusted-controller backends. The boundary, monitor, recorder, and admission machinery are the parts meant to outlast any particular backend.
+The design is deterministic-first. MAF runs hand-coded behaviors reliably before learned components are introduced. When AI nodes are added, they slot in above the same boundary, satisfying the same interface. Nothing below the boundary changes.
 
 ```text
-┌──────────────┐   MAVLink    ┌──────────────┐   Protobuf    ┌──────────────┐
-│  Controller  │ ◀──────────▶ │     MAF      │ ◀───────────▶ │ tower-server │
-│ (ArduPilot)  │              │(C++/Zenoh/BT)│   extension   │     (Go)     │
-└──────────────┘              └──────────────┘               └──────────────┘
+┌─────────────────────────────────────────────┐
+│  Mission layer              (UNTRUSTED)     │
+│  Hand-coded behaviors · learned nodes       │
+└────────────────────┬────────────────────────┘
+                     │ command stream
+                     ▼
+┌─────────────────────────────────────────────┐
+│  Runtime monitor            (TRUSTED)       │
+│  bounds · rate-of-change · staleness        │
+└────────────────────┬────────────────────────┘
+                     │ approved commands only
+                     ▼
+┌─────────────────────────────────────────────┐
+│  Adapter → ArduPilot        (TRUSTED)       │
+│  single writer to controller                │
+└─────────────────────────────────────────────┘
 ```
 
-!!! note "Initial hardware target"
-
-    The initial demonstration runs entirely in ArduPilot Rover SITL with Gazebo. The hardware target pairs a ground robot running ArduPilot Rover firmware with an Nvidia Jetson Orin hosting the autonomy and inference stack, demonstrated SITL-first and then hardware-in-the-loop on the Orin to validate latency, crash isolation, and recording flush under conditions that don't resolve in software.
+The boundary doesn't depend on what sits above it. A hand-coded navigate node and a learned policy satisfy the same interface. The monitor, adapter, and session log stay the same regardless.
 
 ## The Authority Boundary
 
-Inside a single vehicle, the seam that matters runs between high-level autonomy — anything from a hand-coded behavior tree to a single learned BT node to a whole-layer learned policy — and the trusted low-level controller. Every command flowing across that seam passes through two MAF-owned components: a runtime monitor that decides whether the command is allowed, and an adapter that is the only module in the system permitted to write controller-facing commands.
+The seam that matters runs between high-level autonomy and the trusted low-level controller. Two MAF-owned components enforce it:
+
+**Runtime monitor** — sees every command before the adapter. Passes it through, substitutes a fallback, or triggers a halt based on structural invariants. Three invariant classes cover most of what's catchable at the command interface:
+
+- **Per-sample bounds** — NaN/Inf, out-of-range values, stale sensor timestamps
+- **Rate-of-change limits** — per-step deltas exceeding what the platform can physically execute
+- **Temporal-window invariants** — individually valid commands that are collectively dangerous: oscillatory heading patterns, sustained max-rate commands past geofences, jerk exceeding mechanical tolerance
+
+**Single-writer adapter** — the only module that links against the controller transport. Bypass is architecturally impossible, not merely prohibited. A command either passes the monitor and reaches the adapter, or it doesn't reach the controller at all.
+
+Every monitor decision records the full active invariant set alongside the outcome. The key post-mortem question — did no applicable invariant exist for this failure, or did one exist and the monitor miss it — is always answerable from the log.
+
+## Mission Execution
+
+A mission is a sequence of tasks. Each task has a goal, a behavior node that executes it, and transition rules for what happens on success or failure. The mission executor is the state machine — it tracks which task is active, advances on completion, and handles failure transitions. The behavior node is the current executor: it ticks at 20 Hz and returns `Success`, `Failure`, or `Running`.
 
 ```text
-        ┌─────────────────────────────────────────────┐
-        │  High-level autonomy   (UNTRUSTED)          │
-        │  • Hand-coded behavior tree                 │
-        │  • Single learned BT node                   │
-        │  • Whole-layer learned policy / WAM         │
-        └────────────────────┬────────────────────────┘
-                             │ command stream
-                             ▼
-        ┌─────────────────────────────────────────────┐
-        │  Runtime monitor       (TRUSTED)            │
-        │  • per-sample bounds, staleness, NaN/Inf    │
-        │  • rate-of-change limits                    │
-        │  • temporal-window invariants               │
-        └────────────────────┬────────────────────────┘
-                             │ approved commands only
-                             ▼
-        ┌─────────────────────────────────────────────┐
-        │  maf_ardupilot_adapter (TRUSTED)            │
-        │  • single writer to controller              │
-        └────────────────────┬────────────────────────┘
-                             │ MAVLink
-                             ▼
-        ┌─────────────────────────────────────────────┐
-        │  ArduPilot            (TRUSTED CONTROL)     │
-        │  • low-level control, estimation, failsafes │
-        └─────────────────────────────────────────────┘
+Operator / Tower
+  └── Mission (task list + transitions)
+        └── MissionExecutor  ← state machine
+              └── Active BTNode  ← current behavior, ticked 20x/sec
+                    └── CommandStream → Monitor → Adapter → Controller
 ```
 
-The contract doesn't depend on what sits above it. Whether the policy is 10M parameters or 10B, hand-coded or learned, the monitor, adapter, recording schema, and admission step stay the same. What changes at scale is what's plausible to put above the boundary — a 10B-parameter VLA replaces what used to be an entire planning stack — not how the boundary is enforced. The trusted surface stays small while the policy above can scale arbitrarily, which is the whole point.
+Every task can specify a primary behavior and a fallback. When the behavioral monitor flags a problem, the executor swaps to the fallback — the task goal stays the same, the behavior executing it changes. The monitor below sees no difference.
 
-## Process Layout and Crash Isolation
+### Behavior nodes
 
-MAF ships as two processes per vehicle. The mission runtime and adapter live in `maf_rover`; recording lives in a separate `maf_recorder` process. Crash isolation is structural — a learned-policy segfault in `maf_rover` can't take the recorder down with it, and the recording schema is flushed on crash for post-hoc fault attribution.
-
-```text
-┌────────────────────────────────────────────────────┐  ┌──────────────────────┐
-│  maf_rover  (process 1)                            │  │  maf_recorder        │
-│                                                    │  │  (process 2)         │
-│  ┌─────────────┐     ┌─────────────┐               │  │                      │
-│  │  Mission BT │ ──▶ │   Monitor   │ ──────────────┼──┼─▶  Recording sink    │
-│  │  + nodes    │     │             │               │  │   • crash-flushed    │
-│  └─────────────┘     └──────┬──────┘               │  │   • fault-class meta │
-│                             │ approved only        │  │   • session ID       │
-│                             ▼                      │  │                      │
-│                      ┌─────────────┐               │  └──────────────────────┘
-│                      │   Adapter   │               │
-│                      │ (single     │               │
-│                      │  writer)    │               │
-│                      └──────┬──────┘               │
-└─────────────────────────────┼──────────────────────┘
-                              │ MAVLink
-                              ▼
-                         ArduPilot
-```
-
-Only `maf_ardupilot_adapter` links against the controller transport, so bypass is architecturally impossible rather than merely prohibited. Bypass attempts surface at link time, not at runtime.
-
-Zenoh is the current default transport between modules where the in-process boundary doesn't reach — perception edges, ROS bridges, distributed sensors. Transport is an adapter; the contract boundary stays stable across transport substitutions.
-
-## Three Levels of Contracts
-
-Contracts live at three levels, each subordinate to the one above:
-
-- **Authority-boundary contract** *(primary)*. What crosses between high-level autonomy and the controller, what can't, and what invariants hold regardless of what produces commands above.
-- **Monitor contract.** What gets checked at the boundary, what triggers intervention, what fallback behavior runs when an invariant is violated.
-- **BT-node contract** *(module-level)*. Goal-context input, command-stream output, termination/timeout/fallback/replay semantics. Symmetric — hand-coded and learned ONNX implementations satisfy it identically — so individual nodes can be substituted, whole layers swapped, or the entire behavior tree replaced with a monolithic policy without disturbing the boundary above it.
+Every behavior node — hand-coded or learned — satisfies the same contract:
 
 ```cpp
-// Every BT node — hand-coded or a learned ONNX wrapper —
-// satisfies the same contract, so substitution is mechanical.
-
 class BTNode {
-  // Input  : structured goal context from the parent.
-  // Output : command stream toward the authority boundary.
-  // Termination, timeout, fallback, and replay all defined.
-  Status tick(const GoalContext& goal,
-              CommandStream&    out_cmd,
-              const ReplayState* replay = nullptr);
+public:
+    virtual NodeStatus tick(const GoalContext& goal,
+                            const WorldState&  world,
+                            CommandStream&     out_cmd) = 0;
 };
 ```
 
-Keeping the core in plain C++ instead of ROS nodes means the live middleware graph never becomes the application model. ROS can still wrap sensor drivers, perception packages, or visualization at the edges, but it adapts the contract instead of defining it.
+`GoalContext` carries mission-level intent (target waypoint, mode, mission ID). `WorldState` carries current vehicle state from the ArduPilot EKF. The contract is symmetric — substituting a learned node for a hand-coded one changes nothing below the boundary.
 
-## The Runtime Monitor
+### User roles
 
-The monitor is the enforcement point. It sees every command before it reaches the adapter and either passes it through, replaces it with a fallback, or triggers a halt. Three classes of invariant cover most of what's catchable at the command interface:
+Three roles interact with MAF at different levels:
 
-- **Per-sample bounds.** NaN/Inf, out-of-range values, stale timestamps, output magnitudes outside the vehicle's safe envelope. Catches buggy policies that emit malformed commands.
-- **Rate-of-change limits.** Per-step deltas exceeding what the platform can physically execute. Catches discontinuous output and sample-to-sample jumps from numerical instability.
-- **Temporal-window invariants.** Sequences of individually in-bounds commands that are collectively dangerous: oscillatory heading patterns producing traction loss, sustained max-rate commands producing displacement past geofences, jerk patterns exceeding mechanical tolerance. Catches distribution-shifted policies that emit well-formed but contextually wrong commands.
+| Role | What they touch |
+|---|---|
+| **System integrator** | Which behaviors exist, monitor limits, mode-to-behavior mappings |
+| **Mission planner** | Task sequences, waypoints, mode labels, failure handling |
+| **Field operator** | Start / pause / abort; reads plain-language status |
 
-What the monitor *can't* catch is also baked into the architecture: a policy producing physically valid, sequentially reasonable commands that execute the wrong plan — a hallucinated-plan failure — looks the same on the wire as a correct one. The boundary still gives you crash isolation, complete recording, and fallback on downstream symptoms (geofence violation, controller intervention), but the failure class itself hands off to the layer above.
+Operators pick intent. The system resolves implementation. A mission planner specifies `mode: careful` — they never see which behavior node that maps to.
 
-That layer is a **behavioral monitor** running at the policy-semantics layer: temporal consistency over action distributions (Sentinel-style), VLM-based judgments about whether the task is making progress, or out-of-distribution scoring on the policy's outputs. It doesn't gate commands; it raises a signal on a slower clock when the policy is no longer behaving like itself.
+## Sensor Integration
+
+Navigation state comes from ArduPilot's EKF3, which fuses GPS, IMU, barometer, and compass on the controller. MAF's telemetry thread receives the already-fused output over MAVLink (`GLOBAL_POSITION_INT`) and writes it into `WorldState`. There is no separate navigation filter running in MAF.
+
+Sensors ArduPilot doesn't see — lidar, camera, external perception — write into `WorldState` through their own threads. MAF owns that processing. This is the only domain where MAF runs any fusion logic of its own.
+
+Every behavior node checks the timestamp on sensor data before acting on it. If a pose is older than the node's configured maximum, it returns `Failure` rather than navigating on stale data. The monitor's staleness check is the last line of defense, not the first.
+
+## What the Monitor Can't Catch
+
+A policy producing physically valid, sequentially reasonable commands that execute the wrong plan is invisible to the architectural monitor by construction. That failure class hands to a **behavioral monitor** running at the policy-semantics layer — temporal consistency over action distributions, VLM task-progress detection, out-of-distribution scoring on policy outputs. It doesn't gate commands; it raises a signal on a slower clock.
 
 ```text
-                            policy command stream
-                                     │
-                   ┌─────────────────┼─────────────────┐
-                   ▼                                   ▼
-   ┌──────────────────────────────┐   ┌──────────────────────────────┐
-   │  Architectural-boundary      │   │  Behavioral monitor          │
-   │  monitor  (MAF)              │   │                              │
-   │                              │   │  • temporal action           │
-   │  • per-sample bounds         │   │    consistency (Sentinel)    │
-   │  • rate-of-change limits     │   │  • VLM task-progress         │
-   │  • temporal-window           │   │    detection                 │
-   │    invariants                │   │  • out-of-distribution       │
-   │                              │   │    scoring on outputs        │
-   │  "is this command            │   │  "is this policy still       │
-   │   structurally allowed"      │   │   doing the task"            │
-   └──────────────┬───────────────┘   └──────────────────────────────┘
-                  │ approved commands only
-                  ▼
-            adapter / controller
+                    policy command stream
+                             │
+           ┌─────────────────┼─────────────────┐
+           ▼                                   ▼
+┌──────────────────────┐         ┌──────────────────────┐
+│  Architectural       │         │  Behavioral          │
+│  monitor (MAF)       │         │  monitor (Phase 3)   │
+│                      │         │                      │
+│  "is this command    │         │  "is this behavior   │
+│   structurally       │         │   still doing        │
+│   allowed"           │         │   the task"          │
+└──────────┬───────────┘         └──────────────────────┘
+           │ approved only
+           ▼
+    adapter / controller
 ```
 
-What each layer catches depends on what the policy emits. A conservative policy with strong reward shaping produces smooth, low-variance commands well inside the structural bounds — the architectural monitor rarely trips, and almost every catchable failure has to come from the behavioral layer. An aggressive policy trained with a time-optimal objective produces boundary-hugging, high-variance commands — the architectural monitor catches plenty, but the *kinds* of failures it catches and misses shift.
+The partition between layers is a function of the behavior's command distribution, not a fixed property of the monitors. For any given behavior, four catch fractions partition the failure space: architectural-only, behavioral-only, both, neither. Measuring those fractions across behavior types — hand-coded, conservative learned, aggressive learned — is the core research question this prototype is built to answer.
 
-The partition between the two layers is a function of the policy's command distribution, not a fixed property of the monitors. Treating it as fixed — "the architectural layer handles X, the behavioral layer handles Y" — is the mistake. For any given policy the four catch fractions (architectural-only, behavioral-only, both, neither) literally partition the failure space, and the shape of that partition moves as the command distribution does.
+## Current State
 
-The most important of those four is the **uncatchable residual** — failures neither layer can see. A policy producing physically valid, sequentially reasonable, task-coherent commands that execute the *wrong plan* is invisible to both layers by construction: the architectural monitor sees in-bounds commands; the behavioral monitor sees consistent action sequences and apparent task progress. This is the explicit boundary of runtime monitoring as a category. Closing it requires a layer above runtime monitoring — formal verification of plan structure, interpretability of policy internals, or constrained policy training. Runtime monitoring's job is to bound what it can bound and to make the residual auditable from the recordings.
+Initial target: ArduPilot Rover SITL. Single process, no hardware required to run the experiment. A Jetson Orin + physical rover validates latency and real-world dynamics but doesn't change the research question.
 
-Honest framing: this is robotics-policy behavioral monitoring at the command interface. It is not LLM safety, not RLHF supervision, not interpretability of policy internals. The category boundary stays narrow on purpose.
+**Phase 1 — Monitor contract in SITL** *(in progress)*
 
-## Fault Attribution
+Core authority boundary running end-to-end in simulation with a hand-coded behavior node. Monitor enforces per-sample bounds, rate-of-change limits, and staleness. Session log reconstructs the full decision sequence.
 
-The point of recording the full active invariant set with every command isn't bookkeeping — it's making fault attribution decidable from disk rather than from operator memory. The recorded streams (goal-context input, command-stream output, monitor decisions, post-monitor adapter commands) partition causally into input, output, monitor, and controller-layer faults. The interesting case is the monitor's own, which usually requires a postmortem judgment call: did no applicable invariant exist for this case, or did one exist and the monitor fail to enforce it? With the active invariant set recorded alongside the decision, that question collapses to a check against artifacts the recorder already wrote down.
+**Phase 2 — Learned node injection**
 
-Recordings also carry platform identity and pidgin session context, so the same artifacts reconstruct causal-event ordering across vehicles at fleet scale, not just single-vehicle replay. On hardware, frame-level capture of goal context, commands, monitor decisions with the active invariant set, post-monitor adapter commands, inference latency per artifact and power mode, and provenance tags lets the same recording double as an **observability surface for deployed learned components**, not only a fault-attribution artifact — one object, multiple uses.
+Replace the hand-coded navigate node with a learned ONNX node above the boundary. Run the same monitor unchanged. Inject distribution-shifted inputs and measure catch fractions.
 
-## Hardened ONNX Admission
+**Phase 3 — Behavioral monitor layer**
 
-Learned components are untrusted, and the admission step treats an ONNX artifact like an external binary payload rather than a trusted dependency. Structural checks at admission cover what the runtime monitor can't see in advance: input and output schemas against the contract, declared output range against the monitor's invariants, dry-run latency against the control-loop deadline, and a cryptographic hash for integrity. None of that claims the policy is correct; it claims the policy meets the structural preconditions of the boundary it's about to cross.
+Add a behavioral monitor above the architectural boundary. Measure the four-way failure partition across behavior types.
 
-The methodologically novel piece is the provenance record, and specifically the separation of pre-training tags from fine-tuning tags. When pre-training is 99.9% egocentric video and fine-tuning is 0.1% teleop, generalization is governed by the pre-training distribution — collapsing those into a single "training domain" field silently hides the dominant statistical regime. Provenance also captures simulator identity, including world-model checkpoint identity for neural simulators whose failure modes are entangled with the policy's. Mismatch between pre-training tags and the deployment context's declared domain surfaces at admission as a flag rather than an automatic rejection: a refusal to deploy *silently*, while leaving the call to whoever has context the admission protocol doesn't.
+## Where MAF Sits
 
-On hardware, the admission protocol gains a quantization-aware path: artifacts compile through **TensorRT** in INT8 or FP8 form, the dry-run repeats against the quantized engine, and latency is reported in real-time-systems terms — **worst-case execution time** and **deadline-miss rate under load** rather than averages — across multiple Jetson Orin power modes (15W, 30W, MAXN). An artifact that passes admission in FP32 but fails quantized output-range verification under thermal throttling doesn't get to deploy quantized, and that decision is recorded alongside the artifact's provenance.
+MAF is the within-platform half of the composition story — the authority boundary on each vehicle. The cross-platform half is [Tower](tower.md), which composes vehicles into a fleet. The two boundaries are independent: MAF without Tower, or Tower without MAF, are both valid configurations.
 
-## Where MAF Sits in the Stack
+!!! tip "Source and design notes"
 
-MAF is the **within-platform** half of our composition story — the authority boundary on each vehicle. The **cross-platform** half is [Tower](tower.md), which composes vehicles into a fleet through the [pidgin](pidgin.md) protocol seam. Vehicles plug into Tower by publishing a pidgin extension payload at one end of the runtime; MAF enforces the controller-facing contract at the other. The two boundaries are independent: you can adopt MAF without Tower, or Tower without MAF.
-
-The initial demo target is a ground rover on ArduPilot Rover SITL with Gazebo, preserving the same authority split intended for later aerial and drive-by-wire vehicles.
-
-!!! tip "Dive deeper"
-
-    Design notes will be linked in a `maf_rover` repository soon.
+    [github.com/gtcloudrobotics/MAF](https://github.com/gtcloudrobotics/MAF) — architecture, plan, and mission design docs in `docs/`.
