@@ -129,5 +129,6 @@ Now break one thing: the depth camera freezes for 300 ms. A well-designed system
 
 ## Assignment
 
-!!! warning "Assignment under construction"
-    This stub is a placeholder and hasn't been written yet. Check back later for content.
+Apply all four sections at once: the **Air Traffic Control Tracker** — a Python project that fuses radar (50 Hz, noisy) with a GPS transponder (5 Hz, accurate) to track aircraft through 3D airspace and keep working when sensors fail. The sensor processes, Kalman filter, and visualization are provided; you implement one method, `tick()`, in one file. Six graded scenarios each test a specific failure mode explicitly — blocking on a slow sensor, hardcoding rate assumptions, staying latched in lost mode, and more.
+
+Go to [gtcloudrobotics/air-traffic-control-tracker](https://github.com/gtcloudrobotics/air-traffic-control-tracker), click **Use this template** to make your own copy, then clone and push. The autograder runs on every push; you'll see pass/fail in the Actions tab. Same path for everyone — enrolled GT students just send me your GitHub username at the start of the semester so I can match your repo to your grade.
