@@ -14,14 +14,6 @@ The first mental shift in robotics system design is giving up the idea that a ro
 
 A robot is rarely a single sense–think–act loop. High-level mission logic may update only once per second, planners recompute paths periodically, perception runs at sensor rate, state estimation tracks system dynamics continuously, and controllers stabilize motion at very high frequency. Slower layers decide what the robot should do; faster layers decide how to do it.
 
-| Layer | Purpose | Typical Rate | Why |
-| --- | --- | --- | --- |
-| Controller | Stabilize motion | 1 kHz | Needs tight feedback |
-| Estimator | Track state | 100 Hz | Follows dynamics |
-| Perception | Interpret sensors | 30 Hz | Sensor + compute bound |
-| Planner | Compute path | 5 Hz | Longer horizon reasoning |
-| Mission | Goals & strategy | 1 Hz | Human/task timescale |
-
 ![Control Hierarchy](assets/images/control_hierarchy.png)
 
 The exact rates vary across robots, but the overall pattern does not: control runs fastest, estimation follows the dynamics, perception is bounded by sensors and compute, and planning and mission logic run more slowly because they reason over longer horizons. Those differences come from physics, latency, and system requirements, not coding style.
