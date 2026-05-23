@@ -142,4 +142,4 @@ MAF is the within-platform half of the composition story — the authority bound
 
 !!! tip "Source and design notes"
 
-    [github.com/gtcloudrobotics/MAF](https://github.com/gtcloudrobotics/MAF) — architecture, plan, and mission design docs in `docs/`.
+    [MAF](https://github.com/EthanMBoos/MAF) — architecture, plan, and mission design docs in `docs/`.
