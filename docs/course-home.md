@@ -8,18 +8,18 @@ icon: lucide/book-open
 
     Taught by **Ethan Boos** — robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/) and part-time Robotics PhD student at Georgia Tech researching hybrid autonomy behavior architectures.
 
-GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech, so — like all VIP courses — it's graded pass/fail. There are two requirements, and both are built to mirror how you'll actually work as a robotics engineer: one tests that you can solve scoped technical problems, and the other tests that you can ship real code into a real codebase.
+GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech. Like all VIP courses, it's graded pass/fail. There are two requirements, both built to mirror how you'll actually work as a robotics engineer: one tests that you can solve scoped technical problems, and the other tests that you can ship real code into a real codebase.
 
 **The course is fully open.** All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) and the same path works whether you're enrolled at GT or not — click **Use this template** on any assignment repo and push commits; the autograder runs on every push via GitHub Actions, and you can see pass/fail in the Actions tab. PRs into the project repos (section 2) are welcome from anyone — open an issue on the target repo first to scope the work. Anything below about the weekly sync or semester pacing is enrolled-specific.
 
 ## 1. Three autograded assignments
 
-Complete three assignments over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format mirrors a take-home technical interview — a scoped problem, tests you need to pass, and automated grading — because that's where a lot of you will see problems like these next. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
+Complete three assignments over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. That's where a lot of you will first see problems like these. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
 
 ### First semester — all three required
 
 1. **[C++ CLI tooling](cpp-cli-tooling.md)**: CMake fundamentals and the workflow to spin up a useful utility from scratch.
-2. **[System design](system-design.md)**: the top-level view of a robotics stack — how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
+2. **[System design](system-design.md)**: the top-level view of a robotics stack: how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
 3. **[Progressive testing](progressive-testing.md)**: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
 
 ### Returning semesters — pick any three
@@ -30,7 +30,7 @@ Complete three assignments over the semester. These aren't synthetic homework �
 
     These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
 
-4. Hardware basics: every layer of a robot — sensors (IMUs, GPS, lidar, radar, cameras, encoders); motors (DC, BLDC, stepper, servo); buses (I2C, SPI, CAN, Ethernet); compute (MCUs vs. SBCs); and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
+4. Hardware basics: sensors (IMUs, GPS, lidar, radar, cameras, encoders), motors (DC, BLDC, stepper, servo), buses (I2C, SPI, CAN, Ethernet), compute (MCUs vs. SBCs), and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
 5. **[Time alignment](time-alignment.md)**: making every clock and timestamp on a single robot agree — the foundation that sensor fusion, state estimation, and control loops silently depend on.
 6. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
 7. Robot math: the kinematics, dynamics, and transformations that underpin everything else.

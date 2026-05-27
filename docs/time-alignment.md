@@ -51,7 +51,7 @@ A few things that catch people:
 
 **Characterization.** Online, continuous, analytical. No bench tests, no per-unit calibration. The ping-pong runs at ~1 Hz forever, and the filter tracks slow drift while rejecting RTT spikes. Per-unit oscillator variance is absorbed automatically — the algorithm only tracks the running difference, so it doesn't care whether module A drifts at +18 ppm and B at -23 ppm. The only design choices are the filter constants and the boot-time gate.
 
-Clock reconciliation is only half of the adapter's job. The other half — recovering *when the measurement actually happened*, not just when its message arrived — is the harder problem most teams skip.
+Clock reconciliation is only half of the adapter's job. The other half is recovering *when the measurement actually happened* rather than just when the message arrived. That's the harder problem, and most teams skip it.
 
 ---
 
@@ -133,13 +133,13 @@ Four conditions, each revealing a different class of bug:
 - **Endurance.** Run the loaded system longer than a real mission. Thermal throttling, memory leaks, oscillator drift, growing middleware state, and slow disk I/O all widen the tail over time — and cold/loaded testing misses every one. Acceptance criterion: monotonic stability. If the tail is creeping upward over the run, there's a leak and the budget will eventually fail to close.
 - **Live.** Once deployed, the same metrics become health signals. Each adapter reports its latency and timestamp statistics at 1 Hz, and watchdogs alarm when the running 99th percentile approaches the §4 budget, when a publisher goes stale, or when the §2 offset estimator's residuals grow. Catch degradation before the budget actually violates, so degraded modes have time to engage.
 
-A system has a known healthy operating envelope only after it's been characterized under the conditions it will actually run in. Each skipped stage has a specific cost: skip *loaded* and load will kill you; skip *endurance* and a robot that demoed perfectly will fail on the first long mission; skip *live* and a slowly-failing sensor will produce confidently wrong outputs until something obvious breaks downstream.
+A system has a known healthy operating envelope only after it's been characterized under the conditions it will actually run in. Skipping any stage has a specific cost. Skip *loaded* and the tails you didn't see in isolation will kill you. Skip *endurance* and a robot that demoed fine will fail on the first long mission. Skip *live* and a slowly-failing sensor will produce confidently wrong outputs until something obvious breaks downstream.
 
 ---
 
 ## 6. The Middleware Owns Time, Or You Do
 
-Everything covered so far — clock reconciliation, measurement-time recovery, end-to-end budgets — has to live somewhere in the stack. The framework you pick decides which pieces are handed to you and which you build yourself.
+Clock reconciliation, measurement-time recovery, end-to-end budgets: all of it has to live somewhere in the stack. The framework you pick decides which pieces are handed to you and which you build yourself.
 
 ![Time](assets/images/time.png)
 

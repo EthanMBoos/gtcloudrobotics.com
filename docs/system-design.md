@@ -4,7 +4,7 @@ icon: lucide/workflow
 
 # System Design
 
-System design is the top-level view of a robot: what the major pieces are, what each is responsible for, how they exchange information, and why they run at different rates. If you can look at a robotics stack and explain where sensing ends, estimation begins, how planning hands off to control, and what happens when data goes stale, you can reason about the system before reading a line of code.
+System design is the top-level view of a robot: what the major pieces are, who owns what, how they pass information, and why they run at different rates. If you can look at a robotics stack and explain the boundary between sensing and estimation, how planning hands off to control, and what happens when data goes stale, you can reason about the system before reading a line of code.
 
 ---
 
@@ -12,7 +12,7 @@ System design is the top-level view of a robot: what the major pieces are, what 
 
 The first mental shift in robotics system design is giving up the idea that a robot is one big loop that reads sensors, makes a decision, and sends commands. Real robots are usually several loops running at different rates because different parts of the problem live on different time scales.
 
-A robot is rarely a single sense–think–act loop. High-level mission logic may update only once per second, planners recompute paths periodically, perception runs at sensor rate, state estimation tracks system dynamics continuously, and controllers stabilize motion at very high frequency. Slower layers decide what the robot should do; faster layers decide how to do it.
+A robot is rarely a single sense–think–act loop. Different parts of the problem live on different time scales: mission logic updates every second or so, planners run at a few hertz, perception runs at sensor rate, estimators track the dynamics, and controllers close the loop at high frequency. Slower layers decide what to do; faster layers decide how.
 
 ![Control Hierarchy](assets/images/control_hierarchy.png)
 
@@ -52,7 +52,7 @@ Two distinctions matter early. Perception is not estimation: detecting a lane ma
 
 ## 2. Interfaces Are The Real Architecture
 
-System design is mostly boundary design. Modules stay swappable only when their interfaces are clean: inputs are explicit, outputs are typed, and responsibilities do not leak across layers.
+System design is mostly boundary design. A module stays swappable only if its inputs are explicit, its outputs are typed, and its responsibilities don't leak into neighboring layers.
 
 ```text
 Good:
@@ -101,7 +101,7 @@ The final question in any system design is not just "how does this work when eve
 
 ![Degraded Modules](assets/images/degraded_modules.png)
 
-This is where safety authority becomes explicit. A well-designed system makes clear which module can command a stop, which inputs are optional, and which failures require an immediate fallback. Some faults should trigger a controlled stop; others should degrade performance while keeping the robot stable. The point is not to avoid failure entirely, but to make sure failure leads to known behavior instead of surprises.
+This is where safety authority becomes explicit. A well-designed system is clear about which module can command a stop, which inputs are optional, and what to do when something fails hard enough to need a fallback. Some faults should trigger a controlled stop; others should degrade performance while keeping the robot stable. You can't prevent all failures. The goal is that when they happen, the system does something predictable.
 
 One concrete example makes the interaction between layers easier to see. Picture a small indoor delivery robot moving medicine between rooms in a hospital:
 
@@ -115,7 +115,7 @@ One concrete example makes the interaction between layers easier to see. Picture
 
 When everything is healthy, the mission manager picks the next room, the planner turns that into a path through the hall, perception marks carts and people as obstacles, the estimator keeps the robot localized, and the controller tracks the path.
 
-Now break one thing: the depth camera freezes for 300 ms. A well-designed system does **not** let that failure blur across the whole stack. Perception stops publishing fresh obstacle updates. The planner can keep its last path for a moment, but only within a freshness budget. The controller keeps running from the latest valid trajectory instead of blocking. If perception stays stale past the allowed timeout, safety authority escalates: either the planner commands a stop because the world model is stale, or a supervisor module forces safe mode directly. That is system design in practice: not just drawing boxes, but deciding which module can keep going, for how long, and who is allowed to say "stop."
+Now break one thing: the depth camera freezes for 300 ms. A well-designed system does **not** let that failure blur across the whole stack. Perception stops publishing fresh obstacle updates. The planner can keep its last path for a moment, but only within a freshness budget. The controller keeps running from the latest valid trajectory instead of blocking. If perception stays stale past the allowed timeout, safety authority escalates: either the planner commands a stop because the world model is stale, or a supervisor module forces safe mode directly. That's system design in practice: not just the boxes, but who can keep going, for how long, and who gets to say stop.
 
 ---
 

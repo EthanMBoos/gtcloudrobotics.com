@@ -4,7 +4,7 @@ icon: lucide/flask-conical
 
 # Progressive Testing
 
-Progressive testing is the discipline of building confidence in a robot step by step instead of betting everything on a hardware run. The idea is simple: prove behavior in cheap environments first, keep the contract stable as realism increases, and only spend real hardware time on failures that could not have been caught earlier.
+Progressive testing is the discipline of building confidence in a robot step by step instead of betting everything on a hardware run. The core idea: prove behavior in cheap environments first, and only spend real hardware time on failures you couldn't have caught earlier.
 
 ---
 
@@ -12,7 +12,7 @@ Progressive testing is the discipline of building confidence in a robot step by 
 
 Robotics adds sensors, actuators, timing, noisy data, and hardware you can break. If your first serious test is on the robot itself, you are learning too slowly and too expensively.
 
-That is why teams test in layers, moving from cheap and repeatable environments toward expensive and realistic ones. Most bugs should die before they ever reach hardware. No one layer does every job: SIL will never tell you everything about the real world, and hardware will never be the cheapest place to find logic bugs.
+That's why teams test in layers, moving from cheap and repeatable environments toward expensive and realistic ones. Most bugs should die before they reach hardware. No single layer does every job: SIL will never tell you everything about the real world, and the robot is never the cheapest place to find a logic bug.
 
 ![Layered Testing](assets/images/layered_testing.png)
 
@@ -52,7 +52,7 @@ HIL is where you catch:
 
 HIL should be smaller and more selective than SIL. You are not repeating every software test. You are checking the assumptions that only become visible once a real interface is involved.
 
-A concrete failure mode HIL exists to catch — picture the satellite from the [C++ CLI tooling assignment](cpp-cli-tooling.md) with two redundant temperature sensors, averaged each step, with a fault flag if the average exceeds 80 °C. A reasonable first pass at the monitor:
+Here's a concrete failure mode that HIL exists to catch. Picture the satellite from the [C++ CLI tooling assignment](cpp-cli-tooling.md) with two redundant temperature sensors, averaged each step, with a fault flag if the average exceeds 80 °C. A reasonable first pass at the monitor:
 
 ```python
 class ThermalMonitor:
@@ -101,7 +101,7 @@ If a bug could have been found in SIL, finding it on the robot is not proof of r
 
 ## 5. Don't Let Hardware Patches Poison The Core
 
-The earlier HIL example showed the *test* half of the discipline: when hardware reveals a failure mode, roll that mode back into your SIL suite so you catch it for free from then on. This section is about the *fix* half — where in the code the patch lives decides whether the codebase survives. Real platforms come with quirks: a sensor that needs a 50 ms warmup after `init()`, a firmware bug that returns `-127` once every few thousand reads, a serial port that drops the first byte after a reconnect. Each gets discovered the hard way during HIL or bench testing, usually under pressure.
+The earlier HIL example showed the *test* half of the discipline: when hardware reveals a failure mode, roll that mode back into your SIL suite so you catch it for free from then on. This section is about the *fix* half: where in the code the patch lives decides whether the codebase survives. Real platforms come with quirks: a sensor that needs a 50 ms warmup after `init()`, a firmware bug that returns `-127` once every few thousand reads, a serial port that drops the first byte after a reconnect. Each gets discovered the hard way during HIL or bench testing, usually under pressure.
 
 The tempting move is to patch the bug where it surfaced. If the monitor saw a bad reading, fix the monitor. A week of that and the clean SIL-tested logic from earlier in this lesson looks like:
 
@@ -123,7 +123,7 @@ class ThermalMonitor:
         ...
 ```
 
-Every patch is locally justified. Together they have eaten the architecture. The monitor now knows what hardware revision it is on, which sensor has which firmware bug, and how long a specific ADC takes to settle. Swapping a sensor, running this code in SIL, or porting it to a new platform all just got harder. Worse, the SIL test still passes — it doesn't know about any of these conditions either, so the safety net you built has quietly stopped covering the code that actually ships.
+Every patch is locally justified. Together they have eaten the architecture. The monitor now knows what hardware revision it is on, which sensor has which firmware bug, and how long a specific ADC takes to settle. Swapping a sensor, running this code in SIL, or porting it to a new platform all just got harder. Worse, the SIL test still passes. It doesn't know about any of these conditions either, so the safety net you built has quietly stopped covering the code that actually ships.
 
 The fix is the same boundary discipline that [system design](system-design.md#2-interfaces-are-the-real-architecture) and [thin shell, fat core](cpp-cli-tooling.md#5-thin-shell-fat-core) already argued for: give each sensor a thin **adapter** whose only job is to present a clean `.read()` to the rest of the code and absorb the device's quirks behind it.
 
