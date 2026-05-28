@@ -8,9 +8,9 @@ icon: lucide/book-open
 
     Taught by **Ethan Boos** — robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/) and part-time Robotics PhD student at Georgia Tech researching hybrid autonomy behavior architectures.
 
-GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech. Like all VIP courses, it's graded pass/fail. There are two requirements, both built to mirror how you'll actually work as a robotics engineer: one tests that you can solve scoped technical problems, and the other tests that you can ship real code into a real codebase.
+GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech. You contribute to open-source robotics project repos and work through problems you'll actually hit as a robotics engineer.
 
-**The course is fully open.** All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) and the same path works whether you're enrolled at GT or not — click **Use this template** on any assignment repo and push commits; the autograder runs on every push via GitHub Actions, and you can see pass/fail in the Actions tab. PRs into the project repos (section 2) are welcome from anyone — open an issue on the target repo first to scope the work. Anything below about the weekly sync or semester pacing is enrolled-specific.
+**The course is fully open.** All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) and the same path works whether you're enrolled at GT or not — click **Use this template** on any assignment repo and push commits; the autograder runs on every push via GitHub Actions, and you can see pass/fail in the Actions tab. PRs into the subteam project repos are welcome from anyone — open an issue on the target repo first to scope the work. Anything below about the weekly sync or semester pacing is enrolled-specific.
 
 ## 1. Three autograded assignments
 
@@ -24,13 +24,12 @@ Complete three assignments over the semester. These aren't synthetic homework �
 
 ### Returning semesters — pick any three
 
-*Listed in natural learning order; jump around to whatever matches your interests.*
 
 !!! note "Still in development — available Spring 2027"
 
     These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
 
-4. Hardware basics: sensors (IMUs, GPS, lidar, radar, cameras, encoders), motors (DC, BLDC, stepper, servo), buses (I2C, SPI, CAN, Ethernet), compute (MCUs vs. SBCs), and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
+4. **[Hardware basics](hardware-basics.md)**: sensors (IMUs, GPS, lidar, radar, cameras, encoders), motors (DC, BLDC, stepper, servo), buses (I2C, SPI, CAN, Ethernet), compute (MCUs vs. SBCs), and power (batteries, regulation) — what each does, at what rate, and how each one fools you.
 5. **[Time alignment](time-alignment.md)**: making every clock and timestamp on a single robot agree — the foundation that sensor fusion, state estimation, and control loops silently depend on.
 6. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
 7. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
@@ -41,29 +40,23 @@ Complete three assignments over the semester. These aren't synthetic homework �
 12. Learning-based methods: when to reach for RL or imitation learning — and when not to.
 13. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
 
-Pick assignments that match where you want your robotics career to go. VIP is typically a three-semester commitment, so between the required first-semester set and two rounds of electives, you'll end up covering nearly every option by the time you're done.
+VIP is typically a three-semester commitment — the required first-semester set plus two rounds of electives gets you through most of the list.
 
-## 2. One substantive merge into a project repo
+## 2. Contributions to a subteam
 
-Land one pull request into the `main` branch of one of the active course repositories:
+**Platform** — the [pidgin](pidgin.md) wire contract and the [Tower](tower.md) operator surface above it.
 
-- **[Tower](https://github.com/EthanMBoos/Tower)** — operator UI (Electron + React)
-- **[Tower-Field](https://github.com/EthanMBoos/Tower-Field)** — field-side operator tooling
-- **[tower-server](https://github.com/EthanMBoos/tower-server)** — Go server and pidgin envelope protocol
-- **[MAF](https://github.com/EthanMBoos/MAF)** — MAF implementation (C++, Ardupilot / MAVLink)
+- **UI** — You're building the operator interface: a 3D map of the fleet, command panels, and a geospatial mission planner. The interesting constraint: command panels are generated from live vehicle capability data, so the UI can never show a button that doesn't apply to the vehicle in front of you.
+- **Server** — Go server that sits between the vehicles and everything else: the UI, LLM, mission planner. Translates raw telemetry, enforces what commands can reach which vehicles, and keeps a live snapshot of the fleet. Everything above it depends on this being right.
+- **LLM** — Two modes: helping operators plan missions before launch, and grounding commands against what's live in the field. Most of the work is eval infrastructure: prompt pipelines, test suites, eventually fine-tuning on real sessions. Good fit if you care about making LLMs reliable in high-stakes settings.
 
-"Substantive" means something that required you to understand a subsystem — not a button swap or a typo fix. A list of candidate issues and features will be posted at the start of the semester; or you can propose your own idea and get it scoped before you start.
+**Autonomy** — the [MAF](maf.md) on-vehicle authority boundary and runtime.
 
-!!! tip "Start the PR early"
-
-    The merge requirement is where most of the real learning happens, and it's easy to underestimate the scope. Pick your issue in the first few weeks so review cycles don't stack up at the end of the term.
+- **Systems** — Real-time C++ at the controller interface: writing the authority monitor, building the hand-coded behavior trees that make up the deterministic autonomy stack, and designing behaviors complex enough to be useful in the field. The behaviors also have to be structured so RL policies can slot in cleanly without touching anything safety-critical. When something goes wrong on the vehicle — sensor dropout, thread timing, bad state — it's your code that either catches it or doesn't. You have to think about everything.
+- **RL** — Getting trained policies onto a real vehicle. You implement them as ONNX behavior nodes above the authority boundary so they're swappable with hand-coded behaviors, then stress-test the safety monitor: figuring out what it catches and misses as the policy gets more complex.
 
 ## Course logistics
 
-**Weekly sync — Wednesdays at 5 PM, in person.** We meet every week in Klaus. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time. This is the main place to get unstuck on assignments, talk through PR scope, and generally get feedback on your work.
+**Weekly sync — Wednesdays at 5 PM, in person.** We meet every week in Klaus. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time. This is the main place to get unstuck on assignments and get feedback on your subteam's work.
 
 **Send me your GitHub username at the start of the semester.** That's how your assignment repos get matched to your grade — there's no other submission step.
-
-**AI tools are fair game.** Copilot, Claude, Cursor — use whatever makes you productive. That's how the industry actually works, and pretending otherwise doesn't prepare you for it. The rule is simple: ==you are accountable for every line of code you commit or submit==. If I see unexplained complexity or a block of code that doesn't feel like yours, I'll ask you to walk me through it. If you can't explain what it does and why, I'll ask you to rewrite it and submit a written explanation of the new code.
-
-**Get what you put in.** This course is deliberately applied. The point isn't to hand you a grade — it's to leave you with real interview-ready skills and a grounded picture of what the robotics industry is actually like day-to-day. Put the hours in and the goal is that by the end of the term you have code you're proud to point to — in a PR, on a resume, in an interview.
