@@ -8,13 +8,13 @@ icon: lucide/book-open
 
     Taught by **Ethan Boos** — robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/) and part-time Robotics PhD student at Georgia Tech researching hybrid autonomy behavior architectures.
 
-GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech. You contribute to open-source robotics project repos and work through problems you'll actually hit as a robotics engineer.
+GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech. You contribute to open-source robotics project repos and work through problems you'll actually see as a robotics engineer.
 
 **The course is fully open.** All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) and the same path works whether you're enrolled at GT or not — click **Use this template** on any assignment repo and push commits; the autograder runs on every push via GitHub Actions, and you can see pass/fail in the Actions tab. PRs into the subteam project repos are welcome from anyone — open an issue on the target repo first to scope the work. Anything below about the weekly sync or semester pacing is enrolled-specific.
 
 ## 1. Three autograded assignments
 
-Complete three assignments over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews with hard-tech robotics companies like SpaceX, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. That's where a lot of you will first see problems like these. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
+Complete three assignments over the semester. These aren't synthetic homework — I wrote each one from problems I've actually encountered: some drawn from technical interviews at hard-tech robotics companies, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. That's where a lot of you will first see problems like these. **Attempts are unlimited** — the goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
 
 ### First semester — all three required
 
