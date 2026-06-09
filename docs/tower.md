@@ -15,12 +15,12 @@ Most fleet software is trapped in a single domain. Drone GCS rarely handles grou
 
 The alternative most fleets settle on — a unified dashboard that flattens vehicles into a lowest-common-denominator interface — has its own failure mode: silent execution failures where a ground rover quietly receives a "take off" command, or a stationary manipulator is queried for GPS waypoints, with no error and no warning until something physically goes wrong.
 
-**Tower** is an open-architecture command and control system for heterogeneous robotic fleets that threads the needle between those two extremes. It pairs an Electron + React [operator UI](https://github.com/EthanMBoos/Tower) with a Go [tower-server](https://github.com/EthanMBoos/tower-server) that bridges vehicles over the [pidgin protocol](pidgin.md). Vehicles share one operator surface, but no operator action ever bypasses what the receiving vehicle says it can do.
+**Tower** is an open-architecture command and control system for heterogeneous robotic fleets that threads the needle between those two extremes. It pairs a React PWA [operator UI](https://github.com/EthanMBoos/Tower) with a Go [tower-server](https://github.com/EthanMBoos/tower-server) that bridges vehicles over the [pidgin protocol](pidgin.md). Vehicles share one operator surface, but no operator action ever bypasses what the receiving vehicle says it can do.
 
 ```text
 ┌──────────────┐    UDP multicast    ┌──────────────┐    WebSocket     ┌──────────────┐
 │   Vehicles   │ ◀─────────────────▶ │ tower-server │ ◀───────────────▶│  Operator UI │
-│   protobuf   │                     │     (Go)     │   JSON frames    │  (Electron)  │
+│   protobuf   │                     │     (Go)     │   JSON frames    │   (Browser)  │
 └──────────────┘                     └──────────────┘                  └──────────────┘
 ```
 
