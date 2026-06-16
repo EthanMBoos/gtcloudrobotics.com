@@ -122,6 +122,8 @@ The partition between layers is a function of the behavior's command distributio
 
 ## Current State
 
+I'm actively iterating on this design solo, so it's not yet open for student contributions — once the authority boundary contract is solid I'll bring people in on it.
+
 Initial target: ArduPilot Rover SITL. Single process, no hardware required to run the experiment. A Jetson Orin + physical rover validates latency and real-world dynamics but doesn't change the research question.
 
 **Phase 1 — Monitor contract in SITL** *(in progress)*
