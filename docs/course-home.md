@@ -36,7 +36,7 @@ Complete three assignments over the semester. These aren't synthetic homework �
 8. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
 9. Control systems: closing the loop between desired and actual — PID, LQR, MPC.
 10. Path & motion planning: generating feasible trajectories through space and time.
-11. Behavior architectures & autonomy: composing behavior with state machines, behavior trees, and planners.
+11. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
 12. Learning-based methods: when to reach for RL or imitation learning — and when not to.
 13. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
 
@@ -44,16 +44,11 @@ VIP is typically a three-semester commitment — the required first-semester set
 
 ## 2. Contributions to a subteam
 
-**Platform** — the [pidgin](pidgin.md) wire contract and the [Tower](tower.md) operator surface above it.
+**Platform** — the [pidgin](pidgin.md) wire contract and the [Tower](tower.md) operator surface above it. Core platform work is mostly solved at this point. If you want to contribute to the server or UI, let me know and I'll find you something, but most of what's left to build now lives in the other two tracks.
 
-- **UI** — You're building the operator interface: a 3D map of the fleet, command panels, and a geospatial mission planner. The interesting constraint: command panels are generated from live vehicle capability data, so the UI can never show a button that doesn't apply to the vehicle in front of you.
-- **Server** — Go server that sits between the vehicles and everything else: the UI, LLM, mission planner. Translates raw telemetry, enforces what commands can reach which vehicles, and keeps a live snapshot of the fleet. Everything above it depends on this being right.
-- **LLM** — Two modes: helping operators plan missions before launch, and grounding commands against what's live in the field. Most of the work is eval infrastructure: prompt pipelines, test suites, eventually fine-tuning on real sessions. Good fit if you care about making LLMs reliable in high-stakes settings.
+**LLM** — Two modes: helping operators plan missions before launch, and grounding commands against what's live in the field. Most of the work is eval infrastructure: prompt pipelines, test suites, eventually fine-tuning on real sessions. Good fit if you care about making LLMs reliable in high-stakes settings.
 
-**Autonomy** — the [MAF](maf.md) on-vehicle authority boundary and runtime.
-
-- **Systems** — Real-time C++ at the controller interface: writing the authority monitor, building the hand-coded behavior trees that make up the deterministic autonomy stack, and designing behaviors complex enough to be useful in the field. The behaviors also have to be structured so RL policies can slot in cleanly without touching anything safety-critical. When something goes wrong on the vehicle — sensor dropout, thread timing, bad state — it's your code that either catches it or doesn't. You have to think about everything.
-- **RL** — Getting trained policies onto a real vehicle. You implement them as ONNX behavior nodes above the authority boundary so they're swappable with hand-coded behaviors, then stress-test the safety monitor: figuring out what it catches and misses as the policy gets more complex.
+**Autonomy** — pick your own application and build a complete, vertically-integrated autonomy stack behind it. Any vehicle, any language, any problem area (search & rescue, agriculture, logistics, construction, environmental monitoring, etc). It has to talk to Tower over [pidgin](pidgin.md) and prove itself in a high-fidelity [SIL](progressive-testing.md) simulation, not a scripted telemetry feed standing in for a vehicle.
 
 ## Course logistics
 
