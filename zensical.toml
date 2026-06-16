@@ -54,6 +54,7 @@ nav = [
      "system-design.md",
      "progressive-testing.md",
      "time-alignment.md",
+     "behavior-architectures.md",
      "hardware-basics.md",
   ]},
   {"Tower C2" = "tower.md"},
