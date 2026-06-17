@@ -13,9 +13,9 @@ It's a different question from "what's the path from A to B" (a planner's job) a
 ## 1. Where This Layer Sits
  
 ```text
-Mission        "search zone A, then return"          ~1 Hz
+Mission        "search zone A, then return"             ~1 Hz
   │
-Behavior        "right now: explore, or track,        ~5-20 Hz
+Behavior        "right now: explore, or track,         ~5-20 Hz
   │              or return, and what if this fails"
   │
 Planner         "the actual path/trajectory for        rate varies,
