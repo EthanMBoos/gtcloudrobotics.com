@@ -59,7 +59,7 @@ nav = [
   ]},
   {"Tower C2" = "tower.md"},
   {"Pidgin Protocol" = "pidgin.md"},
-  {"Modular Autonomy Framework" = "maf.md"}
+  {"Sim-Portable Autonomy Runtime" = "spar.md"}
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

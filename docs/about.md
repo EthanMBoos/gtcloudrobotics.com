@@ -12,7 +12,7 @@ Robot autonomy is becoming more capable and more opaque at the same time. Hand-c
 We treat this at two layers, and the same architectural argument shows up at both:
 
 - **Across platforms.** The [pidgin protocol](pidgin.md) is the wire contract that composes heterogeneous vehicles into a single fleet through a capability-aware Physical API. Vehicles advertise capabilities; the protocol validates commands against them before routing. New vehicle types plug in as protobuf extensions with no core changes. The protocol stands on its own; any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build. [Tower](tower.md) is our reference operator UI on top of it.
-- **Within a platform.** [MAF](maf.md) is a C++ mission and integration runtime built around the authority boundary between high-level autonomy and the trusted low-level controller. A runtime monitor decides what commands cross it, a single-writer adapter is the only module in the system permitted to write to the controller, and a crash-isolated recorder captures the full state at the boundary. The certified surface stays small while the policy above can scale arbitrarily. Whether it's a hand-coded behavior tree, a single learned BT node, or a monolithic policy replacing the entire autonomy layer, the monitor, adapter, recording schema, and admission step stay the same.
+- **Within a platform.** [SPAR](spar.md) is a C++ mission execution runtime that guarantees invariance-by-construction across two substitution axes: the source of an observation (simulation vs. hardware) and the behavior that consumes it (hand-coded vs. learned policy). A trusted observation assembler makes both look identical to the mission layer; a trusted monitor and adapter decide what commands cross to the controller. Field a learned policy without certifying it. If it fails, the monitor catches it, the fallback takes over, and the logs reconstruct exactly what happened.
 
 Same pattern at both levels: keep the seams small, and vehicles, transports, and autonomy can change without breaking them. The two aren't symmetric in stakes, though. The pidgin seam decides whether new vehicles compose into a fleet; the authority boundary decides what a learned policy is allowed to command, which is why we can field one without verifying it. If the policy crashes, the autopilot stays up. If the vehicle crashes, the recordings tell us which side failed.
 
@@ -50,13 +50,13 @@ The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the
 
     [:octicons-arrow-right-24: See the protocol](pidgin.md)
 
--   :lucide-layers:{ .lg .middle } **Modular Autonomy Framework**
+-   :lucide-layers:{ .lg .middle } **Sim-Portable Autonomy Runtime**
 
     ---
 
-    The authority boundary between your learned policy and the autopilot. Field the policy without certifying it.
+    Invariance-by-construction across sim/hardware and behavior types. Corner the gap instead of closing it.
 
-    [:octicons-arrow-right-24: Learn more](maf.md)
+    [:octicons-arrow-right-24: Learn more](spar.md)
 
 </div>
 
