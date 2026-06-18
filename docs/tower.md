@@ -8,12 +8,12 @@ hide:
 
 <figure markdown="span">
   ![Tower operator UI](assets/images/TowerPreview.png)
-  <figcaption>Tower operator UI — 3D mission planning and fleet monitoring.</figcaption>
+  <figcaption>Tower operator UI: 3D mission planning and fleet monitoring.</figcaption>
 </figure>
 
-Most fleet software is trapped in a single domain. Drone GCS rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats — months wasted on repetitive integration, or separate codebases for every new vehicle.
+Most fleet software is trapped in a single domain. Drone GCS rarely handles ground robots, marine systems can't visualize UAVs, and mixing platforms usually means juggling multiple apps with incompatible data formats, meaning months wasted on repetitive integration or separate codebases for every new vehicle.
 
-The alternative most fleets settle on — a unified dashboard that flattens vehicles into a lowest-common-denominator interface — has its own failure mode: silent execution failures where a ground rover quietly receives a "take off" command, or a stationary manipulator is queried for GPS waypoints, with no error and no warning until something physically goes wrong.
+The alternative most fleets settle on, a unified dashboard that flattens vehicles into a lowest-common-denominator interface, has its own failure mode: silent execution failures where a ground rover quietly receives a "take off" command, or a stationary manipulator is queried for GPS waypoints, with no error and no warning until something physically goes wrong.
 
 **Tower** is an open-architecture command and control system for heterogeneous robotic fleets that threads the needle between those two extremes. It pairs a React PWA [operator UI](https://github.com/EthanMBoos/Tower) with a Go [tower-server](https://github.com/EthanMBoos/tower-server) that bridges vehicles over the [pidgin protocol](pidgin.md). Vehicles share one operator surface, but no operator action ever bypasses what the receiving vehicle says it can do.
 
@@ -31,7 +31,7 @@ The Tower UI is built for operators running mixed fleets, not vehicle-specific c
 - **3D mission planning.** Geospatial waypointing, area coverage, and multi-vehicle coordination across air, ground, and stationary assets in a single planner.
 - **Fleet monitoring.** Live telemetry from every connected vehicle on one map and in one status panel, with platform-specific detail surfaced through extensions rather than hidden behind generic widgets.
 - **Capability-aware command panels.** The UI renders only the controls each selected vehicle has actually advertised at runtime, so an operator never sees a button that maps to an action the receiving vehicle can't accept. The server backs this with a hard validation step; the UI just consumes the result.
-- **LLM-assisted operations.** Natural-language operator intents are grounded against the same capability data the command panels use, so the model can't propose actions a vehicle doesn't support — the legibility guarantees that hold for the human operator hold for the assistant too.
+- **LLM-assisted operations.** Natural-language operator intents are grounded against the same capability data the command panels use, so the model can't propose actions a vehicle doesn't support. The legibility guarantees that hold for the human operator hold for the assistant too.
 
 The result is a tighter operator experience: one map, one mission timeline, and one command surface across heterogeneous assets, without pretending that a stationary hub can fly or that a drone can charge a partner.
 
@@ -48,7 +48,7 @@ That split is what lets the UI stay clean: it doesn't see protobuf, doesn't mana
 
 ## A Capability-Aware Physical API
 
-Cross-platform composition rests on the protocol seam. Vehicles advertise capabilities through [pidgin](pidgin.md); `tower-server` validates every operator action against those capabilities before routing it; new vehicle types plug in by registering a versioned extension rather than forking the core. The operator surface treats heterogeneous vehicles uniformly when their capabilities overlap and surfaces real differences at the right layer — see [the pidgin page](pidgin.md) for envelope, extensions, and capability mechanics.
+Cross-platform composition rests on the protocol seam. Vehicles advertise capabilities through [pidgin](pidgin.md); `tower-server` validates every operator action against those capabilities before routing it; new vehicle types plug in by registering a versioned extension rather than forking the core. The operator surface treats heterogeneous vehicles uniformly when their capabilities overlap and surfaces real differences at the right layer. See [the pidgin page](pidgin.md) for envelope, extensions, and capability mechanics.
 
 `tower-server` is one bridge implementation. Because pidgin stands on its own, other autonomy stacks, GCSes, or middlewares can adopt the protocol without buying into Tower.
 
@@ -56,11 +56,11 @@ Cross-platform composition rests on the protocol seam. Vehicles advertise capabi
 
 The motivating workload is mixed-domain operations where each platform has a meaningfully different command surface and operational envelope. A last-mile delivery scenario — ground rovers navigating sidewalks and parking lots, aerial drones handling rooftop and hard-to-reach drops, and stationary hubs managing handoff and charging — exercises the boundary cases the architecture was built for: vehicles that share some commands (mission start/stop, waypoint queue, status reporting) but disagree on others (altitude, payload manipulation, charge state).
 
-Operators see one map, one mission timeline, and one command surface across all three classes. Vehicle differences are surfaced where they're actionable; vehicle commonalities are pooled where they're useful. Adding a new platform class is mostly extension-mapping work at the edge — see the [pidgin integration contract](pidgin.md#integration-contract) for what that looks like in practice — rather than central bridge maintenance in the middle.
+Operators see one map, one mission timeline, and one command surface across all three classes. Vehicle differences are surfaced where they're actionable; vehicle commonalities are pooled where they're useful. Adding a new platform class is mostly extension-mapping work at the edge rather than central bridge maintenance in the middle. See the [pidgin integration contract](pidgin.md#integration-contract) for what that looks like in practice.
 
 ## Where Tower Sits in the Stack
 
-Tower is the **cross-platform** half of our composition story — it composes vehicles into a fleet through the protocol seam. The **within-platform** half is the [SPAR](spar.md) authority boundary on each vehicle. Vehicles plug into Tower by publishing a pidgin extension payload at one end of the runtime; SPAR enforces the autopilot-facing contract at the other. The two boundaries are independent: you can adopt pidgin without SPAR, or SPAR without Tower.
+Tower is the **cross-platform** half of our composition story: it composes vehicles into a fleet through the protocol seam. The **within-platform** half is the [SPAR](spar.md) authority boundary on each vehicle. Vehicles plug into Tower by publishing a pidgin extension payload at one end of the runtime; SPAR enforces the autopilot-facing contract at the other. The two boundaries are independent: you can adopt pidgin without SPAR, or SPAR without Tower.
 
 !!! tip "Dive deeper"
 
