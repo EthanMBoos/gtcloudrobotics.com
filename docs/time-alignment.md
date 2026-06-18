@@ -158,7 +158,7 @@ Production teams converge on bypassing ROS 2 on the latency-critical path while 
 
 These aren't exotic workarounds. They're what closing a real §4 budget looks like.
 
-**Bare-metal (MAF) pays the opposite tax.** Clocks are constructor arguments, `t_measure` is a required field rejected at the authority boundary if missing, and single-writer is enforced at link time. The time bugs ROS lets you write silently won't compile here. What it costs: no `tf2`, no `message_filters`, no bag replay, no package ecosystem. Every alignment primitive is yours to build, and the tooling gap is real.
+**Bare-metal (SPAR) pays the opposite tax.** Clocks are constructor arguments, `t_measure` is a required field rejected at the authority boundary if missing, and single-writer is enforced at link time. The time bugs ROS lets you write silently won't compile here. What it costs: no `tf2`, no `message_filters`, no bag replay, no package ecosystem. Every alignment primitive is yours to build, and the tooling gap is real.
 
 **Which trade?** If the critical reaction loop has to close a tight §4 budget — collision avoidance on a fast platform, anything safety-critical — bare-metal earns its keep. If 50–100 ms of distributed overhead is fine and the ecosystem matters more, ROS is the right answer. Most production systems end up in the middle: ROS at the edges for tooling, visualization, and logging; bare-metal or a thin shared-memory transport on the latency-critical path from perception through control. The seam between them is where re-stamping into the right time model has to be most explicit, because crossing it means crossing time models too.
 
