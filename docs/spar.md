@@ -8,12 +8,6 @@ hide:
 
 **SPAR** is a C++ mission execution runtime whose central claim is invariance-by-construction across two substitution axes: swapping the source of an observation (simulation vs. hardware) and swapping the behavior that consumes it (hand-coded vs. learned policy) both leave the surrounding pipeline bit-identical. The mechanism is a single-reader deterministic snapshot: asynchronous transport is demoted to dumb stamp-and-push writers feeding per-source ring buffers, and a single reader builds one immutable, time-coherent `WorldState` per tick via a pure `latest_at_or_before(t)` lookup. Because the assembly is a pure function of buffer contents and reference time, scheduler jitter, callback ordering, and "newest-available smear" cannot leak into the observation. The nondeterminism is quarantined to the write side.
 
-The payoff is not that simulation equals reality. It is that the residual sim-to-real gap is cornered rather than closed: confined to one component (the sample streams themselves), which are injected through a single transport-degradation layer calibrated to delay/jitter/dropout distributions measured on the real hardware. The gap is localized and measurable instead of smeared across the stack. With the source isolated as the only free variable, SPAR can measure the four-way partition of the failure space across behavior types (hand-coded, conservative learned, aggressive learned), turning "is this policy safe to deploy" from simulation-plus-hope into a quantity you can actually report.
-
-The runtime enforces this through two typed boundaries sandwiching an untrusted mission layer. A runtime monitor decides what commands are allowed through. A single-writer adapter is the only module permitted to write to the controller. A companion seam on the input side, the observation assembler, guarantees that every behavior, learned or hand-coded, reads a single time-coherent view of the world. Every decision is logged with enough context to reconstruct what happened and why, from logs alone, without operator memory.
-
-SPAR runs hand-coded behaviors reliably before learned components are introduced. When AI nodes are added, they slot in between the same two boundaries, satisfying the same interfaces. Nothing below the command boundary changes, and nothing above the observation boundary changes how the world is built.
-
 ```text
         sensor sources (async, different rates/latencies)
                               │
@@ -42,7 +36,11 @@ SPAR runs hand-coded behaviors reliably before learned components are introduced
 └─────────────────────────────────────────────┘
 ```
 
-The untrusted mission layer is sandwiched between two trusted seams: a trusted assembler decides what it sees, a trusted monitor and adapter decide what it can do. Neither boundary depends on what sits between them. A hand-coded navigate node and a learned policy read the same `WorldState` and satisfy the same command interface; the assembler, monitor, adapter, and session log stay the same regardless.
+The payoff is not that simulation equals reality. It is that the residual sim-to-real gap is cornered rather than closed: confined to one component (the sample streams themselves), which are injected through a single transport-degradation layer calibrated to delay/jitter/dropout distributions measured on the real hardware. The gap is localized and measurable instead of smeared across the stack. With the source isolated as the only free variable, SPAR can measure the four-way partition of the failure space across behavior types (hand-coded, conservative learned, aggressive learned), turning "is this policy safe to deploy" from simulation-plus-hope into a quantity you can actually report.
+
+The runtime enforces this through two typed boundaries sandwiching an untrusted mission layer. Neither boundary depends on what sits between them. A runtime monitor decides what commands are allowed through. A single-writer adapter is the only module permitted to write to the controller. A companion seam on the input side, the observation assembler, guarantees that every behavior, learned or hand-coded, reads a single time-coherent view of the world. Every decision is logged with enough context to reconstruct what happened and why, from logs alone, without operator memory.
+
+SPAR runs hand-coded behaviors reliably before learned components are introduced. When AI nodes are added, they slot in between the same two boundaries, satisfying the same interfaces. Nothing below the command boundary changes, and nothing above the observation boundary changes how the world is built.
 
 ## The Observation Assembler
 
