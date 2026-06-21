@@ -20,7 +20,7 @@ Complete three assignments over the semester. These aren't synthetic homework. I
 
 1. **[C++ CLI tooling](cpp-cli-tooling.md)**: CMake fundamentals and the workflow to spin up a useful utility from scratch.
 2. **[System design](system-design.md)**: the top-level view of a robotics stack: how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
-3. **[Progressive testing](progressive-testing.md)**: walking the SIL → HIL → hardware test progression, mocking sensors, subsystems, and hardware at each layer.
+3. **[Time alignment](time-alignment.md)**: making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
 
 ### Returning semesters: pick any three
 
@@ -29,14 +29,13 @@ Complete three assignments over the semester. These aren't synthetic homework. I
 
     These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
 
-4. **[Hardware basics](hardware-basics.md)**: sensors (IMUs, GPS, lidar, radar, cameras, encoders), motors (DC, BLDC, stepper, servo), buses (I2C, SPI, CAN, Ethernet), compute (MCUs vs. SBCs), and power (batteries, regulation), covering what each does, at what rate, and how each one fools you.
-5. **[Time alignment](time-alignment.md)**: making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
+4. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
+5. **[Hardware basics](hardware-basics.md)**: sensors (IMUs, GPS, lidar, radar, cameras, encoders), motors (DC, BLDC, stepper, servo), buses (I2C, SPI, CAN, Ethernet), compute (MCUs vs. SBCs), and power (batteries, regulation), covering what each does, at what rate, and how each one fools you.
 6. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
-7. Robot math: the kinematics, dynamics, and transformations that underpin everything else.
+7. Frames & transforms: coordinate frames, rotations, and geodesy — converting between local and global frames, body and world, and LLA to ENU so every module agrees on where things are.
 8. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
 9. Control systems: closing the loop between desired and actual (PID, LQR, MPC).
 10. Path & motion planning: generating feasible trajectories through space and time.
-11. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
 12. Learning-based methods: when to reach for RL or imitation learning, and when not to.
 13. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
 
