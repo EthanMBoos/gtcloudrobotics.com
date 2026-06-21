@@ -19,7 +19,7 @@ Complete three assignments over the semester. These aren't synthetic homework. I
 ### First semester: all three required
 
 1. **[C++ CLI tooling](cpp-cli-tooling.md)**: CMake fundamentals and the workflow to spin up a useful utility from scratch.
-2. **[System design](system-design.md)**: the top-level view of a robotics stack: how sensors, controllers, planners, and autonomy modules fit together, and why each runs at a different rate (controller in the kHz range, perception at camera fps, planner slower still). The mental model the rest of the course leans on.
+2. **[System design](system-design.md)**: who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
 3. **[Time alignment](time-alignment.md)**: making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
 
 ### Returning semesters: pick any three
