@@ -32,11 +32,10 @@ Complete three assignments over the semester. These aren't synthetic homework. I
 4. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
 5. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
 6. Frames & transforms: coordinate frames, rotations, and geodesy — converting between local and global frames, body and world, and LLA to ENU so every module agrees on where things are.
-7. State estimation & SLAM: fusing noisy sensors into a confident estimate of pose and map.
-8. Control systems: closing the loop between desired and actual (PID, LQR, MPC).
-9. Path & motion planning: generating feasible trajectories through space and time.
-10. Learning-based methods: when to reach for RL or imitation learning, and when not to.
-11. Perception & computer vision: turning raw camera and lidar data into structured understanding. Listed last because modern pretrained vision models have made most of this nearly trivial.
+7. Control systems: closing the loop between desired and actual (PID, LQR, MPC).
+8. Path & motion planning: generating feasible trajectories through space and time.
+9. Learning-based methods: when to reach for RL or imitation learning, and when not to.
+10. Perception & computer vision: turning raw camera and lidar data into structured understanding.
 
 VIP is typically a three-semester commitment. The required first-semester set plus two rounds of electives gets you through most of the list.
 
