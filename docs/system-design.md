@@ -76,7 +76,7 @@ def plan(world: WorldModel, goal: Goal) -> Trajectory: ...
 def plan(world, camera_driver, imu_serial_port, ros_node): ...
 ```
 
-The leaky version is no longer a planner. It's a planner-plus-half-the-driver-stack, and swapping the camera or rewiring the IMU now breaks the planning logic. The clean version doesn't care where its `WorldModel` came from: a stereo camera, a lidar, a simulator, or a recorded log. That's the same property that makes [progressive testing](progressive-testing.md) tractable — the planner that runs in SIL is literally the same planner that runs on the robot.
+The leaky version is no longer a planner. It's a planner-plus-half-the-driver-stack, and swapping the camera or rewiring the IMU now breaks the planning logic. The clean version doesn't care where its `WorldModel` came from: a stereo camera, a lidar, a simulator, or a recorded log.
 
 ---
 
