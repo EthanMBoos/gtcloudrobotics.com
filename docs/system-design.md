@@ -18,7 +18,7 @@ A robot is rarely a single sense–think–act loop. Different parts of the prob
 
 The exact rates vary across robots, but the overall pattern does not: control runs fastest, estimation follows the dynamics, perception is bounded by sensors and compute, and planning and mission logic run more slowly because they reason over longer horizons. Those differences come from physics, latency, and system requirements, not coding style.
 
-This is also why you can't just call the slow layer from inside the fast one. A controller running at 1 kHz cannot block on a 30 Hz perception update — it would miss 32 of its own deadlines waiting. The usual pattern is a **shared latest-value slot**: the slow producer writes whenever it has something new, the fast consumer reads the most recent value without blocking, and a timestamp lets the consumer notice when the value is stale.
+This is also why you can't just call the slow layer from inside the fast one. A controller running at 1 kHz cannot block on a 30 Hz perception update. It would miss 32 of its own deadlines waiting. The usual pattern is a **shared latest-value slot**: the slow producer writes whenever it has something new, the fast consumer reads the most recent value without blocking, and a timestamp lets the consumer notice when the value is stale.
 
 ```cpp
 struct Stamped { Pose value; double t_sec; };
@@ -44,7 +44,7 @@ void controller_loop() {
 }
 ```
 
-The controller never waits on perception, but it also never silently uses a half-second-old pose — the timestamp is what makes the decoupling safe.
+The controller never waits on perception, but it also never silently uses a half-second-old pose. The timestamp is what makes the decoupling safe.
 
 Two distinctions matter early. Perception is not estimation: detecting a lane marker is different from estimating vehicle pose. And planning is not control: deciding where to go is different from generating the fast actuator commands that make the robot follow that decision.
 
@@ -76,7 +76,7 @@ def plan(world: WorldModel, goal: Goal) -> Trajectory: ...
 def plan(world, camera_driver, imu_serial_port, ros_node): ...
 ```
 
-The leaky version is no longer a planner — it's a planner-plus-half-the-driver-stack, and swapping the camera or rewiring the IMU now breaks the planning logic. The clean version doesn't care where its `WorldModel` came from: a stereo camera, a lidar, a simulator, or a recorded log. That's the same property that makes [progressive testing](progressive-testing.md) tractable — the planner that runs in SIL is literally the same planner that runs on the robot.
+The leaky version is no longer a planner. It's a planner-plus-half-the-driver-stack, and swapping the camera or rewiring the IMU now breaks the planning logic. The clean version doesn't care where its `WorldModel` came from: a stereo camera, a lidar, a simulator, or a recorded log. That's the same property that makes [progressive testing](progressive-testing.md) tractable — the planner that runs in SIL is literally the same planner that runs on the robot.
 
 ---
 
