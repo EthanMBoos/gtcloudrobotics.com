@@ -6,7 +6,7 @@ hide:
 
 # SPAR — Sim Portable Autonomy Runtime
 
-!!! note "WIP"
+!!! note "Work in progress"
 
     Actively building this out solo, not ready for student contributors yet. Check back in 2027.
 
