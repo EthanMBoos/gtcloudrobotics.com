@@ -4,7 +4,7 @@ hide:
 - toc
 ---
 
-# SPAR — Sim-Portable Autonomy Runtime
+# SPAR — Sim Portable Autonomy Runtime
 
 !!! note "WIP"
 
