@@ -14,8 +14,6 @@ hide:
 
 The primary research direction is foundation model actors (Cosmos-based VLAs) deployed through this fixed boundary. A conventional RL baseline (SAC via KinematicBackend) is built first to validate the pipeline and establish catch fractions before Cosmos data collection begins.
 
-The mechanism works like this. A trusted observation assembler delivers one time-coherent snapshot per tick to an untrusted mission layer (hand-coded or learned), and every command that layer produces passes through a trusted runtime monitor before reaching the vehicle controller. The monitor is deployment-only: policies train without it, so catch fractions reflect the policy's natural command distribution, not one the monitor shaped. The assembler, monitor, adapter, and session log are unchanged across experiments, which is what makes catch fraction vs. policy type a quantity you can measure rather than a judgment call. Swapping a hand-coded behavior tree for a trained neural policy requires changing one line, and the same assembler runs identically in simulation and on hardware, so the observations a policy trains on are the observations it sees at deployment.
-
 ## Research Questions
 
 > **Can a fixed runtime monitor reliably catch dangerous commands regardless of what policy produces them and how does that guarantee hold up as the policy changes?**
