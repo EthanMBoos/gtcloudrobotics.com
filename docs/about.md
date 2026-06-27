@@ -30,7 +30,7 @@ The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the
 
     ---
 
-    What the course is, how it's structured, and what you'll build.
+    The VIP structure, what students contribute, and how the two research tracks fit together.
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
@@ -38,7 +38,7 @@ The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the
 
     ---
 
-    Mission planning and fleet monitoring across heterogeneous vehicles. Still in beta, already useful.
+    One operator surface for heterogeneous fleets: capability-aware command routing, 3D mission planning, and no silent failures.
 
     [:octicons-arrow-right-24: See Tower](tower.md)
 
@@ -46,15 +46,15 @@ The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the
 
     ---
 
-    The wire contract for multi-vehicle fleets. Adopt it independently of everything else here.
+    The wire contract composing heterogeneous vehicles into one fleet. Adopt it independently of everything else here.
 
     [:octicons-arrow-right-24: See the protocol](pidgin.md)
 
--   :lucide-layers:{ .lg .middle } **Sim-Portable Autonomy Runtime**
+-   :lucide-layers:{ .lg .middle } **Sim Portable Autonomy Runtime**
 
     ---
 
-    Invariance-by-construction across sim/hardware and behavior types. Corner the gap instead of closing it.
+    The within-platform authority boundary: every policy command vetted before it reaches the controller, with a defined fallback on reject.
 
     [:octicons-arrow-right-24: Learn more](spar.md)
 
