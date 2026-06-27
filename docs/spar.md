@@ -10,9 +10,21 @@ hide:
 
     Actively building this out solo, not ready for student contributors yet. Check back in 2027.
 
-**SPAR** is a C++ research runtime built around a command authority boundary: an untrusted mission layer proposes commands, and a trusted runtime monitor vets every one before it reaches the vehicle controller. It measures empirically how reliably that monitor catches policy failures, and how the coverage changes as the policy changes. The architecture holds two things fixed by construction across two substitution axes. Swapping the observation source (simulation vs. hardware) and swapping the behavior (hand-coded vs. learned) both leave the surrounding pipeline bit-identical. The policy is the only free variable.
+**SPAR** is a C++ runtime. It enforces one thing: an unbypassable command authority
+boundary. An untrusted mission layer proposes commands; a trusted runtime monitor vets
+every one before it reaches the vehicle controller; a single-writer adapter is the only
+path to the controller. The boundary holds **bit-identical** across two substitution axes:
+observation source (simulation vs. hardware) and behavior (hand-coded vs. learned). The
+policy is the only free variable. The monitor checks every command against ArduPilot's
+accepted envelope, whatever produced it. That's a vehicle-control problem, not the
+tabletop manipulation setting most of this work targets.
 
-The primary research direction is foundation model actors (Cosmos-based VLAs) deployed through this fixed boundary. A conventional RL baseline (SAC via KinematicBackend) is built first to validate the pipeline and establish catch fractions before Cosmos data collection begins.
+To stress the boundary's policy-invariance, behaviors are swapped through it from the most
+predictable to the most adversarial: a hand-coded baseline, a conventional RL policy (SAC
+via `KinematicBackend`), and foundation-model actors (Cosmos-based VLAs), the hardest free
+variable. The RL baseline is built first to validate the pipeline and establish catch
+fractions before VLA data collection begins. Cosmos is a stress test for the boundary,
+nothing more.
 
 ## Research Questions
 
@@ -20,7 +32,8 @@ The primary research direction is foundation model actors (Cosmos-based VLAs) de
 
 > **When an operator delegates a behavior to a learned policy, what does the monitor catch that the operator can't anticipate?**
 
-Every design decision in this repo is evaluated against whether it produces a data point in the four-way failure partition:
+The four-way partition below is how the boundary is **evaluated**. Every catch is
+attributed to a layer, so the post-mortem question is always answerable:
 
 | Class | Caught by |
 |---|---|
@@ -29,7 +42,13 @@ Every design decision in this repo is evaluated against whether it produces a da
 | Both | Both layers |
 | Neither | The uncatchable residual — explicit boundary of what monitoring can do |
 
-The catch fraction across those four classes, measured as policy type changes, is the publishable contribution. The boundary architecture is the mechanism. These are not separable.
+The **boundary is the contribution; the partition is how it's validated.** The catch
+fraction across these classes shows whether the guarantee holds as the policy changes, and
+where the two layers catch different things.
+ 
+The behavioral row is a slot. It takes any detector that calibrates on successful rollouts
+and thresholds with conformal prediction, which is what the recent papers all do. SPAR
+doesn't ship its own; it ships STAC, FAIL-Detect, and FIPER as reference plug-ins.
 
 ## Architecture
 
@@ -52,8 +71,9 @@ The catch fraction across those four classes, measured as policy type changes, i
 ┌─────────────────────────────────────────────┐
 │  Runtime monitor            (TRUSTED)       │
 │  bounds · rate-of-change · staleness        │
+│  approve → adapter   reject → safe fallback │
 └────────────────────┬────────────────────────┘
-                     │ approved commands only
+                     │ approved command, or defined safe fallback on reject
                      ▼
 ┌─────────────────────────────────────────────┐
 │  Adapter → ArduPilot        (TRUSTED)       │
@@ -61,11 +81,28 @@ The catch fraction across those four classes, measured as policy type changes, i
 └─────────────────────────────────────────────┘
 ```
 
-**Observation assembler.** The same assembler, the same `latest_at_or_before(t)` lookup, and the same staleness math run in simulation and on the rover; only the source implementation changes. For hand-coded behaviors and the SAC RL baseline, the assembled snapshot is the policy's primary input. For vision-based policies (Cosmos, Phase 4a), raw video frames flow through a separate path, but the assembler still runs, because the monitor needs assembled state (pose age, speed) to gate every command regardless of what produced it.
-
-**Runtime monitor.** Sees every command before the adapter. Enforces per-sample bounds, rate-of-change limits, and temporal-window invariants derived from ArduPilot's accepted command envelope. Every decision is logged with the triggered invariant and an `invariant_flags` bitmask so the post-mortem question is always answerable: did no applicable invariant exist, or did one exist and the monitor miss it?
-
-**Single-writer adapter.** The only module that links against the controller transport. Bypass is architecturally impossible, not merely prohibited.
+**Observation assembler.** The same assembler, the same `latest_at_or_before(t)` lookup,
+and the same staleness math run in simulation and on the rover; only the source
+implementation changes. For hand-coded behaviors and the SAC RL baseline, the assembled
+snapshot is the policy's primary input. For vision-based policies (Cosmos, Phase 4a), raw
+video frames flow through a separate path, but the assembler still runs, because the
+monitor needs assembled state (pose age, speed) to gate every command regardless of what
+produced it.
+ 
+**Runtime monitor.** Sees every command before the adapter. Enforces per-sample bounds,
+rate-of-change limits, and temporal-window invariants derived from ArduPilot's accepted
+command envelope. Every decision is logged with the triggered invariant and an
+`invariant_flags` bitmask so the post-mortem question is always answerable: did no
+applicable invariant exist, or did one exist and the monitor miss it?
+ 
+**Rejection contract.** A rejected command is never silently dropped. The monitor puts a
+**defined safe fallback** in its place and logs the rejection with the triggered
+`invariant_flags`. The fallback is what keeps the vehicle safe; a flagged command does
+nothing on its own. It's configurable per deployment: hold-last-approved,
+commanded-stop/zero, or hand-off to an ArduPilot failsafe mode.
+ 
+**Single-writer adapter.** The only module that links against the controller transport.
+Bypass is architecturally impossible, not merely prohibited.
 
 ## Where SPAR Sits
 
