@@ -29,15 +29,12 @@ Complete three assignments over the semester. These aren't synthetic homework. I
 
     These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
 
-4. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
-5. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
-6. Frames & transforms: coordinate frames, rotations, and geodesy — converting between local and global frames, body and world, and LLA to ENU so every module agrees on where things are.
-7. Control systems: closing the loop between desired and actual (PID, LQR, MPC).
-8. Path & motion planning: generating feasible trajectories through space and time.
-9. Learning-based methods: when to reach for RL or imitation learning, and when not to.
-10. Perception & computer vision: turning raw camera and lidar data into structured understanding.
+4. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
+5. Frames & transforms: coordinate frames, rotations, and geodesy: converting between local and global frames, body and world, and LLA to ENU so every module agrees on where things are.
+6. Path & motion planning: generating feasible trajectories through space and time.
+7. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
 
-VIP is typically a three-semester commitment. The required first-semester set plus two rounds of electives gets you through most of the list.
+VIP is typically a three-semester commitment. The required first-semester set plus two rounds of electives gets you through the whole list.
 
 ## 2. Contributions to a subteam
 
