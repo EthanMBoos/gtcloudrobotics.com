@@ -5,7 +5,7 @@ hide:
 ---
 
 # What is GT Cloud Robotics?
-A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building the infrastructure for deploying learned robot autonomy in the real world. This page is about that infrastructure and the argument behind it; for how the course itself runs — tracks, cycles, logistics — see [Course Home](course-home.md).
+A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building the infrastructure for deploying learned robot autonomy in the real world. This page is about that infrastructure and the argument behind it; for how the course itself runs, including focus tracks, demo cycles, and logistics, see [Course Home](course-home.md).
 
 Robot autonomy is becoming more capable and more opaque at the same time. Hand-coded behavior trees are giving way to learned policies; learned policies are giving way to monolithic models that decode motor commands directly from pre-trained video. Policy capability is scaling faster than our ability to verify it, so certifying the whole stack stops being the right question. The right one is what *contract* sits between the opaque parts and the parts you trust, and whether it holds when what's above it changes.
 
