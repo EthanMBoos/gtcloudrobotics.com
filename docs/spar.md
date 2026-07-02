@@ -85,7 +85,7 @@ doesn't ship its own; it ships STAC, FAIL-Detect, and FIPER as reference plug-in
 
 **Observation assembler.** The same assembler, the same `latest_at_or_before(t)` lookup,
 and the same staleness math run in simulation and on the rover; only the source
-implementation changes. State estimation is upstream and external — SPAR consumes an
+implementation changes. State estimation is upstream and external. SPAR consumes an
 estimated pose and velocity (e.g., the platform's `robot_localization` EKF), it never
 produces one. For hand-coded behaviors and the SAC RL baseline, the assembled
 snapshot is the policy's primary input. For vision-based policies (Cosmos, Phase 4a), raw
@@ -95,7 +95,7 @@ produced it.
 
 **Runtime monitor.** Sees every command before the adapter. Enforces per-sample bounds,
 rate-of-change limits, and temporal-window invariants derived from the active
-`ControllerEnvelope` — the controller's accepted command limits. Every decision is logged with the triggered invariant and an
+`ControllerEnvelope`. The controller's accepted command limits. Every decision is logged with the triggered invariant and an
 `invariant_flags` bitmask so the post-mortem question is always answerable: did no
 applicable invariant exist, or did one exist and the monitor miss it?
 
@@ -103,8 +103,7 @@ applicable invariant exist, or did one exist and the monitor miss it?
 **defined safe fallback** in its place and logs the rejection with the triggered
 `invariant_flags`. The fallback is what keeps the vehicle safe; a flagged command does
 nothing on its own. It's configurable per deployment: commanded-stop/zero (the default),
-hold-last-approved, or — where the controller provides one — hand-off to a
-controller-native failsafe mode.
+hold-last-approved, or hand-off to a controller-native failsafe mode.
 
 **Single-writer adapter.** The `ControllerAdapter` is the only module that links against
 the controller transport; bypass is architecturally impossible, not merely prohibited.
