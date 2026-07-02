@@ -8,44 +8,46 @@ icon: lucide/book-open
 
     Taught by **Ethan Boos**, robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/) and part-time Robotics PhD student at Georgia Tech researching hybrid autonomy behavior architectures.
 
-GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech. You contribute to open-source robotics project repos and work through problems you'll actually see as a robotics engineer.
+GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech centered around rapid robotics software prototyping. Students pick a focus area and develop a full demo of a working program every two weeks.
 
-**The course is fully open.** All assignment repos live in [github.com/gtcloudrobotics](https://github.com/gtcloudrobotics) and the same path works whether you're enrolled at GT or not. Click **Use this template** on any assignment repo and push commits; the autograder runs on every push via GitHub Actions, and you can see pass/fail in the Actions tab. PRs into the subteam project repos are welcome from anyone; open an issue on the target repo first to scope the work. Anything below about the weekly sync or semester pacing is enrolled-specific.
+## How the course works
 
-## 1. Three autograded assignments
+### 1. Pick a track
 
-Complete three assignments over the semester. These aren't synthetic homework. I wrote each one from problems I've actually encountered: some drawn from technical interviews at hard-tech robotics companies, others from real issues I'm working through as a robotics engineer at [Georgia Tech Research Institute](https://www.gtri.gatech.edu/). The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. That's where a lot of you will first see problems like these. **Attempts are unlimited.** The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync (see below).
+At the start, choose one of the three tracks below as your rough interest area: **Platform**, **LLM**, or **Autonomy**. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
 
-### First semester: all three required
+### 2. Ship something every two weeks
 
-1. **[C++ CLI tooling](cpp-cli-tooling.md)**: CMake fundamentals and the workflow to spin up a useful utility from scratch.
-2. **[System design](system-design.md)**: who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
-3. **[Time alignment](time-alignment.md)**: making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
+Work runs in two-week cycles. Each cycle you commit to one thing you can demo, and you show it running at the Wednesday sync. If you're on a subteam, you commit as a team. A demo means it works in front of people: a running node, a passing eval, a vehicle doing the thing in sim. Not slides, not a status update.
 
-### Returning semesters: pick any three
+When a cycle closes, that deliverable is done. You pick a new problem to work on, still inside your track. Over a semester you stack up several distinct, shipped pieces of work rather than one open-ended project that's perpetually "almost there."
 
+### 3. If you can't demo, do a module
 
-!!! note "Still in development, available Spring 2027"
+Some cycles you'll hit a wall. That's fine, but a cycle without a demo isn't a free pass: complete one module from the pool below and show that instead.
 
-    These electives are still being written. They'll be ready for returning students in Spring 2027; the required first-semester assignments above are available now.
+The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. Attempts are unlimited. The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync.
 
-4. Multi-threading & concurrency: when concurrency actually helps, and how to dodge the classic pitfalls.
-5. Frames & transforms: converting between local and global frames, body and world, and LLA to ENU.
-6. Path & motion planning: generating feasible trajectories through space and time.
-7. **[Behavior architectures & autonomy](behavior-architectures.md)**: composing behavior with state machines, behavior trees, and planners.
+**Modules** (I'm still finishing up the non-hyperlinked ones):
+1. **[C++ CLI tooling](cpp-cli-tooling.md)** — CMake fundamentals and the workflow to spin up a useful utility from scratch.
+2. **[System design](system-design.md)** — who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
+3. **[Time alignment](time-alignment.md)** — making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
+4. Multi-threading & concurrency — when concurrency actually helps, and how to dodge the classic pitfalls.
+5. Frames & transforms — converting between local and global frames, body and world, and LLA to ENU.
+6. Path & motion planning — generating feasible trajectories through space and time.
+7. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
 
-VIP is typically a three-semester commitment. The required first-semester set plus two rounds of electives gets you through the whole list.
+## The tracks
 
-## 2. Contributions to a subteam
+Platform is the structured track; the other two are open-ended.
 
-**Platform.** The [pidgin](pidgin.md) wire contract and the [Tower](tower.md) operator surface above it. Core platform work is mostly solved at this point. If you want to contribute to the server or UI, let me know and I'll find you something, but most of what's left to build now lives in the other two tracks.
+**Platform.** This is the work I do for my own PhD, so unlike the pick-your-own-problem tracks it comes with clear, rigorous tasking and direction. If you'd rather go deep on well-scoped problems in a real system than scope your own from scratch, come here: tell me what you find interesting and I'll carve off a piece. See [Tower](tower.md), [Pidgin](pidgin.md), [SPAR](spar.md).
 
-**LLM.** Two modes: helping operators plan missions before launch, and grounding commands against what's live in the field. Most of the work is eval infrastructure: prompt pipelines, test suites, eventually fine-tuning on real sessions. Good fit if you care about making LLMs reliable in high-stakes settings.
+**LLM.** Making a language model trustworthy enough to command a real vehicle. Two modes: turning a non-expert's plain-language description of a complex job into something a robot can run, and checking every live command against what the vehicle can actually do and safely do before it fires. A hallucination in a chat window is a nuisance; a hallucinated command to a vehicle isn't. Figuring out how to make it reliable is the work, and most of it is unsolved.
 
-**Autonomy.** Pick your own application and build a complete, vertically-integrated autonomy stack behind it. Any vehicle, any language, any problem area (search & rescue, agriculture, logistics, construction, environmental monitoring, etc). It has to talk to Tower over [pidgin](pidgin.md) and prove itself in a high-fidelity [SIL](progressive-testing.md) simulation, not a scripted telemetry feed standing in for a vehicle.
+**Autonomy.** Pick your own application and build a complete, vertically-integrated autonomy stack behind it. Any vehicle, any language, any problem area (search & rescue, agriculture, logistics, construction, environmental monitoring, etc). Build the full system from perception to the behavior that drives the vehicle.
 
 ## Course logistics
 
-**Weekly sync: Wednesdays at 5 PM, in person.** We meet every week in Klaus. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time. This is the main place to get unstuck on assignments and get feedback on your subteam's work.
+**Weekly sync / demo day: Wednesdays at 5 PM, in person.** We meet every week in Klaus. Every other week is demo day. You demo what you committed to. Off-week syncs are for getting unstuck, getting feedback on in-progress work, and lining up your next cycle. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time.
 
-**Send me your GitHub username at the start of the semester.** That's how your assignment repos get matched to your grade. There's no other submission step.
