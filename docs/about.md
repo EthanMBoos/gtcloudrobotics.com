@@ -5,7 +5,7 @@ hide:
 ---
 
 # What is GT Cloud Robotics?
-A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building the infrastructure for deploying learned robot autonomy in the real world.
+A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building the infrastructure for deploying learned robot autonomy in the real world. This page is about that infrastructure and the argument behind it; for how the course itself runs — tracks, cycles, logistics — see [Course Home](course-home.md).
 
 Robot autonomy is becoming more capable and more opaque at the same time. Hand-coded behavior trees are giving way to learned policies; learned policies are giving way to monolithic models that decode motor commands directly from pre-trained video. Policy capability is scaling faster than our ability to verify it, so certifying the whole stack stops being the right question. The right one is what *contract* sits between the opaque parts and the parts you trust, and whether it holds when what's above it changes.
 
@@ -16,7 +16,7 @@ We treat this at two layers, and the same architectural argument shows up at bot
 
 Same pattern at both levels: keep the seams small, and vehicles, transports, and autonomy can change without breaking them. The two aren't symmetric in stakes, though. The pidgin seam decides whether new vehicles compose into a fleet; the authority boundary decides what a learned policy is allowed to command, which is why we can field one without verifying it. If the policy crashes, the autopilot stays up. If the vehicle crashes, the recordings tell us which side failed.
 
-The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the same authority split is intended for later aerial vehicles.
+The reference demo targets a Clearpath Husky over a ROS 2/Zenoh transport, chosen so the authority split stays controller-agnostic; `MavlinkAdapter` extends the same boundary to ArduPilot vehicles.
 
 !!! tip "Still in beta, still useful"
 
@@ -30,7 +30,7 @@ The initial demo targets a ground rover on ArduPilot Rover SITL with Gazebo; the
 
     ---
 
-    The VIP structure, what students contribute, and how the two research tracks fit together.
+    The VIP structure, the three tracks students can pick from, and how coursework ships every two weeks.
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
