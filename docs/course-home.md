@@ -29,12 +29,19 @@ Some cycles you'll hit a wall. That's fine, but a cycle without a demo isn't a f
 The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. Attempts are unlimited. The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync.
 
 **Modules** (I'm still finishing up the non-hyperlinked ones):
+
 1. **[C++ CLI tooling](cpp-cli-tooling.md)** — CMake fundamentals and the workflow to spin up a useful utility from scratch.
+
 2. **[System design](system-design.md)** — who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
+
 3. **[Time alignment](time-alignment.md)** — making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
+
 4. Multi-threading & concurrency — when concurrency actually helps, and how to dodge the classic pitfalls.
+
 5. Frames & transforms — converting between local and global frames, body and world, and LLA to ENU.
+
 6. Path & motion planning — generating feasible trajectories through space and time.
+
 7. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
 
 ## The tracks
