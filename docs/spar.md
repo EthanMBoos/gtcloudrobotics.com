@@ -6,11 +6,14 @@ hide:
 
 # SPAR — Sim Portable Autonomy Runtime
 
+
 !!! note "Work in progress"
 
     Actively building this out solo, not ready for student contributors yet. The runtime and its eval protocol are the active priority.
 
     Not yet structured for outside contributors, but the design is public and meant to be read.
+
+[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/SPAR){ .md-button }
 
 **SPAR** is a C++ runtime. It enforces one thing: an unbypassable command authority
 boundary. An untrusted mission layer proposes commands; a trusted runtime monitor vets
@@ -117,4 +120,4 @@ SPAR is the within-platform half of the composition story: the authority boundar
 
 !!! tip "Source"
 
-    [SPAR on GitHub](https://github.com/EthanMBoos/SPAR) — architecture, eval protocol, and RL pipeline docs in `docs/`.
+    [SPAR on GitHub](https://github.com/EthanMBoos/SPAR): architecture, eval protocol, and RL pipeline docs in `docs/`.
