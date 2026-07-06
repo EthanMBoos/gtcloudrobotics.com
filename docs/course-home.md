@@ -10,6 +10,8 @@ icon: lucide/book-open
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech centered around rapid robotics software prototyping. Students pick a focus area and develop a full demo of a working program every two weeks.
 
+This course is about mobile robots in the real world: ground, air, and water vehicles (UGV, UAV, USV) that have to navigate an unpredictable environment and then carry out a long-horizon task. Not self-driving cars, not robot arms. Those live in structured or controlled settings; the hard part here is staying reliable across a long mission in a world that won't hold still.
+
 ## How the course works
 
 ### 1. Pick a track
@@ -18,15 +20,17 @@ At the start, choose one of the three tracks below as your rough interest area: 
 
 ### 2. Ship something every two weeks
 
-Work runs in two-week cycles. Each cycle you commit to one thing you can demo, and you show it running at the Wednesday sync. If you're on a subteam, you commit as a team. A demo means it works in front of people: a running node, a passing eval, a vehicle doing the thing in sim. Not slides, not a status update.
+Work runs in two-week cycles. Each cycle you commit to one thing you can demo, and you show it at the Wednesday sync. If you're on a subteam, you commit as a team. Demoing is mandatory. A demo means it works in front of people: a running node, a passing eval, a vehicle doing the thing in sim. Not slides, not a status update.
+
+If it flops, that's fine. You still get up, share your code, and talk through it: what you were going for, where it broke, and why. A demo that fails and gets explained is worth more than a status update that hides the failure. What isn't acceptable is showing up with nothing.
 
 When a cycle closes, that deliverable is done. You pick a new problem to work on, still inside your track. Over a semester you stack up several distinct, shipped pieces of work rather than one open-ended project that's perpetually "almost there."
 
-### 3. If you can't demo, do a module
+### 3. Background modules (optional)
 
-Some cycles you'll hit a wall. That's fine, but a cycle without a demo isn't a free pass: complete one module from the pool below and show that instead.
+The modules below are optional background reading and context to build up a solid foundation. They're here when you want to go deeper on a topic.
 
-The format is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. Attempts are unlimited. The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync.
+Each one is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. Attempts are unlimited. The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync.
 
 **Modules** (I'm still finishing up the non-hyperlinked ones):
 
