@@ -50,6 +50,7 @@ nav = [
   {"About" = "about.md"},
   {"Robotics Course" = [
      "course-home.md",
+     "reference-resources.md",
      "cpp-cli-tooling.md",
      "system-design.md",
      "time-alignment.md",
