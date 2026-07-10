@@ -34,8 +34,6 @@ Each one is deliberately close to a take-home technical interview: a scoped prob
 
 **Modules** (I'm still finishing up the non-hyperlinked ones):
 
-0. **[Reference Resources](reference-resources.md)** — A curated list of materials for anyone new to robotics development.
-
 1. **[C++ CLI tooling](cpp-cli-tooling.md)** — CMake fundamentals and the workflow to spin up a useful utility from scratch.
 
 2. **[System design](system-design.md)** — who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
