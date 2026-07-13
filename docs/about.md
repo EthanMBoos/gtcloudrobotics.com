@@ -16,7 +16,7 @@ We treat this at two layers, and the same architectural argument shows up at bot
 
 Same pattern at both levels: keep the seams small, and vehicles, transports, and autonomy can change without breaking them. The two aren't symmetric in stakes, though. The pidgin seam decides whether new vehicles compose into a fleet; the authority boundary decides what a learned policy is allowed to command, which is why we can field one without verifying it. If the policy crashes, the autopilot stays up. If the vehicle crashes, the recordings tell us which side failed.
 
-The reference demo targets a Clearpath Husky over a ROS 2/Zenoh transport, chosen so the authority split stays controller-agnostic; `MavlinkAdapter` extends the same boundary to ArduPilot vehicles.
+The reference demo targets a Clearpath Husky over a ROS 2/Zenoh transport, chosen so the authority split stays controller-agnostic.
 
 !!! tip "Still in beta, still useful"
 

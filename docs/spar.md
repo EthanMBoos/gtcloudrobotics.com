@@ -6,12 +6,14 @@ hide:
 
 # SPAR — Sim Portable Autonomy Runtime
 
-
-!!! note "Work in progress"
-
-    Actively building this out solo, not ready for student contributors yet. The runtime and its eval protocol are the active priority.
-
-    Not yet structured for outside contributors, but the design is public and meant to be read.
+```text
+ simulation ─┐                ┌─ hand-coded tree
+             ├─▶ assembler ─▶ policy ─▶ monitor ─▶ adapter ─▶ controller
+   hardware ─┘                └─ learned model
+             ▲                   ▲      └───────┬────────┘
+      swap the source     swap the behavior     the boundary: trusted,
+                                              bit-identical in every build
+```
 
 [:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/SPAR){ .md-button }
 
@@ -111,8 +113,7 @@ hold-last-approved, or hand-off to a controller-native failsafe mode.
 **Single-writer adapter.** The `ControllerAdapter` is the only module that links against
 the controller transport; bypass is architecturally impossible, not merely prohibited.
 Adapters are named by transport, not vehicle: the reference is `Ros2Adapter` (diff-drive
-`cmd_vel`, demoed on the Clearpath Husky), with `MavlinkAdapter` a second profile for
-ArduPilot vehicles.
+`cmd_vel`, demoed on the Clearpath Husky).
 
 ## Where SPAR Sits
 
