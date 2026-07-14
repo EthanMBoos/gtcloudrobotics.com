@@ -20,7 +20,7 @@ That's a software problem, so we work in simulation. You won't touch hardware. G
 
 ### 1. Figure out what you're aiming at
 
-Before you pick a track, pick 5-10 companies with postings you'd want and could plausibly get. Pull out the skills they're hiring for. Cross-reference Glassdoor and levels.fyi. My prediction is in the [slide 5 of the syllabus deck](https://docs.google.com/presentation/d/1y0O1_-Wkozg2WZw5zR-AYKrOTz60Ur8x-tx7RLZLKpc/edit?usp=sharing); check it against what you actually find.
+Before you pick a track, research 5-10 companies with open job postings you'd want and could plausibly get. Pull out the skills they're hiring for. Cross-reference Glassdoor and levels.fyi. My prediction is in the [slide 5 of the syllabus deck](https://docs.google.com/presentation/d/1y0O1_-Wkozg2WZw5zR-AYKrOTz60Ur8x-tx7RLZLKpc/edit?usp=sharing); check it against what you actually find.
 
 The output is a list of skills you can name. Everything after this is you building evidence for them, every two weeks, for a semester.
 
