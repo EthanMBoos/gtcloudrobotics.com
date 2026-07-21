@@ -5,18 +5,15 @@ hide:
 ---
 
 # What is GT Cloud Robotics?
-A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building the infrastructure for deploying learned robot autonomy in the real world. This page is about that infrastructure and the argument behind it; for how the course itself runs, including focus tracks, demo cycles, and logistics, see [Course Home](course-home.md).
+A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building infrastructure for deploying learned robot autonomy in the real world. This page is the short version of what we build and why; for tracks, demo cycles, and logistics, see [Course Home](course-home.md).
 
-Robot autonomy is becoming more capable and more opaque at the same time. Hand-coded behavior trees are giving way to learned policies; learned policies are giving way to monolithic models that decode motor commands directly from pre-trained video. Policy capability is scaling faster than our ability to verify it, so certifying the whole stack stops being the right question. The right one is what *contract* sits between the opaque parts and the parts you trust, and whether it holds when what's above it changes.
+Robot autonomy is becoming more capable and more opaque at the same time. Hand-coded behavior trees are giving way to learned policies; learned policies are giving way to monolithic models that decode motor commands directly from pre-trained video. Connecting one of these models to a robot is easy. Making it work inside an existing autonomy stack, and verifying the full system across enough scenarios to trust it with a long-time horizon job, is not. That is the problem we work on, and it shows up at two scales.
 
-We treat this at two layers, and the same architectural argument shows up at both:
+Within a vehicle, [SPAR](spar.md) is a hybrid-autonomy runtime: a deterministic behavior tree owns the mission, the motion stack (Nav2 on the ground, PX4 in the air) owns movement, and learned components take on specific jobs, a trained policy as a behavior node, a vision model behind the perception topic. The whole stack develops in a Unity + MuJoCo simulation, which is also where a learned component proves itself before it's trusted.
 
-- **Across platforms.** The [pidgin protocol](pidgin.md) is the wire contract that composes heterogeneous vehicles into a single fleet through a capability-aware Physical API. Vehicles advertise capabilities; the protocol validates commands against them before routing. New vehicle types plug in as protobuf extensions with no core changes. The protocol stands on its own; any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build. [Tower](tower.md) is our reference operator UI on top of it.
-- **Within a platform.** [SPAR](spar.md) is a hybrid-autonomy runtime. A deterministic C++ behavior tree owns the mission, the vehicle's motion stack (Nav2 on the ground, PX4 in the air) owns movement, and learned components plug in at fixed seams: a trained policy as a behavior node, a vision model behind the perception topic. The tree arbitrates and preempts learned components the same way it does hand-written ones, so the mission stays legible whatever produced the behavior. The whole stack develops in a Unity + MuJoCo simulation whose worlds dump out as the exact physics model they run, so a policy trains fast with no ROS in the loop and is evaluated in the full stack without crossing a physics boundary.
+Across a fleet, [Tower](tower.md) gives ground, air, and marine vehicles one operator surface, built on the [pidgin protocol](pidgin.md): vehicles advertise what they support, every command is validated against that before it's forwarded, and new vehicle types join as protocol extensions. Pidgin stands on its own; any autonomy stack or GCS can adopt it without anything else we build.
 
-Same pattern at both levels: keep the seams small, and vehicles, transports, and autonomy can change without breaking them. The pidgin seam decides whether new vehicles compose into a fleet; SPAR's seams decide where a learned component takes over, and what it has to prove in simulation before it's trusted with a mission.
-
-The reference demo is a simulated Clearpath Husky on a ROS 2/Zenoh stack making inspection rounds of a site: patrolling waypoints, investigating what perception reports, and docking when the battery runs low, with a PX4 drone flying the same worlds.
+The reference demo is a simulated Clearpath Husky and a Skydio drone making inspection rounds of the same site: patrolling waypoints, investigating what perception reports, and docking when the battery runs low.
 
 !!! tip "Still in beta, still useful"
 
