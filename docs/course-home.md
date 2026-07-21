@@ -26,7 +26,7 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 ### 2. Pick a track
 
-At the start, choose one of the three tracks below as your rough interest area: **Autonomy**, **LLM**, or **Platform**. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. Autonomy and LLM are open-ended; Platform is structured and isn't open to first-semester students.
+At the start, choose one of the four tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. Simulation, Autonomy, and Learning are open-ended; Command and Control is structured and isn't open to first-semester students.
 
 ### 3. Ship something every two weeks
 
@@ -42,31 +42,29 @@ The modules below are optional background reading and context to build up a soli
 
 Each one is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. Attempts are unlimited. The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync.
 
-**Modules** (I'm still finishing up the non-hyperlinked ones):
+**Modules**:
 
 1. **[C++ CLI tooling](cpp-cli-tooling.md)** — CMake fundamentals and the workflow to spin up a useful utility from scratch.
 
 2. **[System design](system-design.md)** — who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
 
-3. **[Time alignment](time-alignment.md)** — making every clock and timestamp on a single robot agree, the foundation that sensor fusion, state estimation, and control loops silently depend on.
-
-4. Multi-threading & concurrency — when concurrency actually helps, and how to dodge the classic pitfalls.
-
-5. Frames & transforms — converting between local and global frames, body and world, and LLA to ENU.
-
-6. Path & motion planning — generating feasible trajectories through space and time.
-
-7. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
+3. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
 
 ## The tracks
 
-**Autonomy.** Pick your own application and build a complete, vertically-integrated autonomy stack behind it. Any vehicle, any language, any problem area. Two ways to start: [kickstart-autonomy](https://github.com/EthanMBoos/kickstart-autonomy), a ROS2 + Nav2 ground Husky I threw together so you can skip the config and get to the interesting layer on day one. Nothing precious about it, rip it apart if you want. Or from scratch, which is harder and more fun. Bolt on a VLM, try a learned policy; that's a good cycle. But six cycles of "the model saw the thing" is not a stack.
+Three of the four tracks build on [SPAR](https://github.com/EthanMBoos/spar), the course's simulation and autonomy starter repo. The Command and Control track builds on [Tower](tower.md).
 
-**LLM.** Making a language model trustworthy enough to command a real vehicle. Two modes: turning a non-expert's plain-language description of a complex job into something a robot can run, and checking every live command against what the vehicle can actually do and safely do before it fires. A hallucination in a chat window is a nuisance; a hallucinated command to a vehicle isn't. Your target is the [kickstart-autonomy](https://github.com/EthanMBoos/kickstart-autonomy) Husky. Expect the work to split three ways: prompting and model strategy, Gazebo scenarios that stress what a model can actually understand, and the infrastructure to run it at scale (Ollama locally, or [PACE](https://pace.gatech.edu/)). Every demo produces a number. Fifty scenarios is a weekend of clicking; thousands is where the interesting failures live.
+**Unity & MuJoCo Robotics Simulation** — Build simulation environments. MuJoCo owns the physics, Unity owns rendering and world authoring, and the scene is the world. New sites, new sensors, moving agents: the scenarios the other tracks test against come from here.
 
-**Platform.** This is the work I do for my own PhD, so unlike the pick-your-own-problem tracks it comes with clear, rigorous tasking and direction. If you'd rather go deep on well-scoped problems in something that's actively being built than scope your own from scratch, come here: tell me what you find interesting and I'll carve off a piece. See [Tower](https://github.com/EthanMBoos/Tower), [Pidgin](https://www.gtcloudrobotics.com/pidgin/), [SPAR](https://www.gtcloudrobotics.com/spar/). I'm on a publication timeline, so I can't teach the basics in this track. It's not a judgment about anyone, I just don't have the hours to hand-hold here. So it isn't open in your first semester. Ship in Autonomy or LLM, demo every two weeks, and I'll see what you can do. Then we talk.
+**Behavior Tree Autonomy Platform** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
+
+**Command and Control Interface** — Remote operation of a mixed fleet. This is [Tower](tower.md): a React operator UI and a Go server speaking the pidgin protocol, where every command is checked against what the receiving vehicle supports. An open challenge: can you build an LLM harness that genuinely helps an operator plan a mission with their fleet?
+
+**RL & VLA Learning Integration** — Bring learned models into the stack. SPAR has the swap points: train a policy in a pure-MuJoCo loop and run it as a behavior node, or put a VLM behind the perception topic. Then evaluate it against the hand-written tree.
 
 ## Course logistics
 
-**Weekly sync / demo day: Wednesdays at 5 PM, in person.** We meet every week in Klaus. Every other week is demo day. You demo what you committed to. Off-week syncs are for getting unstuck, getting feedback on in-progress work, and lining up your next cycle. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time.
+Weekly sync / demo day: Wednesdays at 5 PM, in person.
+
+We meet every week in Klaus. Every other week is demo day. You demo what you committed to. Off-week syncs are for getting unstuck, getting feedback on in-progress work, and lining up your next cycle. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time.
 

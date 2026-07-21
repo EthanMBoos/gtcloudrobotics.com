@@ -52,7 +52,6 @@ nav = [
      "course-home.md",
      "cpp-cli-tooling.md",
      "system-design.md",
-     "time-alignment.md",
      "behavior-architectures.md",
   ]},
   {"Tower C2" = "tower.md"},
