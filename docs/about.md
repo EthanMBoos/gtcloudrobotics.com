@@ -12,11 +12,11 @@ Robot autonomy is becoming more capable and more opaque at the same time. Hand-c
 We treat this at two layers, and the same architectural argument shows up at both:
 
 - **Across platforms.** The [pidgin protocol](pidgin.md) is the wire contract that composes heterogeneous vehicles into a single fleet through a capability-aware Physical API. Vehicles advertise capabilities; the protocol validates commands against them before routing. New vehicle types plug in as protobuf extensions with no core changes. The protocol stands on its own; any autonomy stack, GCS, or middleware can adopt it without buying into anything else we build. [Tower](tower.md) is our reference operator UI on top of it.
-- **Within a platform.** [SPAR](spar.md) is a C++ runtime built around a command authority boundary. It guarantees invariance by construction across two substitution axes: the source of an observation (simulation vs. hardware) and the behavior that consumes it (hand-coded vs. learned policy), leaving the policy as the only free variable. A trusted observation assembler makes both sources look identical to the mission layer; a trusted monitor and single-writer adapter decide what commands cross to the controller. Field a learned policy without certifying it: every command it emits is gated, rejected ones hand off to a defined fallback, and the logs reconstruct what the monitor saw and did. What the boundary catches, and the residual it can't, is measured rather than assumed.
+- **Within a platform.** [SPAR](spar.md) is a hybrid-autonomy runtime. A deterministic C++ behavior tree owns the mission, the vehicle's motion stack (Nav2 on the ground, PX4 in the air) owns movement, and learned components plug in at fixed seams: a trained policy as a behavior node, a vision model behind the perception topic. The tree arbitrates and preempts learned components the same way it does hand-written ones, so the mission stays legible whatever produced the behavior. The whole stack develops in a Unity + MuJoCo simulation whose worlds dump out as the exact physics model they run, so a policy trains fast with no ROS in the loop and is evaluated in the full stack without crossing a physics boundary.
 
-Same pattern at both levels: keep the seams small, and vehicles, transports, and autonomy can change without breaking them. The two aren't symmetric in stakes, though. The pidgin seam decides whether new vehicles compose into a fleet; the authority boundary decides what a learned policy is allowed to command, which is why we can field one without verifying it. If the policy crashes, the autopilot stays up. If the vehicle crashes, the recordings tell us which side failed.
+Same pattern at both levels: keep the seams small, and vehicles, transports, and autonomy can change without breaking them. The pidgin seam decides whether new vehicles compose into a fleet; SPAR's seams decide where a learned component takes over, and what it has to prove in simulation before it's trusted with a mission.
 
-The reference demo targets a Clearpath Husky over a ROS 2/Zenoh transport, chosen so the authority split stays controller-agnostic.
+The reference demo is a simulated Clearpath Husky on a ROS 2/Zenoh stack making inspection rounds of a site: patrolling waypoints, investigating what perception reports, and docking when the battery runs low, with a PX4 drone flying the same worlds.
 
 !!! tip "Still in beta, still useful"
 
@@ -30,7 +30,7 @@ The reference demo targets a Clearpath Husky over a ROS 2/Zenoh transport, chose
 
     ---
 
-    The VIP structure, the three tracks students can pick from, and how coursework ships every two weeks.
+    The VIP structure, the four tracks students can pick from, and the two-week demo cycle.
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
@@ -54,7 +54,7 @@ The reference demo targets a Clearpath Husky over a ROS 2/Zenoh transport, chose
 
     ---
 
-    The within-platform authority boundary: every policy command vetted before it reaches the controller, with a defined fallback on reject.
+    The hybrid-autonomy runtime: a deterministic behavior tree with fixed seams for learned policies and vision models, stressed in a Unity + MuJoCo sim.
 
     [:octicons-arrow-right-24: Learn more](spar.md)
 

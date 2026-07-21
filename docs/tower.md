@@ -44,7 +44,7 @@ Operators see one map, one mission timeline, and one command surface across all 
 
 ## Where Tower Sits in the Stack
 
-Tower is the **cross-platform** half of our composition story: it composes vehicles into a fleet through the protocol seam. The **within-platform** half is the [SPAR](spar.md) authority boundary on each vehicle. Vehicles plug into Tower by publishing a pidgin extension payload at one end of the runtime; SPAR enforces the autopilot-facing contract at the other. The two boundaries are independent: you can adopt pidgin without SPAR, or SPAR without Tower.
+Tower is the **cross-platform** half of our composition story: it composes vehicles into a fleet through the protocol seam. The **within-platform** half is [SPAR](spar.md), the autonomy runtime on each vehicle, developed and stressed in simulation. Vehicles plug into Tower by publishing a pidgin extension payload; the two are independent: you can adopt pidgin without SPAR, or SPAR without Tower.
 
 !!! tip "Dive deeper"
 

@@ -4,121 +4,81 @@ hide:
 - toc
 ---
 
-# SPAR — Sim Portable Autonomy Runtime
+# SPAR - Sim Portable Autonomy Runtime
+
+[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/spar){ .md-button }
+
+**SPAR** is a hybrid-autonomy runtime. A small C++ behavior tree owns the mission, the vehicle's motion controller (Nav2 on the ground, PX4 in the air) owns movement, and a Unity + MuJoCo simulator stands in for the world. Learned components, RL policies and vision models, plug in at fixed seams in that stack rather than replacing it.
+
+The motivation: RL and vision-language models are advancing fast, and the open question for robots is not capability but reliability over a long, unsupervised mission. SPAR keeps the mission logic deterministic and legible, gives learned components specific jobs behind stable interfaces, and uses simulation to run the scenarios and regressions that tell you whether the combination holds up.
+
+## One Substrate
+
+MuJoCo is the physics and Unity sits on top of it. The MuJoCo plugin runs the physics inside the Unity process, so rendering, drag-and-drop world authoring, and the robot all share one world. A C# sensor layer computes the ROS topics (clock, odometry, TF, lidar, camera, detections) directly from MuJoCo state and ships them over TCP to a Docker container that runs everything else: the behavior tree and each vehicle's motion stack, Nav2 and AMCL for the ground robot, PX4 for the drone. There is no simulator in the container.
 
 ```text
- simulation ─┐                ┌─ hand-coded tree
-             ├─▶ assembler ─▶ policy ─▶ monitor ─▶ adapter ─▶ controller
-   hardware ─┘                └─ learned model
-             ▲                   ▲      └───────┬────────┘
-      swap the source     swap the behavior     the boundary: trusted,
-                                              bit-identical in every build
+        ┌────── container (ROS): behavior tree / Nav2 · AMCL / PX4 ──────┐
+        │        pure ROS + the :10000 endpoint Unity connects to        │
+        └───────────────────────────▲────────────────────────────────────┘
+                                    │ ROS-TCP
+        ┌───────────────────────────┴────────────────────────────────────┐
+        │   one substrate: Unity + MuJoCo plugin (physics in-process)    │
+        │   one C# sensor layer · the scene IS the world                 │
+        │   MJCF flows OUT only: dump → lint → rasterize (make map)      │
+        └────────────────────────────────────────────────────────────────┘
 ```
 
-[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/SPAR){ .md-button }
+The Unity scene is the world. Nothing is generated into it; the model only flows out. `make map` dumps the exact MJCF the plugin compiled, runs it through a lint gate (geometry the robot can hit but its lidar can't see, blocked docks and waypoints), and rasterizes the occupancy map AMCL localizes against, so the map can never drift from the world. The lidar map and AMCL are the ground robot's localization; the drone relies on PX4's own state estimation. The same scene runs windowed for authoring and demos, or headless for automated tests, with the same physics and sensors either way. Everything runs on tools that aren't vendor locked: Unity for rendering, MuJoCo for physics, standard ROS 2 in the container.
 
-**SPAR** is a C++ runtime. It enforces one thing: an unbypassable command authority
-boundary. An untrusted mission layer proposes commands; a trusted runtime monitor vets
-every one before it reaches the vehicle controller; a single-writer adapter is the only
-path to the controller. The boundary holds **bit-identical** across two substitution axes:
-observation source (simulation vs. hardware) and behavior (hand-coded vs. learned). The
-policy is the only free variable. The monitor checks every command against the active controller's
-accepted envelope, whatever produced it. Gating vehicle-control commands like this is a
-different problem from the tabletop manipulation setting most of this work targets.
+## The Behavior Layer
 
-To stress the boundary's policy-invariance, behaviors are swapped through it from the most
-predictable to the most adversarial: a hand-coded baseline, a conventional RL policy (SAC
-via `KinematicBackend`), and foundation-model actors (Cosmos-based VLAs), the hardest free
-variable. The RL baseline is built first to validate the pipeline and establish catch
-fractions before VLA data collection begins. Cosmos is a stress test for the boundary,
-nothing more.
-
-## Research Questions
-
-> **Can a fixed runtime monitor reliably catch dangerous commands regardless of what policy produces them and how does that guarantee hold up as the policy changes?**
-
-> **When an operator delegates a behavior to a learned policy, what does the monitor catch that the operator can't anticipate?**
-
-The four-way partition below is how the boundary is **evaluated**. Every catch is
-attributed to a layer, so the post-mortem question is always answerable:
-
-| Class | Caught by |
-|---|---|
-| Architectural-only | Runtime monitor (bounds, rate-of-change, temporal-window) |
-| Behavioral-only | Behavioral monitor: any success-calibrated, conformal-thresholded detector (slot) |
-| Both | Both layers |
-| Neither | The uncatchable residual: explicit boundary of what monitoring can do |
-
-The **boundary is the contribution; the partition is how it's validated.** The catch
-fraction across these classes shows whether the guarantee holds as the policy changes, and
-where the two layers catch different things.
-
-The behavioral row is a slot. It takes any detector that calibrates on successful rollouts
-and thresholds with conformal prediction, which is what the recent papers all do. SPAR
-doesn't ship its own; it ships STAC, FAIL-Detect, and FIPER as reference plug-ins.
-
-## Architecture
+The tree is BehaviorTree.CPP, ticked at 10 Hz on sim time. Priority reads top to bottom: an active mission gates everything, low battery preempts inspection, a fresh detection preempts the patrol, and every branch bottoms out in holding position rather than undefined behavior.
 
 ```text
-        sensor sources (async, different rates/latencies)
-                              │
-                              ▼
-┌─────────────────────────────────────────────┐
-│  Observation assembler      (TRUSTED)       │
-│  ring buffers · latest-as-of-t · staleness  │
-└────────────────────┬────────────────────────┘
-                     │ time-coherent WorldState (one per tick)
-                     ▼
-┌─────────────────────────────────────────────┐
-│  Mission layer              (UNTRUSTED)     │  ◀── operator selects active behavior
-│  Hand-coded behaviors · learned nodes       │
-└────────────────────┬────────────────────────┘
-                     │ command stream
-                     ▼
-┌─────────────────────────────────────────────┐
-│  Runtime monitor            (TRUSTED)       │
-│  bounds · rate-of-change · staleness        │
-│  approve → adapter   reject → safe fallback │
-└────────────────────┬────────────────────────┘
-                     │ approved command, or defined safe fallback on reject
-                     ▼
-┌─────────────────────────────────────────────┐
-│  ControllerAdapter          (TRUSTED)       │
-│  single writer · transport plugin           │
-└─────────────────────────────────────────────┘
+    ReactiveFallback (root)
+    ├── ReactiveSequence (mission gate)
+    │   ├── MissionActive?
+    │   └── ReactiveFallback (on mission)
+    │       ├── BatteryLow?   → ReturnToDock, else HoldPosition
+    │       ├── AnomalySeen?  → Inspect
+    │       ├── Rounds
+    │       └── HoldPosition
+    └── Idle
 ```
 
-**Observation assembler.** The same assembler, the same `latest_at_or_before(t)` lookup,
-and the same staleness math run in simulation and on the rover; only the source
-implementation changes. State estimation is upstream and external. SPAR consumes an
-estimated pose and velocity (e.g., the platform's `robot_localization` EKF), it never
-produces one. For hand-coded behaviors and the SAC RL baseline, the assembled
-snapshot is the policy's primary input. For vision-based policies (Cosmos, Phase 4a), raw
-video frames flow through a separate path, but the assembler still runs, because the
-monitor needs assembled state (pose age, speed) to gate every command regardless of what
-produced it.
+Every composite is reactive: the whole tree re-evaluates every tick, so a battery that drops mid-inspection redirects the robot on the next tick with no hand-written transition. Leaves own the motion-stack calls (Nav2 actions on the ground, PX4 commands in the air), with retry cooldowns and goal preemption handled locally. Conditions own freshness: a battery reading older than its staleness window counts as low, because a value you can't trust is treated the same as a bad one. All tuning (waypoints, dock pose, thresholds, cooldowns) lives in one YAML per world and is injected at registration time, so the tree XML stays pure shape. Every tick, the executive publishes a JSON status line on `bt/status`: root status, active leaf, mission state, battery level and age.
 
-**Runtime monitor.** Sees every command before the adapter. Enforces per-sample bounds,
-rate-of-change limits, and temporal-window invariants derived from the active
-`ControllerEnvelope`. The controller's accepted command limits. Every decision is logged with the triggered invariant and an
-`invariant_flags` bitmask so the post-mortem question is always answerable: did no
-applicable invariant exist, or did one exist and the monitor miss it?
+## Where Learned Components Plug In
 
-**Rejection contract.** A rejected command is never silently dropped. The monitor puts a
-**defined safe fallback** in its place and logs the rejection with the triggered
-`invariant_flags`. The fallback is what keeps the vehicle safe; a flagged command does
-nothing on its own. It's configurable per deployment: commanded-stop/zero (the default),
-hold-last-approved, or hand-off to a controller-native failsafe mode.
+Two seams, both already load-bearing:
 
-**Single-writer adapter.** The `ControllerAdapter` is the only module that links against
-the controller transport; bypass is architecturally impossible, not merely prohibited.
-Adapters are named by transport, not vehicle: the reference is `Ros2Adapter` (diff-drive
-`cmd_vel`, demoed on the Clearpath Husky).
+**Perception.** The camera is real in every run: Unity renders color and depth, and a detector node in the container turns pixels into a labeled map-frame point on `perception/detections`. Today that detector is classical blob-finding, but the message is deliberately generic (header, label, point), so a pretrained VLM or segmentation model can replace it and report whatever classes it sees without the topic or the tree changing. The tree filters by label at the subscription. Vision models enter this stack as perception, not control.
+
+**Behavior.** A tree leaf is just a node that produces commands while it runs. A trained policy can occupy a leaf the same way the hand-written `Rounds` or `Inspect` leaves do, arbitrated by the same tree, preempted by the same battery condition.
+
+## What's Being Researched
+
+> Can a deterministic behavior layer and learned components share one stack, swapping the learned parts in and out without destabilizing the rest?
+
+> Where does a learned policy actually beat the hand-written tree, and what evidence from simulation would justify trusting it with a long mission?
+
+The architecture buys one specific trick for answering these. Because MuJoCo is the physics inside Unity *and* in a plain Python process, the dumped world is the exact model the sim runs. So training can leave the heavy stack behind entirely:
+
+```text
+    Unity scene (authored world)
+      └── make map  →  the exact compiled MJCF model
+            └── pure-MuJoCo Gymnasium env (no ROS, no Unity, fast)
+                  └── train a policy on low-dimensional state
+                        └── deploy it as a behavior node
+                              └── eval in the full Unity + ROS stack
+```
+
+The policy never crosses a physics boundary between training and evaluation. The first head-to-heads are a learned local planner against Nav2's, and a learned executive against the hand-written tree, on the same worlds with the same pass bar the smoke tests already enforce. The MJCF dump ships today; the Gymnasium wrapper and the deploy path are the open work, with the full design in the repo's [rl.md](https://github.com/EthanMBoos/spar/blob/main/docs/rl.md). Learning from pixels is deliberately out of scope: rendering throttles sampling by orders of magnitude, and pretrained models already cover recognition through the perception seam.
 
 ## Where SPAR Sits
 
-SPAR is the within-platform half of the composition story: the authority boundary on each vehicle. The cross-platform half is [Tower](tower.md), which composes vehicles into a fleet. The two boundaries are independent: SPAR without Tower, or Tower without SPAR, are both valid configurations.
+SPAR is the within-platform half of the stack: the autonomy runtime on each vehicle, developed and stressed in simulation. The cross-platform half is [Tower](tower.md), which composes vehicles into a fleet over the pidgin protocol. The two are independent: you can adopt one without the other.
 
-!!! tip "Source"
+!!! tip "Dive deeper"
 
-    [SPAR on GitHub](https://github.com/EthanMBoos/SPAR): architecture, eval protocol, and RL pipeline docs in `docs/`.
+    Read the repo's [simulation architecture](https://github.com/EthanMBoos/spar/blob/main/docs/sim-architecture.md) and [RL design](https://github.com/EthanMBoos/spar/blob/main/docs/rl.md) docs, or start from the [README quickstart](https://github.com/EthanMBoos/spar#quickstart).
