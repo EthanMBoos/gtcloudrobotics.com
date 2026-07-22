@@ -129,7 +129,7 @@ Note that the `Battery low?` node here is the *soft* version: a graceful return 
 
 ## 5. Building This For Your Own Project
 
-Start with the smallest tool that fits. For a handful of behaviors with mostly sequential transitions, a flat state machine is a fine choice: the transition matrix fits in your head, you can test every edge, and you skip learning a tick loop and a library. That's not a student concession; production autopilots like PX4 run their mode logic as an explicit state machine.
+Start with the smallest tool that fits. For a handful of behaviors with mostly sequential transitions, a flat state machine is a fine choice: the transition matrix fits in your head, you can test every edge, and you skip learning a tick loop and a library. Production autopilots like PX4 run their mode logic as an explicit state machine.
 
 Behavior trees earn their setup cost when a project accumulates what §2 predicted: more behaviors, more cross-cutting concerns, more edge cases from the real world. That's their pedigree, too: they came out of game AI as a complexity-management tool, and Nav2 uses them because navigation with retries and recoveries otherwise becomes an FSM with dozens of states and hundreds of transitions.
 
