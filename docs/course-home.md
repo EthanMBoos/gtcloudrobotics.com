@@ -47,7 +47,7 @@ When a cycle closes, that deliverable is done. You pick a new problem to work on
 
 The modules below are optional background reading and context to build up a solid foundation. They're here when you want to go deeper on a topic.
 
-Each one is deliberately close to a take-home technical interview: a scoped problem, tests to pass, automated grading. Attempts are unlimited. The goal is to learn the material, not to one-shot it under pressure. If you're stuck, bring it to the weekly sync.
+Each one is deliberately close to a take-home technical interview: a scoped problem, tests to pass, and CI that grades every push. If you're stuck, bring it to the weekly sync.
 
 **Modules**:
 
@@ -56,6 +56,8 @@ Each one is deliberately close to a take-home technical interview: a scoped prob
 2. **[System design](system-design.md)** — who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
 
 3. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
+
+... more coming soon ...
 
 ## Course logistics
 
