@@ -7,7 +7,7 @@ hide:
 # Tower C2
 
 <figure markdown="span">
-  ![Tower operator UI](assets/images/TowerPreview.png)
+  ![Tower operator UI](assets/images/TowerPreview.webp)
   <figcaption>Tower operator UI: 3D mission planning and fleet monitoring.</figcaption>
 </figure>
 

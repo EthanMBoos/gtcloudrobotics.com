@@ -14,7 +14,7 @@ The first mental shift in robotics system design is giving up the idea that a ro
 
 A robot is rarely a single sense–think–act loop. Different parts of the problem live on different time scales: mission logic updates every second or so, planners run at a few hertz, perception runs at sensor rate, estimators track the dynamics, and controllers close the loop at high frequency. Slower layers decide what to do; faster layers decide how.
 
-![Control Hierarchy](assets/images/control_hierarchy.png)
+![Control Hierarchy](assets/images/control_hierarchy.webp)
 
 The exact rates vary across robots, but the overall pattern does not: control runs fastest, estimation follows the dynamics, perception is bounded by sensors and compute, and planning and mission logic run more slowly because they reason over longer horizons. Those differences come from physics, latency, and system requirements, not coding style.
 
@@ -99,7 +99,7 @@ A 1 kHz controller should not block waiting on a 30 Hz perception output. A plan
 
 The final question in any system design is not just "how does this work when everything is healthy?" but "what happens when part of it breaks?" Real systems need an answer for dropped sensors, delayed perception, crashed planners, and stale state.
 
-![Degraded Modules](assets/images/degraded_modules.png)
+![Degraded Modules](assets/images/degraded_modules.webp)
 
 This is where safety authority becomes explicit. A well-designed system is clear about which module can command a stop, which inputs are optional, and what to do when something fails hard enough to need a fallback. Some faults should trigger a controlled stop; others should degrade performance while keeping the robot stable. You can't prevent all failures. The goal is that when they happen, the system does something predictable.
 

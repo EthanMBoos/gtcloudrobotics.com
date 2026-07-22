@@ -12,7 +12,7 @@ This lesson covers the core ideas behind well-built command-line tools in C++: a
 
 A command-line tool talks to the outside world through a deliberately small interface. It has a handful of input channels (`argv`, config files, `stdin`) and a few output channels (`stdout`, `stderr`, an exit code), plus whatever side effects it has on disk or the network.
 
-![CLI Contract](assets/images/cli_contract.png)
+![CLI Contract](assets/images/cli_contract.webp)
 
 The contract is simple on purpose. It makes CLI tools **composable**: you can pipe them together, script them, call them from CI, and automate them, as long as you respect the conventions. A program that prints errors to `stdout` or exits `0` on failure breaks scripts silently, which is worse than crashing loudly.
 
@@ -32,7 +32,7 @@ The biggest mental shift in modern C++ is moving from "compile a bunch of files"
 
 CMake figures out the build order from the graph. It also propagates include directories, compile flags, and dependencies along the edges, so consumers of a library automatically inherit what they need.
 
-![Cmake Target Graph](assets/images/cmake_target_graph.png)
+![Cmake Target Graph](assets/images/cmake_target_graph.webp)
 
 In this graph, a **PUBLIC** link means a dependency becomes part of a target's exposed interface, so anything that depends on that target also inherits its include paths, compile settings, and linked libraries. A **PRIVATE** link means the dependency is only used internally and does not propagate to downstream consumers. In the diagram, `core` publicly exposes its dependency on `Boost::something`, while `utils` uses Boost only as an internal implementation detail.
 
@@ -86,7 +86,7 @@ The important habit is **separating "what options exist" from "where they came f
 
 The most durable pattern in CLI tools (and most software generally) is to **keep your core logic pure and push I/O to the edges.**
 
-![Thin shell, fat core](assets/images/thin_shell_fat_core.png)
+![Thin shell, fat core](assets/images/thin_shell_fat_core.webp)
 
 A well-structured CLI separates into three layers: a **pure core** of deterministic logic with no filesystem, clock, network, or `argv` dependencies; an **application-services** layer that handles config, logging, persistence, and external APIs; and a **thin executable** that parses arguments, wires everything together, and calls into the core.
 

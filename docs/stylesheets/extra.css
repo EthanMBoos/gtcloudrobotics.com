@@ -12,7 +12,7 @@
 }
 
 .hero-section {
-  background: url('../assets/images/hero-bg.png') center top / cover no-repeat;
+  background: url('../assets/images/hero-bg.webp') center top / cover no-repeat;
   position: fixed;
   top: 0;
   left: 0;
