@@ -12,8 +12,6 @@ GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
 
 This course is about mobile robots in the real world: ground, air, and water vehicles (UGV, UAV, USV) that have to navigate an unpredictable environment and then carry out a long-horizon task. Not self-driving cars, not robot arms. Those live in structured or controlled settings; the hard part here is staying reliable across a long mission in a world that won't hold still.
 
-[Syllabus week slide deck.](https://docs.google.com/presentation/d/1y0O1_-Wkozg2WZw5zR-AYKrOTz60Ur8x-tx7RLZLKpc/edit?usp=sharing)
-
 ## How the course works
 
 ### 1. Figure out what you're aiming at
