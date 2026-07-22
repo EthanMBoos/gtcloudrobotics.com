@@ -10,7 +10,7 @@ icon: lucide/rocket
 
 A Georgia Tech VIP course building open-architecture infrastructure<br>for fielding modern, learned robot autonomy.
 
-[Get started](about.md){ .md-button .md-button--primary }
-[Learn more](about.md){ .md-button }
+[Learn more](about.md){ .md-button .md-button--primary }
+[Course home](course-home.md){ .md-button }
 
 </div>
