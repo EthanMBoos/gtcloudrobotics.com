@@ -77,7 +77,7 @@ The policy never crosses a physics boundary between training and evaluation. The
 
 ## Where SPAR Sits
 
-SPAR is the within-platform half of the stack: the autonomy runtime on each vehicle, developed and stressed in simulation. The cross-platform half is [Tower](tower.md), which composes vehicles into a fleet over the pidgin protocol. The two are independent: you can adopt one without the other.
+SPAR is the autonomy runtime on each vehicle: the mission logic, the motion stack, and the seams where learned components plug in, developed and stressed entirely in simulation before anything touches hardware.
 
 !!! tip "Dive deeper"
 

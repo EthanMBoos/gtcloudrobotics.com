@@ -10,7 +10,7 @@ icon: lucide/book-open
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/) course at Georgia Tech centered around rapid robotics software prototyping. Students pick a focus area and develop a full demo of a working program every two weeks.
 
-This course is about mobile robots in the real world: ground, air, and water vehicles (UGV, UAV, USV) that have to navigate an unpredictable environment and then carry out a long-horizon task. Not self-driving cars, not robot arms. Those live in structured or controlled settings; the hard part here is staying reliable across a long mission in a world that won't hold still.
+This course is about mobile robots in the real world: air and ground vehicles that have to navigate an unpredictable environment and then carry out a long-horizon task. Not self-driving cars, not robot arms. Those live in structured or controlled settings; the hard part here is staying reliable across a long mission in a world that won't hold still.
 
 ## How the course works
 
@@ -22,13 +22,11 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 ### 2. Pick a track
 
-At the start, choose one of the four tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. Three of the four tracks build on [SPAR](https://github.com/EthanMBoos/spar), the course's simulation and autonomy starter repo. The Command and Control track builds on [Tower](tower.md).
+At the start, choose one of the three tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. All three tracks build on [SPAR](https://github.com/EthanMBoos/spar), the course's simulation and autonomy starter repo.
 
 **Unity & MuJoCo Robotics Simulation** — Build simulation environments. MuJoCo owns the physics, Unity owns rendering and world authoring, and the scene is the world. New sites, new sensors, moving agents: the scenarios the other tracks test against come from here.
 
 **Behavior Tree Autonomy Platform** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
-
-**Command and Control Interface** — Remote operation of a mixed fleet. This is [Tower](tower.md): a React operator UI and a Go server speaking the pidgin protocol, where every command is checked against what the receiving vehicle supports. An open challenge: can you build an LLM harness that genuinely helps an operator plan a mission with their fleet?
 
 **RL & VLA Learning Integration** — Bring learned models into the stack. SPAR has the swap points: train a policy in a pure-MuJoCo loop and run it as a behavior node, or put a VLM behind the perception topic. Then evaluate it against the hand-written tree.
 

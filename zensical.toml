@@ -54,8 +54,6 @@ nav = [
      "system-design.md",
      "behavior-architectures.md",
   ]},
-  {"Tower C2" = "tower.md"},
-  {"Pidgin Protocol" = "pidgin.md"},
   {"Sim-Portable Autonomy Runtime" = "spar.md"}
 ]
 

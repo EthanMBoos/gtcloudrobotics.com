@@ -5,13 +5,13 @@ hide:
 ---
 
 # What is GT Cloud Robotics?
-A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building infrastructure for deploying learned robot autonomy in the real world. The pages below cover each project in depth; [Course Home](course-home.md) covers how the course itself runs.
+A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building infrastructure for deploying learned robot autonomy in the real world. [SPAR](spar.md) covers the runtime in depth; [Course Home](course-home.md) covers how the course itself runs.
 
 <!-- demo highlight reel goes here -->
 
 !!! tip "Still in beta, still useful"
 
-    [Tower](https://github.com/EthanMBoos/Tower) is in beta but already stable enough to back multi-domain research.
+    [SPAR](https://github.com/EthanMBoos/spar) is in active development but already stable enough to back multi-domain research.
 
 ## Explore
 
@@ -25,23 +25,7 @@ A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team bu
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
--   :lucide-radio-tower:{ .lg .middle } **Tower C2**
-
-    ---
-
-    One operator surface for heterogeneous fleets: capability-aware command routing, 3D mission planning, and no silent failures.
-
-    [:octicons-arrow-right-24: See Tower](tower.md)
-
--   :lucide-network:{ .lg .middle } **Pidgin Protocol**
-
-    ---
-
-    The wire contract composing heterogeneous vehicles into one fleet. Adopt it independently of everything else here.
-
-    [:octicons-arrow-right-24: See the protocol](pidgin.md)
-
--   :lucide-layers:{ .lg .middle } **Sim Portable Autonomy Runtime**
+-   :lucide-layers:{ .lg .middle } **Sim-Portable Autonomy Runtime**
 
     ---
 
