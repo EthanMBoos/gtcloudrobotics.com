@@ -8,77 +8,117 @@ hide:
 
 [:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/spar){ .md-button }
 
-**SPAR** is a hybrid-autonomy runtime. A small C++ behavior tree owns the mission, the vehicle's motion controller (Nav2 on the ground, PX4 in the air) owns movement, and a Unity + MuJoCo simulator stands in for the world. Learned components, RL policies and vision models, plug in at fixed seams in that stack rather than replacing it.
+**SPAR** is a small MuJoCo and ROS 2 stack for experimenting with mobile robot autonomy. It gives students a working system they can read, modify, and demonstrate without first building an entire simulator or autonomy stack.
 
-The motivation: RL and vision-language models are advancing fast, and the open question for robots is not capability but reliability over a long, unsupervised mission. SPAR keeps the mission logic deterministic and legible, gives learned components specific jobs behind stable interfaces, and uses simulation to run the scenarios and regressions that tell you whether the combination holds up.
+The repository currently contains a Husky ground robot using Nav2, a Skydio X2 drone using PX4 SITL, and a small C++ behavior tree for each. Both robots run in the same MuJoCo world and share a simple camera-to-detection interface.
 
-## One Substrate
+The working behavior is intentionally basic:
 
-MuJoCo is the physics and Unity sits on top of it. The MuJoCo plugin runs the physics inside the Unity process, so rendering, drag-and-drop world authoring, and the robot all share one world. A C# sensor layer computes the ROS topics (clock, odometry, TF, lidar, camera, detections) directly from MuJoCo state and ships them over TCP to a Docker container that runs everything else: the behavior tree and each vehicle's motion stack, Nav2 and AMCL for the ground robot, PX4 for the drone. There is no simulator in the container.
+- patrol while a mission is active;
+- inspect a red anomaly seen by the camera;
+- return home when the battery is low;
+- resume after recharging.
 
-```text
-        ┌────── container (ROS): behavior tree / Nav2 · AMCL / PX4 ──────┐
-        │        pure ROS + the :10000 endpoint Unity connects to        │
-        └───────────────────────────▲────────────────────────────────────┘
-                                    │ ROS-TCP
-        ┌───────────────────────────┴────────────────────────────────────┐
-        │   one substrate: Unity + MuJoCo plugin (physics in-process)    │
-        │   one C# sensor layer · the scene IS the world                 │
-        │   MJCF flows OUT only: dump → lint → rasterize (make map)      │
-        └────────────────────────────────────────────────────────────────┘
-```
+This is enough machinery to expose useful seams for course projects without trying to be a general robotics framework.
 
-The Unity scene is the world. Nothing is generated into it; the model only flows out. `make map` dumps the exact MJCF the plugin compiled, runs it through a lint gate (geometry the robot can hit but its lidar can't see, blocked docks and waypoints), and rasterizes the occupancy map AMCL localizes against, so the map can never drift from the world. The lidar map and AMCL are the ground robot's localization; the drone relies on PX4's own state estimation. The same scene runs windowed for authoring and demos, or headless for automated tests, with the same physics and sensors either way. Everything runs on tools that aren't vendor locked: Unity for rendering, MuJoCo for physics, standard ROS 2 in the container.
+## Simulation architecture
 
-## The Behavior Layer
-
-The tree is BehaviorTree.CPP, ticked at 10 Hz on sim time. Priority reads top to bottom: an active mission gates everything, low battery preempts inspection, a fresh detection preempts the patrol, and every branch bottoms out in holding position rather than undefined behavior.
+MuJoCo is the simulator. One Python process owns both robots, the physics state, rendering, sensors, and simulation clock.
 
 ```text
-    ReactiveFallback (root)
-    ├── ReactiveSequence (mission gate)
-    │   ├── MissionActive?
-    │   └── ReactiveFallback (on mission)
-    │       ├── BatteryLow?   → ReturnToDock, else HoldPosition
-    │       ├── AnomalySeen?  → Inspect
-    │       ├── Rounds
-    │       └── HoldPosition
-    └── Idle
+                    MuJoCo: one world, one clock
+                 /                                \
+              HUSKY                                X2
+    camera · lidar · noisy GPS          camera · IMU · mag · baro · GPS
+                 |                                |
+          ROS 2 · Nav2                     ROS 2 · PX4 EKF2
+                 |                                |
+      ground behavior tree                 air behavior tree
 ```
 
-Every composite is reactive: the whole tree re-evaluates every tick, so a battery that drops mid-inspection redirects the robot on the next tick with no hand-written transition. Leaves own the motion-stack calls (Nav2 actions on the ground, PX4 commands in the air), with retry cooldowns and goal preemption handled locally. Conditions own freshness: a battery reading older than its staleness window counts as low, because a value you can't trust is treated the same as a bad one. All tuning (waypoints, dock pose, thresholds, cooldowns) lives in one YAML per world and is injected at registration time, so the tree XML stays pure shape. Every tick, the executive publishes a JSON status line on `bt/status`: root status, active leaf, mission state, battery level and age.
+The simulator publishes hardware-shaped sensor messages rather than handing the autonomy code a privileged world model. The ground stack navigates with a live lidar scan and a noisy GPS-derived map transform. The air stack sends simulated sensor data through PX4's estimator and accepts PX4 actuator commands back into the physics loop.
 
-## Where Learned Components Plug In
+The same world can run headless for tests, through a read-only viewer for inspection, or eventually inside a fast training loop without ROS.
 
-Two seams, both already load-bearing:
+## Why MJCF
 
-**Perception.** The camera is real in every run: Unity renders color and depth, and a detector node in the container turns pixels into a labeled map-frame point on `perception/detections`. Today that detector is classical blob-finding, but the message is deliberately generic (header, label, point), so a pretrained VLM or segmentation model can replace it and report whatever classes it sees without the topic or the tree changing. The tree filters by label at the subscription. Vision models enter this stack as perception, not control.
+Each SPAR environment is an [MJCF](https://mujoco.readthedocs.io/en/stable/modeling.html) file under `sim/worlds/`. MJCF is MuJoCo's native, XML-based modeling language. It describes the bodies, joints, geometry, mass, friction, actuators, sensors, cameras, lights, and materials that MuJoCo compiles into a simulation.
 
-**Behavior.** A tree leaf is just a node that produces commands while it runs. A trained policy can occupy a leaf the same way the hand-written `Rounds` or `Inspect` leaves do, arbitrated by the same tree, preempted by the same battery condition.
+The important part for SPAR is that the world is physics-first. There is not a visual scene in one format and a separate physics scene that has to stay synchronized with it. The MJCF file is loaded directly by MuJoCo and becomes the model that the simulator steps.
 
-## What's Being Researched
+MJCF can start with a few readable primitives and grow into a detailed scene. A simple box can remain the collision shape while a textured mesh supplies its appearance:
 
-> Can a deterministic behavior layer and learned components share one stack, swapping the learned parts in and out without destabilizing the rest?
+```xml
+<mujoco model="depot">
+  <asset>
+    <texture name="rack_texture" type="2d" file="rack.png"/>
+    <material name="rack_material" texture="rack_texture"/>
+    <mesh name="rack_mesh" file="rack.obj"/>
+  </asset>
 
-> Where does a learned policy actually beat the hand-written tree, and what evidence from simulation would justify trusting it with a long mission?
+  <worldbody>
+    <geom name="rack_collision" type="box"
+          size="0.8 0.3 0.6" pos="4 1.5 0.6"
+          group="3" rgba="0 0 0 0"/>
+    <geom name="rack_visual" type="mesh"
+          mesh="rack_mesh" material="rack_material"
+          pos="4 1.5 0.6" group="2"
+          contype="0" conaffinity="0"/>
+  </worldbody>
 
-The architecture buys one specific trick for answering these. Because MuJoCo is the physics inside Unity *and* in a plain Python process, the dumped world is the exact model the sim runs. So training can leave the heavy stack behind entirely:
+  <include file="../robots/husky.xml"/>
+  <include file="../robots/x2.xml"/>
+</mujoco>
+```
+
+The mesh can carry the detail and texture produced in Blender while the box gives the physics solver and lidar a cheap, predictable surface. Visual fidelity can improve without quietly changing contact behavior.
+
+That combination fits this project better than making a game engine or a general scene-interchange format the runtime authority. URDF is useful for describing a robot, but MJCF comfortably describes the robot and the dynamic world around it. Blender is still useful for authoring assets, but its output is reduced to meshes, materials, and explicit collision geometry before simulation. The final artifact remains plain text that can be generated, reviewed, versioned, and reproduced.
+
+Robot models are composed with the site at load time, so a world describes a place rather than containing a copy of a particular robot. The same MJCF artifact loads in the interactive viewer, the ROS-backed simulator, and the planned training loop without a scene-conversion step between them.
+
+## Why generate worlds
+
+Robot autonomy is often tested against a relatively small collection of hand-built environments. Those environments take time to produce, and they tend to contain the situations their authors already thought to include. Field data expands that set only after a robot encounters something new, often after deployment.
+
+SPAR is exploring whether compositional generation can produce useful variations and targeted edge cases before the robot meets them in the field. The claim is not that a generated world is automatically realistic or useful. The question is whether generation can expose distinct failures that simple domain randomization and a small hand-authored test suite do not.
+
+There are two authoring paths with the same MJCF output:
 
 ```text
-    Unity scene (authored world)
-      └── make map  →  the exact compiled MJCF model
-            └── pure-MuJoCo Gymnasium env (no ROS, no Unity, fast)
-                  └── train a policy on low-dimensional state
-                        └── deploy it as a behavior node
-                              └── eval in the full Unity + ROS stack
+description
+    |
+    +-- primitive: model plan -> Python geometry --+
+    |                                              |
+    +-- fidelity: orchestrator -> BlenderMCP ------+
+                                                   |
+                                                   v
+                                             MJCF world
+                                                   |
+                                                   v
+                                        behavior or policy
+                                                   |
+                           next description <--- failure
 ```
 
-The policy never crosses a physics boundary between training and evaluation. The first head-to-heads are a learned local planner against Nav2's, and a learned executive against the hand-written tree, on the same worlds with the same pass bar the smoke tests already enforce. The MJCF dump ships today; the Gymnasium wrapper and the deploy path are the open work, with the full design in the repo's [rl.md](https://github.com/EthanMBoos/spar/blob/main/docs/rl.md). Learning from pixels is deliberately out of scope: rendering throttles sampling by orders of magnitude, and pretrained models already cover recognition through the perception seam.
+The primitive path exists today. A local model chooses coarse scene content, such as props, regions, colors, and orientation. Python owns exact dimensions, coordinates, collision geometry, and seeded variation. The result is a small, inexpensive world that is useful as a baseline and for experiments that need many variations.
 
-## Where SPAR Sits
+The higher-fidelity path is planned. An orchestrator will ask a designer to build and revise the site through BlenderMCP while a critic inspects scene data and rendered views. Blender provides the richer meshes, materials, lighting, and asset workflow; the result still has to reduce to an MJCF site with explicit collision geometry before MuJoCo runs it.
 
-SPAR is the autonomy runtime on each vehicle: the mission logic, the motion stack, and the seams where learned components plug in, developed and stressed entirely in simulation before anything touches hardware.
+The point is not simply to produce better screenshots. The research question is whether an iterative, tool-using process can repeatedly produce worlds that are visually coherent, physically valid, reproducible, useful for a robot task, and reasonably cheap to generate. Primitive worlds and ordinary domain randomization remain the controls for deciding whether added fidelity actually matters.
 
-!!! tip "Dive deeper"
+A generated world becomes useful when a behavior fails in it for an understandable reason. That failure can drive another description or mutation, followed by another run and eventually evaluation on held-out worlds. The useful output is therefore not the number of scenes produced. It is the number of distinct, task-relevant failures found, whether hardening against them transfers to held-out environments, and what that process costs compared with simpler generation.
 
-    Read the repo's [simulation architecture](https://github.com/EthanMBoos/spar/blob/main/docs/sim-architecture.md) and [RL design](https://github.com/EthanMBoos/spar/blob/main/docs/rl.md) docs, or start from the [README quickstart](https://github.com/EthanMBoos/spar#quickstart).
+## Autonomy as the evaluation harness
+
+SPAR's autonomy stack gives the generated worlds something concrete to test. The existing behavior trees, Nav2 planner, PX4 controller, and color-based detector provide understandable baselines. A learned component can later replace one part at a time without also replacing the mission logic, simulator, or evaluation setup.
+
+A vision model can replace the detector while continuing to publish the same `Detection` message. A learned controller can run inside a behavior-tree leaf and remain subject to the same mission, battery, preemption, and stale-input rules as a hand-written behavior.
+
+The first planned comparison is a learned local planner against Nav2 on the same worlds and start-goal pairs. Success rate, collisions, stale-input behavior, and performance on held-out worlds matter more than whether a policy succeeds in one demonstration.
+
+There is not yet a training environment, exported policy, or learned ROS node in the repository. Building that complete comparison is the next learning milestone.
+
+!!! tip "Read the working design"
+
+    See the repo's [world-generation design](https://github.com/EthanMBoos/spar/blob/main/docs/worldgen.md), [research questions](https://github.com/EthanMBoos/spar/blob/main/docs/research.md), [simulation architecture](https://github.com/EthanMBoos/spar/blob/main/docs/sim-architecture.md), and [RL plan](https://github.com/EthanMBoos/spar/blob/main/docs/rl.md).

@@ -24,7 +24,7 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 At the start, choose one of the three tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. All three tracks build on [SPAR](https://github.com/EthanMBoos/spar), the course's simulation and autonomy starter repo.
 
-**Unity & MuJoCo Robotics Simulation** — Build simulation environments. MuJoCo owns the physics, Unity owns rendering and world authoring, and the scene is the world. New sites, new sensors, moving agents: the scenarios the other tracks test against come from here.
+**MuJoCo Robotics Simulation** — Build and evaluate the worlds used by the other tracks. The current baseline turns text descriptions into constrained primitive MJCF scenes, with an LLM handling semantic layout and Python handling geometry and validation. The next step is a tool-using BlenderMCP loop for richer scenes that still compile and pass the same MuJoCo checks.
 
 **Behavior Tree Autonomy Platform** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
 
@@ -60,4 +60,3 @@ Each one is deliberately close to a take-home technical interview: a scoped prob
 Weekly sync / demo day: Wednesdays at 5 PM, in person.
 
 We meet every week in Klaus. Every other week is demo day. You demo what you committed to. Off-week syncs are for getting unstuck, getting feedback on in-progress work, and lining up your next cycle. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time.
-

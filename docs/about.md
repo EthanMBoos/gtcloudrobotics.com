@@ -11,7 +11,7 @@ A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team bu
 
 !!! tip "Still in beta, still useful"
 
-    [SPAR](https://github.com/EthanMBoos/spar) is in active development but already stable enough to back multi-domain research.
+    [SPAR](https://github.com/EthanMBoos/spar) is still small and in active development. It is the shared starting point for course projects.
 
 ## Explore
 
@@ -21,7 +21,7 @@ A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team bu
 
     ---
 
-    The VIP structure, the four tracks students can pick from, and the two-week demo cycle.
+    The VIP structure, the three tracks students can pick from, and the two-week demo cycle.
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
@@ -29,9 +29,8 @@ A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team bu
 
     ---
 
-    The hybrid-autonomy runtime: a deterministic behavior tree with fixed seams for learned policies and vision models, stressed in a Unity + MuJoCo sim.
+    The hybrid-autonomy runtime: a deterministic behavior tree with fixed seams for learned policies and vision models, stressed in a MuJoCo sim.
 
     [:octicons-arrow-right-24: Learn more](spar.md)
 
 </div>
-
