@@ -24,7 +24,7 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 At the start, choose one of the three tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. All three tracks build on [SPAR](https://github.com/EthanMBoos/spar), the course's simulation and autonomy starter repo.
 
-**MuJoCo Robotics Simulation** — Build and evaluate the worlds used by the other tracks. The current baseline turns text descriptions into constrained primitive MJCF scenes, with an LLM handling semantic layout and Python handling geometry and validation. The next step is a tool-using BlenderMCP loop for richer scenes that still compile and pass the same MuJoCo checks.
+**MuJoCo Robotics Simulation** — Build and evaluate the worlds used by the other tracks. SPAR's current pipeline uses BlenderMCP to turn a text brief into an editable 40×40 m scene with detailed render geometry, semantic sites, and explicit collision proxies. An exporter converts the accepted scene into OBJ and PNG assets, MJCF, and optional ground and air waypoint files, then checks the artifact and compiles it in MuJoCo. Extend that pipeline, author new test environments, and measure how each world changes autonomy behavior.
 
 **Behavior Tree Autonomy Platform** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
 
