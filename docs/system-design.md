@@ -117,10 +117,3 @@ When everything is healthy, the mission manager picks the next room, the planner
 
 Now break one thing: the depth camera freezes for 300 ms. A well-designed system does **not** let that failure blur across the whole stack. Perception stops publishing fresh obstacle updates. The planner can keep its last path for a moment, but only within a freshness budget. The controller keeps running from the latest valid trajectory instead of blocking. If perception stays stale past the allowed timeout, safety authority escalates: either the planner commands a stop because the world model is stale, or a supervisor module forces safe mode directly. That's system design in practice: not just the boxes, but who can keep going, for how long, and who gets to say stop.
 
----
-
-## Assignment
-
-The **Air Traffic Control Tracker**: you're given a radar (50 Hz, noisy), a GPS transponder (5 Hz, accurate), a Kalman filter, and a live 3D visualization. Your job: implement one method, `tick()`, that fuses both sensors without blocking, tracks when readings go stale, and degrades gracefully when a sensor dies. Seven graded scenarios each target a specific failure mode (sensor death, timing jitter, hardcoded rate assumptions, and more). A second required question asks what it actually takes to add a new sensor. Where it gets wired in, what the config contract changes, and how partial failure should be surfaced.
-
-Go to [gtcloudrobotics/air-traffic-control-tracker](https://github.com/gtcloudrobotics/air-traffic-control-tracker), click **Use this template** to make your own copy, then clone and push. The autograder runs on every push and you'll see pass/fail in the Actions tab. Enrolled GT students just send me your GitHub username at the start of the semester so I can match your repo to your grade.

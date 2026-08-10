@@ -24,13 +24,15 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 ### 2. Pick a track
 
-At the start, choose one of the three tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area. All three tracks build on [SPAR](https://github.com/EthanMBoos/spar), the course's simulation and autonomy starter repo.
+At the start, choose one of the three tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
 
-**MuJoCo Robotics Simulation** — Build and evaluate the worlds used by the other tracks. SPAR's current pipeline uses BlenderMCP to turn a text brief into an editable 40×40 m scene with detailed render geometry, semantic sites, and explicit collision proxies. An exporter converts the accepted scene into OBJ and PNG assets, MJCF, and optional ground and air waypoint files, then checks the artifact and compiles it in MuJoCo. Extend that pipeline, author new test environments, and measure how each world changes autonomy behavior.
+**Blender MCP Worldgen** — Use language models and BlenderMCP to build simulated environments for robotics. Work on scene layout, assets, materials, collision geometry, semantic labels, simulator export, or ways to evaluate the worlds you generate.
 
-**Behavior Tree Autonomy Platform** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
+**Behavior Tree Autonomy** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
 
-**RL & VLA Learning Integration** — Bring learned models into the stack. SPAR has the swap points: train a policy in a pure-MuJoCo loop and run it as a behavior node, or put a VLM behind the perception topic. Then evaluate it against the hand-written tree.
+**RL & VLA Learning** — Use learned models for robot perception, behavior, planning, or control. Train a policy, connect a vision-language model to a robot task, or compare a learned approach with a conventional one.
+
+[SPAR](https://github.com/EthanMBoos/SPAR) is there when a working simulator and autonomy stack help you move faster, but you do not have to use it for every demo. Some ideas are easier to prototype as a small standalone program. Others are easier when you can build on pieces that already work together. You can move back and forth between those approaches from one demo cycle to the next.
 
 
 ### 3. Ship something every two weeks
@@ -44,8 +46,6 @@ When a cycle closes, that deliverable is done. You pick a new problem to work on
 ### 4. Background modules (optional)
 
 The modules below are optional background reading and context to build up a solid foundation. They're here when you want to go deeper on a topic.
-
-Each one is deliberately close to a take-home technical interview: a scoped problem, tests to pass, and CI that grades every push. If you're stuck, bring it to the weekly sync.
 
 **Modules**:
 
