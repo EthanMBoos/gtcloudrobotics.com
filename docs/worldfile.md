@@ -8,7 +8,7 @@ hide:
 
 [:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/Worldfile){ .md-button }
 
-**Worldfile** turns LLM-authored 3D environments into MuJoCo world files that can be loaded and tested without Blender. It keeps the open-ended scene decisions inside a bounded authoring process and leaves the exact physics and export work to code.
+**Worldfile** turns LLM-authored 3D environments into MuJoCo world files that can be loaded and tested without Blender. It keeps the open-ended scene decisions inside a bounded authoring process and leaves the exact physics and export work to code. The research asks what structure and validation this process needs to produce usable robot worlds reliably.
 
 A build starts with an environment family, a seed, and a short brief. The LLM works through a fixed set of stages in Blender to choose the layout, objects, contextual details, and appearance. Repository code then compiles the accepted scene into MJCF and checks whether it is usable.
 
@@ -74,15 +74,6 @@ This test is useful because it crosses the whole generated environment: geometry
 
 The Husky base is kinematic. This setup tests world generation, sensing, localization, planning, obstacle avoidance, perception, and mission integration. It does not claim motor, tire, traction, or skid-steer dynamics fidelity.
 
-## What the research tests
-
-The research question is what structure and validation an LLM needs to reliably produce a physics-ready robot world.
-
-The planned first comparison holds the environment families, seeds, briefs, and robot task constant across three generation methods: one-shot generation, bounded staged generation, and staged generation with one repair pass. The measurements include unattended build success, generation time and model calls, MJCF load success, missing assets, collision and stability checks, route and task-site validity, perception and navigation completion, and complete mission success.
-
-Repeated builds on held-out seeds and briefs test whether the process is reliable and whether it produces meaningful variation. A second environment family tests whether the authoring contract generalizes beyond the utility depot.
-
-Policy training may eventually use the resulting worlds, but it is not required for the first evaluation. The fixed autonomy stack gives each world a repeatable task now.
 
 !!! tip "Read the working design"
 
