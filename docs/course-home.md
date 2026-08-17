@@ -26,16 +26,13 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 At the start, choose one of the four tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
 
-**Blender MCP Worldgen** — Use language models and BlenderMCP to build simulated environments for robotics. Work on scene layout, assets, materials, collision geometry, semantic labels, simulator export, or ways to evaluate the worlds you generate.
+**Worldfile and generated environments** — Use language models and 3D authoring tools to build simulated environments for robotics. Work on scene layout, assets, materials, collision geometry, semantic labels, simulator export, or ways to evaluate the worlds you generate.
 
 **Behavior Tree Autonomy** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
 
 **RL & VLA Learning** — Use learned models for robot perception, behavior, planning, or control. Train a policy, connect a vision-language model to a robot task, or compare a learned approach with a conventional one.
 
 **Unreal + ArduPilot Simulation** — Develop a vehicle-dynamics and controls simulator in Unreal Engine where engineers can trim, linearize, tune, and run aircraft and boats with ArduPilot without editing simulator internals.
-
-[SPAR](https://github.com/EthanMBoos/SPAR) is there when a working simulator and autonomy stack help you move faster, but you do not have to use it for every demo. Some ideas are easier to prototype as a small standalone program. Others are easier when you can build on pieces that already work together. You can move back and forth between those approaches from one demo cycle to the next.
-
 
 ### 3. Ship something every two weeks
 

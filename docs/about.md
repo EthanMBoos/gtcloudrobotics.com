@@ -5,32 +5,37 @@ hide:
 ---
 
 # What is GT Cloud Robotics?
-A Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) team building infrastructure for deploying learned robot autonomy in the real world. [SPAR](spar.md) covers the runtime in depth; [Course Home](course-home.md) covers how the course itself runs.
+
+GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) course. This site contains the course material and notes on the two projects developed alongside it: [Worldfile](worldfile.md) and [UnrealArdupilot](unrealardupilot.md).
 
 <!-- demo highlight reel goes here -->
-
-!!! tip "Still in beta, still useful"
-
-    [SPAR](https://github.com/EthanMBoos/spar) is still small and in active development. It is the shared starting point for course projects.
 
 ## Explore
 
 <div class="grid cards" markdown>
 
--   :lucide-book-open:{ .lg .middle } **Course Home**
+-   :lucide-book-open:{ .lg .middle } **Robotics Course**
 
     ---
 
-    The VIP structure, the three tracks students can pick from, and the two-week demo cycle.
+    The four project tracks, background modules, and two-week working-demo cycle.
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
--   :lucide-layers:{ .lg .middle } **Sim-Portable Autonomy Runtime**
+-   :lucide-layers:{ .lg .middle } **Worldfile**
 
     ---
 
-    The hybrid-autonomy runtime: a deterministic behavior tree with fixed seams for learned policies and vision models, stressed in a MuJoCo sim.
+    Bounded LLM authoring compiled into MuJoCo worlds, then checked with a complete ground-robot mission.
 
-    [:octicons-arrow-right-24: Learn more](spar.md)
+    [:octicons-arrow-right-24: Learn about Worldfile](worldfile.md)
+
+-   :lucide-plane:{ .lg .middle } **UnrealArdupilot**
+
+    ---
+
+    Aircraft and boat controls in Unreal Engine with ArduPilot, headless engineering models, and repeatable checks.
+
+    [:octicons-arrow-right-24: Learn about UnrealArdupilot](unrealardupilot.md)
 
 </div>

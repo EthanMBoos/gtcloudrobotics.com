@@ -54,7 +54,7 @@ nav = [
      "system-design.md",
      "behavior-architectures.md",
   ]},
-  {"Sim-Portable Autonomy Runtime" = "spar.md"},
+  {"Worldfile" = "worldfile.md"},
   {"UnrealArduPilot" = "unrealardupilot.md"}
 ]
 
