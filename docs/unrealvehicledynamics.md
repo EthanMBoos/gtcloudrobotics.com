@@ -4,11 +4,11 @@ hide:
 - toc
 ---
 
-# UnrealArdupilot
+# UnrealVehicleDynamics
 
-[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/UnrealArdupilot){ .md-button }
+[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/UnrealVehicleDynamics){ .md-button }
 
-**UnrealArdupilot** gives controls engineers one place to run aircraft and boat controls in Unreal Engine with ArduPilot. It brings trim, linearization, scripted inputs, tuning, closed-loop runs, and replay into one workflow without making every experiment an Unreal or C++ task.
+**UnrealVehicleDynamics** gives controls engineers one place to model, analyze, and run aircraft and boats in Unreal Engine with external control systems, starting with ArduPilot. It brings trim, linearization, scripted inputs, tuning, closed-loop runs, and replay into one workflow without making every experiment an Unreal or C++ task.
 
 Unreal owns the world, clock, rendering, and collisions. A small C++ core adds the vehicle physics needed for controls work. The core also runs without Unreal, so the same model can be trimmed, linearized, tested, and compared with established solvers.
 
@@ -110,4 +110,4 @@ The water checkpoint starts with alignment: rendered waves and physics queries n
 
 !!! tip "Read the working plan"
 
-    See the repo's [main plan](https://github.com/EthanMBoos/UnrealArdupilot/blob/main/README.md), [fixed-wing plan](https://github.com/EthanMBoos/UnrealArdupilot/blob/main/docs/AERO.md), and [boat plan](https://github.com/EthanMBoos/UnrealArdupilot/blob/main/docs/WATER.md).
+    See the repo's [main plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/PLANNING.md), [fixed-wing plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/AERO.md), and [boat plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/WATER.md).

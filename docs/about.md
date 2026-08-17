@@ -6,7 +6,7 @@ hide:
 
 # What is GT Cloud Robotics?
 
-GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) course. This site contains the course material and notes on the two projects developed alongside it: [Worldfile](worldfile.md) and [UnrealArdupilot](unrealardupilot.md).
+GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) course. This site contains the course material and notes on the two projects developed alongside it: [Worldfile](worldfile.md) and [UnrealVehicleDynamics](unrealvehicledynamics.md).
 
 <!-- demo highlight reel goes here -->
 
@@ -30,12 +30,12 @@ GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip
 
     [:octicons-arrow-right-24: Learn about Worldfile](worldfile.md)
 
--   :lucide-plane:{ .lg .middle } **UnrealArdupilot**
+-   :lucide-plane:{ .lg .middle } **UnrealVehicleDynamics**
 
     ---
 
-    Aircraft and boat controls in Unreal Engine with ArduPilot, headless engineering models, and repeatable checks.
+    Aircraft and boat dynamics in Unreal Engine, headless engineering models, external control integrations, and repeatable checks.
 
-    [:octicons-arrow-right-24: Learn about UnrealArdupilot](unrealardupilot.md)
+    [:octicons-arrow-right-24: Learn about UnrealVehicleDynamics](unrealvehicledynamics.md)
 
 </div>
