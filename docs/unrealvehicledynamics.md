@@ -8,64 +8,116 @@ hide:
 
 [:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/UnrealVehicleDynamics){ .md-button }
 
-**UnrealVehicleDynamics** is a controls-oriented vehicle dynamics toolkit being built for native use in Unreal Engine. It keeps the engineering equations in a shared C++ core so the same vehicle model can support fast analysis without Unreal and, later, a visual simulation with external flight or marine controllers.
+**UnrealVehicleDynamics** runs C++ vehicle models headlessly or inside Unreal
+Engine with Cesium and ArduPilot SITL. The repository now includes two working
+examples:
 
-The working result today is the headless fixed-wing path. It calculates aerodynamic and propulsion forces, advances the aircraft state, finds steady flight conditions, produces local linear models, runs scripted control inputs, and saves deterministic runs for comparison and replay.
+- a BYU/MAVSim Aerosonde controlled by ArduPlane; and
+- a Fossen Otter surface vessel controlled by ArduRover.
 
-Unreal, ArduPilot, PX4, and marine integration are the next stages of the project. They are not part of the current result. The research question is whether one readable, testable dynamics model can remain consistent across controls analysis, an interactive Unreal world, and production controller software.
-
-## Model, analyze, replay
-
-```text
-vehicle + experiment configuration
-               |
-               v
-       shared C++ force model
-               |
-               | force + moment
-               v
-        headless motion solver
-               |
-               v
-   labelled signals + run bundle
-               |
-               +-> compare / replay / MATLAB / Python
-```
-
-The core answers one bounded question: given the vehicle state, controls, and environment, what forces and moments act on the vehicle? Configuration files hold the mass, inertia, coefficients, control mappings, initial state, wind, and command schedule. The equations remain ordinary C++ with explicit vectors, matrices, units, and coordinate frames so a controls engineer can relate the implementation to a textbook model.
-
-The command-line tools use that model to simulate a maneuver, find a trim point, linearize about it, apply control doublets, inspect forces, and replay a saved run. A trim point is a steady operating condition such as level flight. Linearization produces the local state-space matrices used for stability analysis and controller design. These tasks run without starting a game engine.
-
-Each run records its resolved configuration, timing, commands, states, forces, moments, and derived air data together. A repeated run can therefore be compared against the original rather than judged from an animation. MATLAB and Python can load the same labelled signals for analysis.
-
-## The current aircraft model
-
-The first aircraft uses the educational Aerosonde parameters from [BYU MAVSim](https://github.com/byu-magicc/mavsim_public/blob/a8489bbc30ab9e746dccac8ac614ab2f8acac6bb/mavsim_python/parameters/aerosonde_parameters.py). The model calculates air-relative velocity, angle of attack, sideslip, dynamic pressure, aerodynamic forces and moments, control-surface effects, propeller thrust and torque, ISA atmosphere, and constant wind.
-
-The repository tests individual force cases, rigid-body motion, trim, linearization, deterministic replay, and the data written by the tools. A pinned JSBSim aircraft built from the same source parameters provides an independent implementation comparison for selected frozen-state cases. That comparison can expose sign, frame, unit, and equation errors; it is not a substitute for validation against flight data.
-
-The current model is deliberately narrow. It covers conventional fixed-wing flight around the documented operating region. Ground handling, takeoff, landing gear, stall and post-stall behavior, turbulence, sensor models, actuator dynamics, and closed-loop autopilot operation remain future work.
-
-## One model, two runtimes
-
-Unreal is the intended main runtime, not a disposable viewer. The next integration will compile the shared C++ sources directly into an Unreal plugin. Unreal will own the world, fixed simulation clock, actors, rendering, collisions, and controller connection. The core will continue to own the engineering force and moment equations.
+The project is kept small on purpose. A controls engineer can change plant or
+controller parameters, run a representative maneuver, and inspect the result.
+It is a working simulation reference, not a claim that either bundled model
+matches a physical vehicle.
 
 ```text
-                         +-> headless solver -> analysis and replay
-shared vehicle model ----|
-                         +-> Unreal / Chaos -> visual simulation and collisions
+ArduPilot PWM
+      |
+      v
+shared C++ model -> committed vehicle state -> ArduPilot sensors
+      |                       |
+      +-> headless CSV        +-> Unreal and Cesium
 ```
 
-For the first aircraft integration, the Unreal adapter will give the core a vehicle state and controls on each physics step. The core will return one force and moment, and Chaos will advance the rigid body. The headless path uses a standard numerical motion solver instead. Matching force cases and timestep studies will check that both paths represent the same equations. Render rate, scenery, and a visual hitch must not silently change the physics result.
+## The two demonstrations
 
-External controllers will close the loop through simulated sensors and actuator commands. ArduPlane is the first target, with PX4 planned through the same vehicle boundary. Commands, physical actuator positions, forces, state, and sensor outputs need to share one timestamp so a bad mapping or delay can be found in the data rather than guessed from the picture.
+The aircraft run starts an Aerosonde in flight and connects it to ArduPlane in
+Fly By Wire A. The controller receives simulated state, stabilizes roll and
+pitch, and drives a short right-left roll sequence.
 
-## Water has to agree with the picture
+The boat run connects the Otter model to ArduRover in ACRO. It applies a speed
+step, a turn-rate step, recovery, and a clean stop. The report shows target and
+measured speed and yaw rate, left and right motor PWM, saturation, plant truth,
+trajectory, and controller timing.
 
-Water makes the visual and physical contract harder. The first boat demo will use Unreal Water, buoyancy, and Chaos to establish the complete loop. One wave definition must drive both the rendered surface and every water-height query used by the physics. A crest on screen where the force model sees a trough is a failed simulation, however convincing either result looks by itself.
+```sh
+./run.py                    # Aerosonde + ArduPlane
+./run.py otter              # Otter + ArduRover
+./run.py otter-open-loop    # Otter without ArduRover
+```
 
-Stock buoyancy is only a starting point. Engineering seakeeping eventually requires effects such as coupled six-axis motion, added mass, radiation memory, and wave excitation. If Chaos cannot express the required model, the C++ core will advance the boat state while Unreal renders the committed pose. The wave components, phase, and simulation time will still be shared so the water, vehicle motion, calculated forces, logs, pause, reset, and replay remain aligned.
+Each command builds the C++ core and Unreal plugin, opens the game window,
+starts the selected ArduPilot container, and stops the run when the experiment
+ends. Cesium supplies the georeferenced world. The camera provides chase,
+orbit, onboard, and side views, including free orbit while the model is paused.
 
-!!! tip "Read the working plan"
+Each run saves a self-contained Plotly report with the simulator truth,
+ArduPilot telemetry, controller exchange timing, and DataFlash files. The
+exchange checks verify that one accepted controller frame advances one fixed
+simulation step. An estimator may differ from plant truth without indicating a
+broken state transfer, so those signals remain separate in the report.
 
-    See the repo's [main plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/PLANNING.md), [Unreal integration plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/UNREAL.md), [fixed-wing plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/AERO.md), and [water plan](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/WATER.md).
+## One core, two state owners
+
+The engineering equations live in an ordinary C++ library with no Unreal,
+networking, JSON, or process code. The CLI and Unreal plugin compile the same
+model sources.
+
+The Aerosonde model returns body force and moment. Unreal Chaos advances the
+aircraft rigid body. The Otter has a coupled six-axis effective mass matrix, so
+its C++ RK4 solver advances the vessel and shaft states while Unreal renders
+the committed pose. This prevents a second rigid-body solver from changing the
+marine equations.
+
+Both paths use SI units, North-East-Down world axes, and Forward-Right-Down body
+axes. Unreal owns the fixed simulation clock and exchanges state and PWM with
+ArduPilot once per accepted controller frame.
+
+## Headless model work
+
+You can inspect either plant without starting Unreal or ArduPilot:
+
+```sh
+cmake -S . -B build
+cmake --build build
+
+build/uvd evaluate examples/run.json
+build/uvd simulate examples/run.json --duration 10 --output runs/aerosonde.csv
+
+build/uvd evaluate examples/otter-run.json
+build/uvd simulate examples/otter-run.json --duration 10 --output runs/otter.csv
+```
+
+`evaluate` exposes the state, forces, moments, and useful intermediate terms at
+one operating point. `simulate` advances the same equations with a constant
+command and writes a labelled trajectory. The fixed-wing model also provides
+trim and local linearization for operating-point analysis.
+
+## Reference models and limits
+
+The aircraft parameters come from the educational Aerosonde in
+[BYU MAVSim](https://github.com/byu-magicc/mavsim_public/blob/a8489bbc30ab9e746dccac8ac614ab2f8acac6bb/mavsim_python/parameters/aerosonde_parameters.py).
+An optional JSBSim comparison evaluates the same aerodynamic equations over
+fixed and random states. It catches sign, frame, unit, and porting errors; it
+does not replace flight-test data.
+
+The boat is a C++ port of Thor Fossen's
+[`otter.m`](https://github.com/cybergalactic/MSS/blob/d7c1e969856f4e98bc2f6ffa466d0abd6ec5d950/CRAFT/USV/models/otter.m)
+from the Marine Systems Simulator. Its tests compare committed MSS reference
+outputs for equilibrium, propulsion, asymmetric motion, water current,
+cross-flow, and hydrostatic loading. Keeping those outputs in the test suite
+avoids requiring MATLAB, Octave, and an MSS checkout for a normal build.
+
+These are educational models with clear boundaries. The aircraft is air-started
+and has no ground contact, takeoff, landing, or measured stall model. The Otter
+runs in calm water with horizontal current and has no waves, contacts, planing,
+or measured trajectory validation. The current visuals are replaceable and do
+not define the dynamics.
+
+!!! note "Read the engineering docs"
+
+    Start with the repository [README](https://github.com/EthanMBoos/UnrealVehicleDynamics#readme),
+    then see the [ArduPlane workflow](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/ARDUPILOT.md),
+    [ArduRover and Otter workflow](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/ARDUROVER.md),
+    [Unreal runtime](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/UNREAL.md),
+    and [installation instructions](https://github.com/EthanMBoos/UnrealVehicleDynamics/blob/main/docs/INSTALL.md).
