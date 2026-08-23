@@ -12,13 +12,11 @@ GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
 
 This course is about mobile robots in the real world: ground, water, and air vehicles that have to navigate an unpredictable environment and then carry out a long-horizon task. Not self-driving cars, not robot arms. Those live in structured or controlled settings; the hard part here is staying reliable across a long mission in a world that won't hold still.
 
-[Syllabus week slide deck](https://docs.google.com/presentation/d/1y0O1_-Wkozg2WZw5zR-AYKrOTz60Ur8x-tx7RLZLKpc/edit?usp=sharing)
-
 ## How the course works
 
 ### 1. Figure out what you're aiming at
 
-Before you pick a track, research 5-10 companies with open job postings you'd want and could plausibly get. Pull out the skills they're hiring for. Cross-reference Glassdoor and levels.fyi. My prediction is in the [slide 5 of the syllabus deck](https://docs.google.com/presentation/d/1y0O1_-Wkozg2WZw5zR-AYKrOTz60Ur8x-tx7RLZLKpc/edit?usp=sharing); check it against what you actually find.
+Before you pick a track, research 5-10 companies with open job postings you'd want and could plausibly get. Pull out the skills they're hiring for. Cross-reference Glassdoor and levels.fyi.
 
 The output is a list of skills you can name. Everything after this is you building evidence for them, every two weeks, for a semester.
 
