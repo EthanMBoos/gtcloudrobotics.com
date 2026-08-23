@@ -35,7 +35,7 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
 |---|---|
 | `index.md` | Hero landing (adds `home-page` body class via inline script) |
 | `about.md` | The infrastructure argument: contracts between opaque autonomy and trusted parts |
-| `course-home.md` | Course structure: tracks (Simulation / Behavior Tree / RL & VLA), 2-week demo cycles, logistics |
+| `course-home.md` | Course structure: three project areas, 2-week demo cycles, logistics |
 | `cpp-cli-tooling.md`, `system-design.md` | Background modules, each ending with an autograded assignment |
 | `behavior-architectures.md` | Background module (no assignment) |
 | `gaussian-fieldwork.md` | Open-ended student subteam exploring Gaussian-splat tools and best practices |

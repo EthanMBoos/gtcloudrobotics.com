@@ -24,15 +24,13 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 ### 2. Pick a track
 
-At the start, choose one of the four tracks below as your rough interest area. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
+At the start, choose one of the three project areas below. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
 
-**Worldfile and generated environments** — Use language models and 3D authoring tools to build simulated environments for robotics. Work on scene layout, assets, materials, collision geometry, semantic labels, simulator export, or ways to evaluate the worlds you generate.
+**[Unreal Vehicle Dynamics](unrealvehicledynamics.md)** — Build and test aircraft and boat dynamics in a shared C++ core that runs headlessly or inside Unreal Engine. Work on vehicle models, reference checks, engineering maneuvers, ArduPilot integration, reports, or the boundary between the model and simulator.
 
-**Behavior Tree Autonomy** — Long-horizon autonomy for a robot working unsupervised. You own the behavior layer above the vehicle's motion controller (Nav2 on the ground, PX4 in the air): mission logic, docking when the battery runs low, deciding what to do with what perception reports. Come up with a mission and make the robot do it end to end.
+**[Fusion in Motion](fusion-in-motion.md)** — Build controlled sensor-fusion experiments for moving ground and aerial vehicles. Work on sensor models, timing and faults, estimator integrations, datasets, metrics, or reports that compare methods against the same measurements and truth.
 
-**RL & VLA Learning** — Use learned models for robot perception, behavior, planning, or control. Train a policy, connect a vision-language model to a robot task, or compare a learned approach with a conventional one.
-
-**Unreal Vehicle Dynamics Simulation** — Develop a vehicle-dynamics and controls simulator in Unreal Engine where engineers can trim, linearize, tune, and run aircraft and boats with external control systems, starting with ArduPilot, without editing simulator internals.
+**[Gaussian Fieldwork](gaussian-fieldwork.md)** — Explore Gaussian-splat tools on real scenes and work out practical capture and evaluation habits. Compare scenes and reconstruction approaches, document failure modes, and try small robotics uses. This is the most open-ended and research-oriented track.
 
 ### 3. Ship something every two weeks
 
