@@ -4,11 +4,11 @@ hide:
 - toc
 ---
 
-# UnrealVehicleDynamics
+# Unreal Vehicle Dynamics
 
 [:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/UnrealVehicleDynamics){ .md-button }
 
-**UnrealVehicleDynamics** runs C++ vehicle models headlessly or inside Unreal
+**Unreal Vehicle Dynamics** runs C++ vehicle models headlessly or inside Unreal
 Engine with Cesium and ArduPilot SITL. The repository now includes two working
 examples:
 

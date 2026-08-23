@@ -18,7 +18,7 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
 ## Authoring conventions
 
 - Frontmatter: `icon: lucide/<name>` on every page; `hide: [toc]` on narrative pages
-  (about, worldfile); module pages keep the ToC.
+  (about); module pages keep the ToC.
 - Material markdown is enabled: admonitions (`!!! note`), grid cards, content tabs,
   `{ .md-button }`, mermaid fences, arithmatex, footnote tooltips. Images live in
   `docs/assets/images/`.
@@ -38,22 +38,12 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
 | `course-home.md` | Course structure: tracks (Simulation / Behavior Tree / RL & VLA), 2-week demo cycles, logistics |
 | `cpp-cli-tooling.md`, `system-design.md` | Background modules, each ending with an autograded assignment |
 | `behavior-architectures.md` | Background module (no assignment) |
-| `worldfile.md` | Public face of the Worldfile research repo (see below) |
+| `gaussian-fieldwork.md` | Open-ended student subteam exploring Gaussian-splat tools and best practices |
 
 Modules 4–6 (multi-threading, frames & transforms, path & motion planning) are named on
 `course-home.md` but **not yet written** — the numbered list there is the source of truth.
 
 ## Consistency with sibling repos
 
-`worldfile.md` describes `../Worldfile`, which has its own `CLAUDE.md` with the system map and invariants.
-When architecture or claims change over there, this page may need the same update (and vice
-versa: don't state things here the repo contradicts). Assignment template repos are also local
-siblings: `../satellite-temperature-monitor`, `../air-traffic-control-tracker`.
-
-Audience differs by surface: the site sells the ideas to students and outsiders; the repo
-docs are engineering records. Keep facts identical, depth different.
-
-**Proven-only rule:** this page describes what exists and works, in the present tense.
-`worldfile.md` presents the current authoring, compiler, validation, and ground mission paths.
-Capabilities join the page when they're built and demonstrated, not when they're designed. Don't
-import future-tense material from the repo's plans/ or future/ docs.
+Assignment template repos are local siblings: `../satellite-temperature-monitor`,
+`../air-traffic-control-tracker`.

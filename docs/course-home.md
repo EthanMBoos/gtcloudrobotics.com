@@ -32,7 +32,7 @@ At the start, choose one of the four tracks below as your rough interest area. T
 
 **RL & VLA Learning** — Use learned models for robot perception, behavior, planning, or control. Train a policy, connect a vision-language model to a robot task, or compare a learned approach with a conventional one.
 
-**UnrealVehicleDynamics Simulation** — Develop a vehicle-dynamics and controls simulator in Unreal Engine where engineers can trim, linearize, tune, and run aircraft and boats with external control systems, starting with ArduPilot, without editing simulator internals.
+**Unreal Vehicle Dynamics Simulation** — Develop a vehicle-dynamics and controls simulator in Unreal Engine where engineers can trim, linearize, tune, and run aircraft and boats with external control systems, starting with ArduPilot, without editing simulator internals.
 
 ### 3. Ship something every two weeks
 

@@ -6,7 +6,7 @@ hide:
 
 # What is GT Cloud Robotics?
 
-GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) course. This site contains the course material and notes on the three projects developed alongside it: [Worldfile](worldfile.md), [UnrealVehicleDynamics](unrealvehicledynamics.md), and [Fusion in Motion](fusion-in-motion.md).
+GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip.gatech.edu/) course. This site contains the course material and notes on three projects developed alongside it: [Unreal Vehicle Dynamics](unrealvehicledynamics.md), [Fusion in Motion](fusion-in-motion.md), and [Gaussian Fieldwork](gaussian-fieldwork.md).
 
 <!-- demo highlight reel goes here -->
 
@@ -18,25 +18,25 @@ GT Cloud Robotics is a Georgia Tech [Vertically Integrated Projects](https://vip
 
     ---
 
-    The four project tracks, background modules, and two-week working-demo cycle.
+    Choose a robotics track, build working software in two-week cycles, and use the background modules when you need them.
 
     [:octicons-arrow-right-24: Go to course](course-home.md)
 
--   :lucide-layers:{ .lg .middle } **Worldfile**
+-   :lucide-scan-line:{ .lg .middle } **Gaussian Fieldwork**
 
     ---
 
-    Bounded LLM authoring compiled into MuJoCo worlds, then checked with a complete ground-robot mission.
+    Try Gaussian-splat tools on real scenes and document what works, what breaks, and why.
 
-    [:octicons-arrow-right-24: Learn about Worldfile](worldfile.md)
+    [:octicons-arrow-right-24: Learn about Gaussian Fieldwork](gaussian-fieldwork.md)
 
--   :lucide-plane:{ .lg .middle } **UnrealVehicleDynamics**
+-   :lucide-plane:{ .lg .middle } **Unreal Vehicle Dynamics**
 
     ---
 
     Aircraft and boat dynamics in Unreal Engine, headless engineering models, external control integrations, and repeatable checks.
 
-    [:octicons-arrow-right-24: Learn about UnrealVehicleDynamics](unrealvehicledynamics.md)
+    [:octicons-arrow-right-24: Learn about Unreal Vehicle Dynamics](unrealvehicledynamics.md)
 
 -   :lucide-radar:{ .lg .middle } **Fusion in Motion**
 

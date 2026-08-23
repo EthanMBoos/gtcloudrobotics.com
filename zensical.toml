@@ -54,9 +54,9 @@ nav = [
      "system-design.md",
      "behavior-architectures.md",
   ]},
-  {"Worldfile" = "worldfile.md"},
-  {"UnrealVehicleDynamics" = "unrealvehicledynamics.md"},
-  {"Fusion in Motion" = "fusion-in-motion.md"}
+  {"Unreal Vehicle Dynamics" = "unrealvehicledynamics.md"},
+  {"Fusion in Motion" = "fusion-in-motion.md"},
+  {"Gaussian Fieldwork" = "gaussian-fieldwork.md"}
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
