@@ -47,7 +47,6 @@ site_url = "https://gtcloudrobotics.com/"
 nav = [
 
   {"Home" = "index.md"},
-  {"About" = "about.md"},
   {"Robotics Course" = [
      "course-home.md",
      "cpp-cli-tooling.md",

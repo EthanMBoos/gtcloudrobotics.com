@@ -17,8 +17,8 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
 
 ## Authoring conventions
 
-- Frontmatter: `icon: lucide/<name>` on every page; `hide: [toc]` on narrative pages
-  (about); module pages keep the ToC.
+- Frontmatter: `icon: lucide/<name>` on every page; narrative project pages hide the
+  ToC; module pages keep it.
 - Material markdown is enabled: admonitions (`!!! note`), grid cards, content tabs,
   `{ .md-button }`, mermaid fences, arithmatex, footnote tooltips. Images live in
   `docs/assets/images/`.
@@ -34,7 +34,6 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
 | Page | What it is |
 |---|---|
 | `index.md` | Hero landing (adds `home-page` body class via inline script) |
-| `about.md` | The infrastructure argument: contracts between opaque autonomy and trusted parts |
 | `course-home.md` | Course structure: three project areas, 2-week demo cycles, logistics |
 | `cpp-cli-tooling.md`, `system-design.md` | Background modules, each ending with an autograded assignment |
 | `behavior-architectures.md` | Background module (no assignment) |
