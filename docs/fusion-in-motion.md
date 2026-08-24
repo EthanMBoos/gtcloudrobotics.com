@@ -8,135 +8,150 @@ hide:
 
 [:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/fusion-in-motion){ .md-button }
 
-**Fusion in Motion** generates, replays, and compares moving sensor-fusion
-experiments. One scenario defines the vehicle trajectory, world, mounted
-sensors, timing, faults, and random seeds. The resulting measurements can drive
-a causal filter, fixed-lag estimator, or offline smoother without changing the
-rest of the experiment.
+**Fusion in Motion** runs deterministic moving sensor-fusion experiments and
+opens the results in an animated Rerun dashboard. The repository has one
+complete initial example: a planar ground robot observed by an IMU, a camera,
+and a lidar.
 
-The same contracts cover ground robots, multirotors, and external sensor front
-ends written in Rust, Python, or C++. The useful result is a controlled
-comparison, not one favored estimator or polished robot demo.
+A state-estimation engineer can change the platform speed or sensor
+configuration, run the same motion again, and see where the estimate begins to
+degrade. A small extended Kalman filter provides the baseline estimate.
 
 ```text
-scenario + seed set
-        |
-        v
-continuous vehicle and world truth
-        |
-        v
-timed sensor acquisition + faults
-        |
-        v
-estimator-visible measurement stream
-        |
-        +--> causal filter
-        +--> fixed-lag estimator
-        +--> offline smoother
-        |
-        v
-truth-aware metrics and report
+scenario YAML -> continuous truth -> timed camera, lidar, and IMU
+                       |                         |
+                       +-> hidden truth          +-> visible measurements
+                                                          |
+                                                          v
+                                                   baseline estimator
+                                                          |
+                                                          v
+                                          metrics and Rerun dashboard
 ```
 
-## One experiment, separate records
+## The initial experiment
 
-A Rust core owns continuous truth, metric geometry, mounted sensor frames, the
-event clock, analytic sensor models, fault injection, and deterministic logging.
-A scenario can change the platform, trajectory, sensor count, rates, mounting
-transforms, clocks, noise, and availability without changing an estimator.
+The ground robot accelerates, follows straight and turning segments, and
+decelerates through a sparse landmark map. The IMU reports angular rate and
+specific force. The camera reports associated landmark bearings, while the
+lidar reports associated range and bearing returns over timed scans.
 
-Each run writes a resolved scenario and manifest, estimator-visible
-`measurements.mcap`, hidden `truth.mcap`, one estimate log per algorithm, and a
-saved report. True acquisition times, ideal observations, fault magnitudes,
-clock mappings, and oracle associations stay in the truth log. Several
-estimators can therefore reuse one measurement log without gaining access to
-the answers used for scoring.
+```sh
+fusion run examples/initial.yaml --output runs/initial --view
+```
 
-MCAP carries Protobuf messages with generated Rust, Python, and C++ readers.
-The manifest records the scenario, software, random generator, estimator and
-metric settings, assets, and hashes. Rerun and saved plots remain derived views.
+The command generates the truth and sensor stream, replays the persisted
+measurements through the baseline EKF, scores the estimate, and opens Rerun.
+The dashboard loops the experiment with a truth-versus-estimate map, separate
+ego-centric camera and lidar views, estimation error, IMU data, and observation
+counts.
 
-## Motion, time, and sensor failures
+Every run is saved as a self-contained experiment bundle. The estimator-visible
+measurements, hidden truth, and estimates use Protobuf messages in MCAP files.
+The run also contains the resolved scenario, artifact hashes, readable metrics,
+and the Rerun recording. The estimator never receives the hidden truth stream;
+it is opened afterward for scoring and visualization.
 
-All vehicles and mounts use one SE(3) truth model. A differential-drive robot
-constrains its trajectory to planar motion; a multirotor uses the full
-three-dimensional state. Both share the same frames, timestamps, messages, and
-scoring code.
+The optional radar example adds a fourth sensor:
 
-The scheduler delivers sensor events instead of advancing everything at one
-global rate. Measurements distinguish acquisition, the reported device clock,
-publication, and estimator arrival. Rolling sensors can also carry per-element
-acquisition times.
+```sh
+fusion run examples/with_radar.yaml --output runs/with-radar --view
+```
 
-Clock drift, latency, batching, reordering, and out-of-sequence arrival are
-ordinary experiment settings. So are bias, correlation, saturation,
-quantization, occlusion, slip, multipath, dropout, mounting error, and
-common-mode disturbance. Random draws are keyed by component, event, and named
-effect, so adding one sensor does not change another sensor's existing noise.
-Estimator comparisons reuse the same seed set and report paired results.
+That scenario adds analytic range, bearing, and radial-velocity detections to
+the same motion and evaluation path.
 
-Inputs are labeled as summary constraints, analytic observations, or raw data
-from a log or renderer. A camera bearing is not presented as a rendered image,
-and an idealized detection is not presented as raw radar. Association
-assumptions remain explicit.
+## Change motion and sensors
 
-## Ground and aerial experiments
+Scenario YAML keeps the variables that define an experiment in one place. It
+includes the trajectory, landmarks, random seed, sensor rates, latency, field
+of view, range, noise, missed detections, IMU bias and saturation, and the
+measurement uncertainty assumed by the estimator.
 
-The ground experiment drives a differential robot through starts, stops,
-straight segments, turns, and speed changes. Landmarks and surfaces support
-camera projection, occlusion, and timed lidar intersection. IMU, wheel ticks,
-camera observations, and lidar run under bias, slip, clock offset, delay,
-mounting error, and dropout.
+`motion_speed_factor` changes how quickly the robot traverses the configured
+path without changing the path geometry. Sensor rates remain samples per
+second, so a faster traversal gives the estimator fewer observations along the
+same path. This makes speed-versus-sensor-rate experiments straightforward to
+interpret.
 
-The aerial experiment drives a multirotor through hover, vertical motion,
-translation, yaw, and roll/pitch excitation. IMU, GNSS, barometer,
-magnetometer, rangefinder, optical flow, and UWB use the same contracts under
-GNSS outage, magnetic disturbance, and changing visibility.
+A sweep applies several values to the same base scenario and repeats each case
+for the requested seeds:
 
-The trajectory boundary also admits prescribed SE(3), skid-steer, Ackermann,
-omnidirectional, uneven-terrain, and fixed-wing profiles. Those models change
-how truth is generated and validated; they do not create separate sensor or
-evaluation systems.
+```sh
+fusion sweep examples/speed_sensor_sweep.yaml --output runs/speed-sensor-sweep
+```
 
-## Estimators and reports
+The sweep example compares platform speed and camera rate. Each case remains a
+normal experiment bundle, while aggregate CSV, JSON, and Markdown reports place
+the scenario parameters beside position error, yaw error, availability,
+divergence, and other baseline metrics. Named random streams keep paired cases
+comparable when one sensor setting changes.
 
-One small Rust estimator exercises the in-process path. A process protocol lets
-Python and C++ systems keep their established perception and optimization
-libraries. Each estimator declares its inputs, output state and frame,
-uncertainty convention, assumptions, execution class, and front-end boundary.
+## One measurement log, different estimators
 
-Causal estimators receive records only when they arrive. Fixed-lag estimators
-can revise a declared window; offline estimators can read the complete visible
-log and are reported separately. Filters, graphs, smoothers, particle and robust
-methods, and learned hybrids keep their native state and execution models.
+The bundled EKF propagates a planar state from the IMU and applies camera,
+lidar, and optional radar updates in causal delivery order. The Rust source
+names frames, units, state elements, covariance, and matrix operations
+explicitly.
 
-Reports include absolute and relative trajectory error, drift, initialization,
-availability, fault recovery, NIS/NEES, covariance coverage, and residual
-checks where supported. Crashes, divergence, timeouts, and missing output stay
-in the results. Runtime, memory, machine details, and provenance stay beside
-accuracy.
+Another estimator does not need to be rewritten in Rust. It can read
+`measurements.mcap` in its own environment, export timestamped planar
+estimates as CSV, and use the same truth and metrics:
 
-## Project boundary
+```sh
+fusion score runs/initial my-estimates.csv --id my-filter
+```
 
-Fusion in Motion is a sensor-fusion experiment runner, not a general robot
-simulator. Physics, rendering, production perception, and live middleware
-remain external. Full simulators, ROS 2 bags, and real datasets connect through
-explicit truth, sensor, or conversion boundaries.
+Several estimators can reuse the same saved measurements without receiving the
+truth used to judge them.
 
-Metric geometry remains separate from appearance. A mesh or lidar map supplies
-range and occlusion truth; a textured asset or Gaussian splat can supply camera
-appearance. Synthetic runs verify equations and controlled failures with exact
-truth. Imported moving-robot datasets test the same contracts against real
-sensing, calibration, synchronization, and imperfect reference trajectories.
+## Toward high-throughput sensor pipelines
 
-This boundary keeps the difficult experimental details visible: motion, time,
-frames, calibration, uncertainty, causality, reproducibility, and fair
-comparison across ground and aerial vehicles.
+The current camera, lidar, and radar models produce lightweight analytic
+observations. They do not create raw images, dense point clouds, or raw radar
+data, and they do not yet place those payloads into competing runtime queues.
+Configured sensor latency changes causal arrival time but does not measure
+thread scheduling, serialization, memory pressure, or blocked workers.
+
+The planned runtime experiments hold the deterministic sensor workload fixed
+while replaying it through a shared queue, a worker pool, isolated sensor
+workers, or separate perception frontends feeding one ordered fusion stage.
+Synthetic payload buffers provide realistic byte volume without requiring a
+complete renderer.
+
+That comparison connects runtime behavior to estimation behavior:
+
+```text
+pipeline architecture
+        -> queue delay, message age, and dropped data
+        -> estimator accuracy and availability
+```
+
+The deterministic simulator can explore queue capacity, bandwidth, processing
+cost, and dropping policy quickly. A separate multithreaded replay can then
+measure the operating-system and hardware effects that a simulated queue cannot
+predict. Keeping those modes separate avoids mistaking a repeatable workload
+model for a hardware benchmark.
+
+## Current limits
+
+Fusion in Motion is presently a planar, measurement-level playground. Its
+landmark associations are supplied, its motion is analytic, and its baseline
+does not represent production perception or a physical sensor validation. It
+does not simulate vehicle dynamics or render raw sensor data. High-throughput
+transport benchmarks are not yet implemented.
+
+The current version covers repeatable scenarios, timed measurements,
+estimation, scoring, saved artifacts, sweeps, and visualization. Raw payloads,
+frontends, and runtime experiments are not yet implemented.
 
 !!! note "Read the engineering docs"
 
     Start with the repository [README](https://github.com/EthanMBoos/fusion-in-motion#readme)
-    for the implementation contract, then read the
-    [literature and design review](https://github.com/EthanMBoos/fusion-in-motion/blob/main/LITERATURE_REVIEW.md)
-    for the estimation foundations, sensor models, software landscape, and
-    dataset coverage behind it.
+    and [installation guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/INSTALL.md).
+    The [experiment guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/EXPERIMENTS.md)
+    covers scenarios, sweeps, and run folders; the
+    [estimator guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/ESTIMATORS.md)
+    explains how to score another implementation; and
+    [sensor pipelines](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/SENSOR_PIPELINES.md)
+    describes the planned runtime experiments.
