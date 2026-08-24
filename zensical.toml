@@ -55,8 +55,8 @@ nav = [
   ]},
   {"Unreal Vehicle Dynamics" = "unrealvehicledynamics.md"},
   {"Fusion in Motion" = "fusion-in-motion.md"},
-  {"Gaussian Fieldwork" = "gaussian-fieldwork.md"},
-  {"pipes-rs" = "pipes-rs.md"}
+  {"pipes-rs" = "pipes-rs.md"},
+  {"Gaussian Fieldwork" = "gaussian-fieldwork.md"}
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

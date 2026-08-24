@@ -22,11 +22,13 @@ The output is a list of skills you can name. Everything after this is you buildi
 
 ### 2. Pick a track
 
-At the start, choose one of the three project areas below. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
+At the start, choose one of the four project areas below. This is the space you work in for the semester. You're not committing to a single deliverable; you're committing to a problem area.
 
 **[Unreal Vehicle Dynamics](unrealvehicledynamics.md)** — Build and test aircraft and boat dynamics in a shared C++ core that runs headlessly or inside Unreal Engine. Work on vehicle models, reference checks, engineering maneuvers, ArduPilot integration, reports, or the boundary between the model and simulator.
 
 **[Fusion in Motion](fusion-in-motion.md)** — Build controlled sensor-fusion experiments for moving ground and aerial vehicles. Work on sensor models, timing and faults, estimator integrations, datasets, metrics, or reports that compare methods against the same measurements and truth.
+
+**[pipes-rs](pipes-rs.md)** — Build sensor processing and fusion pipelines in front of ROS 2. Work on sensor inputs, timing and synchronization, camera and point-cloud processing, estimator integration, recording and replay, or testing what happens as sensor rates and data sizes increase.
 
 **[Gaussian Fieldwork](gaussian-fieldwork.md)** — Explore Gaussian-splat tools on real scenes and work out practical capture and evaluation habits. Compare scenes and reconstruction approaches, document failure modes, and try small robotics uses. This is the most open-ended and research-oriented track.
 
