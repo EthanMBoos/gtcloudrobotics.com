@@ -50,8 +50,6 @@ The modules below are optional background reading and context to build up a soli
 
 2. **[System design](system-design.md)** — how robotics services connect, why they run at different rates, and what happens when sensor data stops arriving.
 
-3. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
-
 ... more coming soon ...
 
 ## Course logistics
