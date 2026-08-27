@@ -48,7 +48,7 @@ The modules below are optional background reading and context to build up a soli
 
 1. **[C++ CLI tooling](cpp-cli-tooling.md)** — CMake fundamentals and the workflow to spin up a useful utility from scratch.
 
-2. **[System design](system-design.md)** — who owns what, where the boundaries go, and what a system should do when a sensor goes quiet.
+2. **[System design](system-design.md)** — how robotics services connect, why they run at different rates, and what happens when sensor data stops arriving.
 
 3. **[Behavior architectures & autonomy](behavior-architectures.md)** — composing behavior with state machines, behavior trees, and planners.
 

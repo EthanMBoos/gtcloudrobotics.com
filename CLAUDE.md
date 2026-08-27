@@ -23,11 +23,17 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
   `{ .md-button }`, mermaid fences, arithmatex, footnote tooltips. Images live in
   `docs/assets/images/`.
 - Voice: direct, second person, no marketing fluff. Written for students ("a demo means it
-  works in front of people; not slides"). Match it.
+  works in front of people; not slides"). Casual and opinionated is welcome when the
+  opinion is tied to a concrete tradeoff.
+- Lead with what the reader can do or understand. Prefer a concrete example before a
+  general rule, short paragraphs, natural unnumbered headings, and plain statements of
+  current limits.
+- Qualify rates, defaults, and design advice when they depend on the robot or project.
+  Cut textbook throat-clearing, repeated setup, unnecessary bolding, universal claims,
+  unnecessary intensifiers, and sentences that mainly try to sound authoritative.
 - `course-home.md` owns course logistics/policy — don't restate them on other pages.
-- Module pages end with an **Assignment** section: template repo in the
-  `github.com/gtcloudrobotics` org + autograder on push + the "enrolled GT students send me
-  your GitHub username" line. Follow that shape for new modules.
+- When a module has an assignment, end with an **Assignment** section and link the
+  template repository and local/CI checks. Not every background module needs one.
 
 ## Content map
 
@@ -35,8 +41,8 @@ autonomy infrastructure; students ship a demo every two weeks). Built with **Zen
 |---|---|
 | `index.md` | Hero landing (adds `home-page` body class via inline script) |
 | `course-home.md` | Course structure: three project areas, 2-week demo cycles, logistics |
-| `cpp-cli-tooling.md`, `system-design.md` | Background modules, each ending with an autograded assignment |
-| `behavior-architectures.md` | Background module (no assignment) |
+| `cpp-cli-tooling.md` | Background module ending with an autograded assignment |
+| `system-design.md`, `behavior-architectures.md` | Background modules (no assignment) |
 | `gaussian-fieldwork.md` | Open-ended student subteam exploring Gaussian-splat tools and best practices |
 
 Modules 4–6 (multi-threading, frames & transforms, path & motion planning) are named on

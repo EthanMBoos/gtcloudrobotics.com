@@ -4,37 +4,45 @@ icon: lucide/terminal
 
 # C++ CLI Tooling
 
-This lesson covers the core ideas behind well-built command-line tools in C++: a clean I/O contract, a CMake target graph, a pure logic core with a thin I/O shell around it, library-parsed configuration, and disciplined error reporting. These patterns show up in almost every production C++ project, from embedded firmware to million-line desktop applications, and once you've internalized them they apply pretty much everywhere.
+Every program needs a way to take input, do some work, and report a result. For
+the tools in this course, that boundary is a CLI. The same executable should run
+by hand, from a script, or in CI without changing the core logic.
 
----
+## Start with the CLI contract
 
-## 1. What a CLI Tool Is
-
-A command-line tool talks to the outside world through a deliberately small interface. It has a handful of input channels (`argv`, config files, `stdin`) and a few output channels (`stdout`, `stderr`, an exit code), plus whatever side effects it has on disk or the network.
+A command-line tool has a small interface to the outside world. It has a
+handful of input channels (`argv`, config files, `stdin`)
+and a few output channels (`stdout`, `stderr`, an exit code), plus whatever side
+effects it has on disk or the network.
 
 ![CLI Contract](assets/images/cli_contract.webp)
 
-The contract is simple on purpose. It makes CLI tools **composable**: you can pipe them together, script them, call them from CI, and automate them, as long as you respect the conventions. A program that prints errors to `stdout` or exits `0` on failure breaks scripts silently, which is worse than crashing loudly.
+The small contract is what makes a CLI easy to script, call from CI, or combine
+with another program. Treat it as an interface rather than whatever happens to
+fall out of `main`.
 
-Three layers of configuration are common, in order of precedence:
+Use this configuration order:
 
-1. **Command-line flags** — per-invocation overrides (`--verbose`, `--port 8080`)
-2. **Config files** — persistent settings, versioned alongside code (INI, TOML, YAML, JSON)
-3. **Defaults** — what the program does when you give it nothing
+1. defaults in the program;
+2. values from a config file; and
+3. command-line flags for this run.
 
-Good tools let you override anything from the layer above.
+Later sources override earlier ones. That is not the only possible policy, but
+it is easy to explain and test. Whatever order you choose, do not let it depend
+on which parsing function happened to run last.
 
----
+## CMake is a graph of targets
 
-## 2. CMake: A Graph of Targets
+A CMake project is a graph. Libraries and executables are targets; calls such
+as `target_link_libraries` add dependency edges. CMake uses the graph to work
+out build order and carry usage requirements to consumers.
 
-The biggest mental shift in modern C++ is moving from "compile a bunch of files" to **thinking in targets.** A CMake project is a graph: nodes are **targets** (libraries via `add_library`, executables via `add_executable`), and edges are **dependencies** declared with `target_link_libraries`.
+![CMake target graph](assets/images/cmake_target_graph.webp)
 
-CMake figures out the build order from the graph. It also propagates include directories, compile flags, and dependencies along the edges, so consumers of a library automatically inherit what they need.
-
-![Cmake Target Graph](assets/images/cmake_target_graph.webp)
-
-In this graph, a **PUBLIC** link means a dependency becomes part of a target's exposed interface, so anything that depends on that target also inherits its include paths, compile settings, and linked libraries. A **PRIVATE** link means the dependency is only used internally and does not propagate to downstream consumers. In the diagram, `core` publicly exposes its dependency on `Boost::something`, while `utils` uses Boost only as an internal implementation detail.
+Use `PUBLIC` when a dependency is part of a target's interface and its consumers
+also need that dependency's usage requirements. Use `PRIVATE` when only the
+target's implementation needs it. In the diagram, `core` exposes its Boost
+dependency while `utils` keeps Boost internal.
 
 A minimal example:
 
@@ -50,11 +58,11 @@ add_executable(my_app src/main.cpp)
 target_link_libraries(my_app PRIVATE core)
 ```
 
----
+## Prefer package targets
 
-## 3. Pulling in External Libraries
-
-Real C++ projects pull in external libraries: Boost, Eigen, fmt, spdlog, gRPC, and so on. CMake's `find_package` locates an installed library on your system and exposes it as one or more **imported targets** you can link against:
+`find_package` asks CMake to locate a dependency. When the package provides an
+imported target, link that target instead of manually collecting include paths
+and `-l` flags:
 
 ```cmake
 find_package(Boost REQUIRED COMPONENTS program_options)
@@ -62,47 +70,39 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 target_link_libraries(my_app PRIVATE Boost::program_options)
 ```
 
-The `Boost::program_options` target carries its include paths, compile definitions, and link flags with it. You don't hand-manage header search paths or `-l` flags.
+`Boost::program_options` carries the usage requirements supplied by the package.
+Not every older CMake package exposes a target this cleanly, but use one when it
+does.
 
-If the package is missing, CMake fails at the configure step with a useful message. That's what you want. Failing early at configure time is much friendlier than a cryptic link error later.
+`REQUIRED` makes a missing dependency fail during configuration. I prefer that
+to letting the build continue toward a harder-to-read compiler or linker error.
 
----
-
-## 4. Parsing Arguments and Config Files
-
-You *can* parse `argv` by hand. Don't. Use a library. The general pattern across every options library in every language is the same three steps:
-
-1. **Describe** the options you accept (name, type, default, help text).
-2. **Parse** an input source (`argv`, a config file, or both) into a parsed map.
-3. **Query** values out by name, with types enforced.
-
-In C++, **Boost.Program_options** is a standard choice. It handles short and long flags, defaults, required values, and conveniently uses the same `options_description` to parse INI-style config files too. Declare your options once, parse whatever sources you need into a `variables_map`, then read values out of it.
-
-The important habit is **separating "what options exist" from "where they came from."** A user shouldn't have to care whether `--port 8080` arrived via a flag, a config file, or a default. The library handles that for you.
-
----
-
-## 5. Thin Shell, Fat Core
-
-The most durable pattern in CLI tools (and most software generally) is to **keep your core logic pure and push I/O to the edges.**
+## Keep I/O at the edges
 
 ![Thin shell, fat core](assets/images/thin_shell_fat_core.webp)
 
-A well-structured CLI separates into three layers: a **pure core** of deterministic logic with no filesystem, clock, network, or `argv` dependencies; an **application-services** layer that handles config, logging, persistence, and external APIs; and a **thin executable** that parses arguments, wires everything together, and calls into the core.
+Parse `argv` and config files in the executable, resolve their precedence, and
+pass a typed configuration into the library. If you use Boost.Program_options,
+keep its `variables_map` at that boundary.
 
-Dependencies flow inward: outer layers depend on inner layers, but the core depends on nothing external. That's what keeps the business logic reusable, testable, and portable across interfaces. In CMake this maps naturally to separate targets: one `add_library` for the core, one for services, and a small `add_executable` at the boundary.
+The logic core should take ordinary values and return ordinary results instead
+of reaching for the filesystem, clock, network, or command line. An application
+layer can handle files and external services when those do not belong in the
+executable itself.
 
----
+Make the core a library target and the CLI a small executable target. Tests can
+call the library without faking `argv` or scraping terminal output.
 
-## 6. Errors and Exit Codes
+## Report failures
 
-A final set of Unix conventions worth drilling in:
+Three conventions cover most small tools:
 
-- **Exit `0` on success, non-zero on failure.** Scripts, CI, and other programs depend on this. A silent non-zero is fine; a loud `0` after a crash is a bug.
-- **Diagnostics and errors go to `stderr`, not `stdout`.** Normal output goes to `stdout`. Mixing them up breaks piping and makes failures invisible to automation.
-- **Errors should say what went wrong and, if possible, what to do about it.** `"Config file 'foo.ini' not found"` is useful. `"Error"` is not.
+- Exit `0` on success and non-zero on failure.
+- Send normal output to `stdout` and diagnostics to `stderr`.
+- Say what failed and include the relevant file, option, or value.
 
-The typical C++ idiom is to wrap `main`'s body in a `try` block, catch `std::exception` and any library-specific error types, print to `std::cerr`, and `return 1`:
+Do not catch an exception only to print `"Error"`. The message should give the
+person running the tool a next step.
 
 ```cpp
 int main(int argc, char** argv) {
@@ -116,12 +116,13 @@ int main(int argc, char** argv) {
 }
 ```
 
-This one pattern covers the vast majority of CLI error-handling needs.
-
----
-
 ## Assignment
 
-Apply these ideas in a small simulation: the **Satellite Temperature Monitor**, a C++/CMake project that reads two redundant sensors, averages them each step, and flags out-of-range faults. Target names, CLI flags, and output files are spec'd so the autograder can check your work on every push. The repo ships with a `run_tests.py` script that runs those same tests locally (`python3 run_tests.py`), and the GitHub Actions workflow just invokes it too, so local pass = CI pass.
+Apply these ideas in the **Satellite Temperature Monitor**, a small C++/CMake
+simulation that reads two redundant sensors, averages them, and flags
+out-of-range temperatures. The target names, flags, and output files are fixed
+so an autograder can check the same contract on every push.
 
-Go to [gtcloudrobotics/satellite-temperature-monitor](https://github.com/gtcloudrobotics/satellite-temperature-monitor), click **Use this template** to make your own copy, then clone and push. The autograder runs on every push and you'll see pass/fail in the Actions tab.
+Go to [gtcloudrobotics/satellite-temperature-monitor](https://github.com/gtcloudrobotics/satellite-temperature-monitor),
+click **Use this template**, then clone your copy. Run `python3 run_tests.py`
+locally before you push; GitHub Actions runs the same checks.

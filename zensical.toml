@@ -50,8 +50,7 @@ nav = [
   {"Robotics Course" = [
      "course-home.md",
      "cpp-cli-tooling.md",
-     "system-design.md",
-     "behavior-architectures.md",
+     "system-design.md"
   ]},
   {"Unreal Vehicle Dynamics" = "unrealvehicledynamics.md"},
   {"Fusion in Motion" = "fusion-in-motion.md"},

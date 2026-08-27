@@ -4,69 +4,74 @@ icon: lucide/workflow
 
 # System Design
 
-System design is the top-level view of a robot: what the major pieces are, who owns what, how they pass information, and why they run at different rates. If you can look at a robotics stack and explain the boundary between sensing and estimation, how planning hands off to control, and what happens when data goes stale, you can reason about the system before reading a line of code.
+A robotics stack is a collection of services doing different jobs and
+exchanging data. This page covers how those services connect, why they run at
+different rates, and what happens when data stops arriving.
 
----
+## Robots run at different rates
 
-## 1. A Robot Is Not One Loop
-
-The first mental shift in robotics system design is giving up the idea that a robot is one big loop that reads sensors, makes a decision, and sends commands. Real robots are usually several loops running at different rates because different parts of the problem live on different time scales.
-
-A robot is rarely a single sense–think–act loop. Different parts of the problem live on different time scales: mission logic updates every second or so, planners run at a few hertz, perception runs at sensor rate, estimators track the dynamics, and controllers close the loop at high frequency. Slower layers decide what to do; faster layers decide how.
+A robot is rarely one big sense-think-act loop, even if you believe VLMs are the
+future. Mission logic may update every second, a planner a few times per second,
+perception when a sensor delivers a frame, and control much faster. The exact
+numbers depend on the vehicle and the job. Longer-horizon decisions can usually
+run more slowly than the loops responding directly to motion.
 
 ![Control Hierarchy](assets/images/control_hierarchy.webp)
 
-The exact rates vary across robots, but the overall pattern does not: control runs fastest, estimation follows the dynamics, perception is bounded by sensors and compute, and planning and mission logic run more slowly because they reason over longer horizons. Those differences come from physics, latency, and system requirements, not coding style.
-
-This is also why you can't just call the slow layer from inside the fast one. A controller running at 1 kHz cannot block on a 30 Hz perception update. It would miss 32 of its own deadlines waiting. The usual pattern is a **shared latest-value slot**: the slow producer writes whenever it has something new, the fast consumer reads the most recent value without blocking, and a timestamp lets the consumer notice when the value is stale.
+A fast loop should not wait for a slower one to produce something new. One
+option is to store only the latest pose. Perception replaces it when new data
+arrives, and the controller reads the newest complete pose available. The
+timestamp says how old that pose is.
 
 ```cpp
-struct Stamped { Pose value; double t_sec; };
-std::atomic<Stamped> latest_pose;  // written by perception, read by controller
+struct StampedPose { Pose value; double t_sec; };
+LatestValue<StampedPose> latest_pose;  // stores the newest complete pose
 
-// Perception thread @ 30 Hz
 void perception_loop() {
     while (running) {
-        Pose p = run_perception();
-        latest_pose.store({p, now()});
-        sleep_until_next_tick(30);
+        latest_pose.store({run_perception(), now()});
+        wait_for_next_frame();
     }
 }
 
-// Controller thread @ 1 kHz
 void controller_loop() {
     while (running) {
-        Stamped s = latest_pose.load();              // never blocks
-        if (now() - s.t_sec > 0.1) enter_safe_mode(); // freshness check
+        StampedPose s = latest_pose.load();
+        if (now() - s.t_sec > pose_timeout) enter_safe_mode();
         else send_command(compute(s.value));
-        sleep_until_next_tick(1000);
+        sleep_until_next_control_tick();
     }
 }
 ```
 
-The controller never waits on perception, but it also never silently uses a half-second-old pose. The timestamp is what makes the decoupling safe.
+`LatestValue` is a placeholder for code that prevents the controller from
+reading a pose halfway through an update. `pose_timeout` is the oldest pose the
+controller will accept.
 
-Two distinctions matter early. Perception is not estimation: detecting a lane marker is different from estimating vehicle pose. And planning is not control: deciding where to go is different from generating the fast actuator commands that make the robot follow that decision.
+## Pass results, not implementation details
 
----
+Perception extracts information from sensor data. Estimation combines
+information over time into a state. Planning decides where to go, and control
+generates the commands that make the vehicle follow the plan.
 
-## 2. Interfaces Are The Real Architecture
-
-System design is mostly boundary design. A module stays swappable only if its inputs are explicit, its outputs are typed, and its responsibilities don't leak into neighboring layers.
+Perception should give the planner detected objects or free space, not access to
+a camera driver. The planner should give the controller a trajectory, not its
+map internals.
 
 ```text
 Good:
-camera -> perception -> planner -> controller
+camera data -> perception -> detected objects -> planner -> trajectory -> controller
 
 Bad:
-camera -> planner
-UI -> controller
+planner -> camera driver
 controller -> map internals
+UI -> actuators
 ```
 
-Good boundaries let you replace a camera, planner, or estimator without rewriting the rest of the stack. Bad boundaries create hidden coupling: a planner reaches into sensor internals, a UI writes actuator commands directly, or a controller depends on map-building details it should never know about. This is why robotics diagrams matter. They are not decoration; they expose ownership boundaries.
+The first pipeline passes the result of each step forward. The second list makes
+one service depend on how another service does its job.
 
-At the code level, those same boundaries are function signatures. The planner asks for exactly what it needs and nothing else:
+The same problem appears in a function signature:
 
 ```python
 # Clean — depends on a typed world model.
@@ -76,44 +81,17 @@ def plan(world: WorldModel, goal: Goal) -> Trajectory: ...
 def plan(world, camera_driver, imu_serial_port, ros_node): ...
 ```
 
-The leaky version is no longer a planner. It's a planner-plus-half-the-driver-stack, and swapping the camera or rewiring the IMU now breaks the planning logic. The clean version doesn't care where its `WorldModel` came from: a stereo camera, a lidar, a simulator, or a recorded log.
+## Handle late and missing data
 
----
-
-## 3. Rate, Latency, And Freshness Budgets
-
-Once the modules are separated, the next question is not just *what talks to what*, but *how fast* and *how stale is still acceptable*. Every important module has both a nominal rate and a latency budget.
-
-| Module | Typical Rate | If Stale... |
-| --- | --- | --- |
-| Controller | ~1 kHz | Tracking degrades immediately |
-| Estimator | ~100 Hz | Downstream state becomes wrong |
-| Perception | ~10-30 Hz | World model goes stale |
-| Planner / mission | ~1-5 Hz | Robot can often coast briefly |
-
-A 1 kHz controller should not block waiting on a 30 Hz perception output. A planner can update slowly as long as a faster lower layer can keep the robot stable in the meantime. A stale pose estimate, on the other hand, can poison everything downstream. In robotics, a perfect answer that arrives too late is often worse than a rough answer that arrives on time.
-
----
-
-## 4. Design For Degraded Modes
-
-The final question in any system design is not just "how does this work when everything is healthy?" but "what happens when part of it breaks?" Real systems need an answer for dropped sensors, delayed perception, crashed planners, and stale state.
+Message rate, delivery delay, and age are different. A sensor can publish at 20
+Hz while a backed-up processing queue delivers old measurements. Set a maximum
+age for each input and decide what the receiving service does after that
+timeout.
 
 ![Degraded Modules](assets/images/degraded_modules.webp)
 
-This is where safety authority becomes explicit. A well-designed system is clear about which module can command a stop, which inputs are optional, and what to do when something fails hard enough to need a fallback. Some faults should trigger a controlled stop; others should degrade performance while keeping the robot stable. You can't prevent all failures. The goal is that when they happen, the system does something predictable.
-
-One concrete example makes the interaction between layers easier to see. Picture a small indoor delivery robot moving medicine between rooms in a hospital:
-
-| Module | Input | Output | Rate | If It Fails... |
-| --- | --- | --- | --- | --- |
-| Mission manager | operator request, task queue | next delivery goal | 1 Hz | robot stops taking new jobs |
-| Planner | map, current pose, goal | short-horizon path | 5 Hz | robot can briefly hold last safe plan |
-| Perception | depth camera, lidar | obstacle tracks, free space | 15 Hz | world model goes stale quickly |
-| Estimator | wheel odometry, IMU, landmarks | robot pose and velocity | 100 Hz | every downstream decision gets worse |
-| Controller | latest pose, target trajectory | wheel velocity commands | 200 Hz | tracking degrades immediately |
-
-When everything is healthy, the mission manager picks the next room, the planner turns that into a path through the hall, perception marks carts and people as obstacles, the estimator keeps the robot localized, and the controller tracks the path.
-
-Now break one thing: the depth camera freezes for 300 ms. A well-designed system does **not** let that failure blur across the whole stack. Perception stops publishing fresh obstacle updates. The planner can keep its last path for a moment, but only within a freshness budget. The controller keeps running from the latest valid trajectory instead of blocking. If perception stays stale past the allowed timeout, safety authority escalates: either the planner commands a stop because the world model is stale, or a supervisor module forces safe mode directly. That's system design in practice: not just the boxes, but who can keep going, for how long, and who gets to say stop.
-
+Suppose a delivery robot's depth camera freezes. Perception stops updating free
+space. The planner can use its last path for a short timeout while the
+controller keeps running. After the timeout, the planner or a separate
+supervisor commands a stop. The design should say how long the timeout is and
+which service sends that command.
