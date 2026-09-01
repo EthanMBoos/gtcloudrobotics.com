@@ -51,9 +51,3 @@ The modules below are optional background reading and context to build up a soli
 2. **[System design](system-design.md)** — how robotics services connect, why they run at different rates, and what happens when sensor data stops arriving.
 
 ... more coming soon ...
-
-## Course logistics
-
-Weekly sync / demo day: Wednesdays at 5 PM, in person.
-
-We meet every week in Klaus. Every other week is demo day. You demo what you committed to. Off-week syncs are for getting unstuck, getting feedback on in-progress work, and lining up your next cycle. Attendance is the default expectation, but I'm flexible: if you need to miss for a test, illness, or something else real, just let me know ahead of time.
