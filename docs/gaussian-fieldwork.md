@@ -6,6 +6,8 @@ hide:
 
 # Gaussian Fieldwork
 
+[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/gaussian-fieldwork.git){ .md-button }
+
 This is the least defined of the subteams. I have not written any code for it,
 picked a stack, or decided what the final system should be. I also know less
 about Gaussian splatting than I do about the other project areas. That gives
