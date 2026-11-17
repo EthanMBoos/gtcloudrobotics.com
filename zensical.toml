@@ -52,9 +52,9 @@ nav = [
      "cpp-cli-tooling.md",
      "system-design.md"
   ]},
+  {"Unreal Vehicle Dynamics" = "unrealvehicledynamics.md"},
   {"isaacdrones" = "isaacdrones.md"},
   {"Fusion in Motion" = "fusion-in-motion.md"},
-  {"pipes-rs" = "pipes-rs.md"},
   {"splatsim" = "splatsim.md"}
 ]
 
