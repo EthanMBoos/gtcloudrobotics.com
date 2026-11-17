@@ -47,7 +47,7 @@ https://gtcloudrobotics.com via GitHub Pages.
 | `course-home.md` | Course structure: four project tracks, 2-week demo cycles, logistics |
 | `cpp-cli-tooling.md` | Background module ending with an autograded assignment |
 | `system-design.md` | Background module (no assignment) |
-| `isaacdrones.md`, `fusion-in-motion.md`, `pipes-rs.md`, `splatsim.md` | Project track pages, one per repo; each has a matching blurb on `course-home.md` |
+| `unrealvehicledynamics.md`, `isaacdrones.md`, `fusion-in-motion.md`, `splatsim.md` | Project track pages, one per repo; each has a matching blurb on `course-home.md` |
 
 Modules 4–6 (multi-threading, frames & transforms, path & motion planning) are
 named on `course-home.md` but **not yet written** — the numbered list there is

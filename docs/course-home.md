@@ -38,6 +38,11 @@ At the start, choose one of the four project areas below. This is the space you
 work in for the semester. You're not committing to a single deliverable; you're
 committing to a problem area.
 
+**[Unreal Vehicle Dynamics](unrealvehicledynamics.md)** — Build and test
+aircraft and boat dynamics in a shared C++ core that runs headlessly or inside
+Unreal Engine. Work on vehicle models, reference checks, engineering maneuvers,
+ArduPilot integration, reports, or the boundary between the model and simulator.
+
 **[isaacdrones](isaacdrones.md)** — Build an aerial drone simulation on a small
 NVIDIA Isaac Sim base. The boot, fixed-rate physics loop, and RTX camera work;
 no drone is modeled yet. Work on the vehicle model, onboard cameras, lidar or
@@ -47,11 +52,6 @@ radar, the ROS 2 bridge, or a flight stack in the loop.
 experiments for moving ground and aerial vehicles. Work on sensor models, timing
 and faults, estimator integrations, datasets, metrics, or reports that compare
 methods against the same measurements and truth.
-
-**[pipes-rs](pipes-rs.md)** — Build sensor processing and fusion pipelines in
-front of ROS 2. Work on sensor inputs, timing and synchronization, camera and
-point-cloud processing, estimator integration, recording and replay, or testing
-what happens as sensor rates and data sizes increase.
 
 **[splatsim](splatsim.md)** — Replay a drone's flight inside a Gaussian splat of
 the place it flew through and score the replay against the log. Work on how far
