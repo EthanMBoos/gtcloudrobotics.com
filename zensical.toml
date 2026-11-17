@@ -53,8 +53,8 @@ nav = [
      "system-design.md"
   ]},
   {"Unreal Vehicle Dynamics" = "unrealvehicledynamics.md"},
-  {"isaacdrones" = "isaacdrones.md"},
   {"Fusion in Motion" = "fusion-in-motion.md"},
+  {"isaacdrones" = "isaacdrones.md"},
   {"splatsim" = "splatsim.md"}
 ]
 
