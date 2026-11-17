@@ -52,10 +52,10 @@ nav = [
      "cpp-cli-tooling.md",
      "system-design.md"
   ]},
-  {"Unreal Vehicle Dynamics" = "unrealvehicledynamics.md"},
+  {"isaacdrones" = "isaacdrones.md"},
   {"Fusion in Motion" = "fusion-in-motion.md"},
   {"pipes-rs" = "pipes-rs.md"},
-  {"Gaussian Fieldwork" = "gaussian-fieldwork.md"}
+  {"splatsim" = "splatsim.md"}
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

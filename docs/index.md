@@ -8,7 +8,8 @@ icon: lucide/rocket
 
 # Autonomous Robotics Systems,<br>Testbed & Evaluation Toolkits
 
-A Georgia Tech VIP course where students build, test, and demo<br>working software for mobile robots.
+A Georgia Tech VIP course where students build, test, and demo<br>working
+software for mobile robots.
 
 [Course home](course-home.md){ .md-button .md-button--primary }
 

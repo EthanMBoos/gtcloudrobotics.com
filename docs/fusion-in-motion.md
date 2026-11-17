@@ -6,7 +6,8 @@ hide:
 
 # Fusion in Motion
 
-[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/fusion-in-motion){ .md-button }
+[:fontawesome-brands-github: View on
+GitHub](https://github.com/EthanMBoos/fusion-in-motion){ .md-button }
 
 **Fusion in Motion** runs deterministic moving sensor-fusion experiments and
 opens the results in an animated Rerun dashboard. The repository has one
@@ -147,11 +148,14 @@ frontends, and runtime experiments are not yet implemented.
 
 !!! note "Read the engineering docs"
 
-    Start with the repository [README](https://github.com/EthanMBoos/fusion-in-motion#readme)
-    and [installation guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/INSTALL.md).
-    The [experiment guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/EXPERIMENTS.md)
-    covers scenarios, sweeps, and run folders; the
-    [estimator guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/ESTIMATORS.md)
-    explains how to score another implementation; and
-    [sensor pipelines](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/SENSOR_PIPELINES.md)
+    Start with the repository
+    [README](https://github.com/EthanMBoos/fusion-in-motion#readme) and
+    [installation
+    guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/INSTALL.md).
+    The [experiment
+    guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/EXPERIMENTS.md)
+    covers scenarios, sweeps, and run folders; the [estimator
+    guide](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/ESTIMATORS.md)
+    explains how to score another implementation; and [sensor
+    pipelines](https://github.com/EthanMBoos/fusion-in-motion/blob/main/docs/SENSOR_PIPELINES.md)
     describes the planned runtime experiments.

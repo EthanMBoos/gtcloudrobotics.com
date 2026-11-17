@@ -6,7 +6,8 @@ hide:
 
 # pipes-rs
 
-[:fontawesome-brands-github: View on GitHub](https://github.com/EthanMBoos/pipes-rs){ .md-button }
+[:fontawesome-brands-github: View on
+GitHub](https://github.com/EthanMBoos/pipes-rs){ .md-button }
 
 `pipes-rs` is a sensor processing and fusion frontend for ROS 2.
 It will read cameras, lidar, radar, IMUs, and other sensors, keep their data in

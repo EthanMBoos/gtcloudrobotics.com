@@ -123,6 +123,7 @@ simulation that reads two redundant sensors, averages them, and flags
 out-of-range temperatures. The target names, flags, and output files are fixed
 so an autograder can check the same contract on every push.
 
-Go to [gtcloudrobotics/satellite-temperature-monitor](https://github.com/gtcloudrobotics/satellite-temperature-monitor),
+Go to
+[gtcloudrobotics/satellite-temperature-monitor](https://github.com/gtcloudrobotics/satellite-temperature-monitor),
 click **Use this template**, then clone your copy. Run `python3 run_tests.py`
 locally before you push; GitHub Actions runs the same checks.
