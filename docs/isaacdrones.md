@@ -9,11 +9,10 @@ hide:
 [:fontawesome-brands-github: View on
 GitHub](https://github.com/EthanMBoos/isaacdrones){ .md-button }
 
-**isaacdrones** is a small base for simulating aerial drones in
+**isaacdrones** is a small base for simulating drones in
 [NVIDIA Isaac Sim](https://docs.isaacsim.omniverse.nvidia.com/latest/) 6.2. It
-starts Isaac Sim in under 10 s, advances physics by a fixed timestep, and
-renders an RTX camera. The only scene is a cube on a ground plane, at rest or
-falling. No drone is modeled yet.
+boots in under 10 s, steps physics at a fixed 60 Hz, and renders an RTX camera.
+The only scene is a cube on a ground plane. There's no drone yet.
 
 ```sh
 uv run isaacdrones                              # a window and a ground plane
@@ -22,50 +21,37 @@ uv run isaacdrones --headless --camera out.png  # one image of the cube
 uv run isaacdrones --headless --video DIR       # the cube falling, 120 frames
 ```
 
-Each frame is one physics step at 60 Hz. On exit the program prints the frame
-count, the simulation time, and the physics engine.
+## Where to start
 
-## The first work
+Make a rigid body that takes thrust and torque each physics step. Skip the rotor
+model for now. Then put a camera on it and set the near clip well below Isaac
+Sim's 1 m default, since a drone camera gets close to things.
 
-Start with a rigid body that takes thrust and torque at each physics step,
-before any rotor model. Then put a camera on it. A camera on a drone passes
-close to objects, so it needs a near clip below Isaac Sim's default of 1 m.
+After that it depends on your demo: the ROS 2 bridge, RTX lidar or radar, or a
+flight stack.
 
-After that, pick what your demo needs: the ROS 2 bridge with an RTX sensor in
-the loop, RTX lidar or radar, pacing to real time, or a flight stack. A flight
-stack or a specific vehicle will also settle body frames, camera axes, and
-joint order, which are open today.
+## Code layout
 
-## How the code is laid out
+It's built on Isaac Sim directly, not Isaac Lab. Only `src/isaacdrones/sim/`
+imports Isaac Sim, through one class, `Simulation`, which owns the loop.
+Everything else imports on any machine.
 
-The project builds directly on Isaac Sim, not Isaac Lab. Only
-`src/isaacdrones/sim/` imports Isaac Sim, and it exposes one class,
-`Simulation`, that owns the app, the stage, and the loop. The rest of the
-package imports on any machine, and a test enforces that.
+Use simulation time, not the wall clock. Quaternions are `wxyz`, units are
+meters and radians, and Z is up.
 
-All stepping goes through `Simulation`, and logic reads simulation time, not
-the wall clock. Quaternions are `wxyz`, units are meters and radians, and Z is
-up.
+## Limits
 
-## Current limits
+Isaac Sim needs Linux or Windows with an NVIDIA RTX GPU, which for us means PACE
+ICE. It won't run on macOS, though the package installs there and the non-sim
+tests run.
 
-Isaac Sim needs Linux or Windows 11 on x86_64 and an NVIDIA RTX GPU. macOS
-cannot run the simulator, though the package installs there and the tests that
-need no simulator run. Our only machine that runs it is Georgia Tech's PACE ICE
-cluster, so code that touches the simulator is unverified until it has run
-there.
-
-`--video` and `--stream` are currently unverified. RTX lidar and radar are
+`--video` and `--stream` haven't been checked recently. Lidar and radar are
 untried.
 
-!!! note "Read the engineering docs"
+!!! note "Docs"
 
-    Start with the repository
-    [README](https://github.com/EthanMBoos/isaacdrones#readme).
-    [TODO.md](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/TODO.md)
-    lists open work,
+    [README](https://github.com/EthanMBoos/isaacdrones#readme),
+    [TODO.md](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/TODO.md),
     [PACE.md](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/PACE.md)
-    covers running on the cluster and what was verified there, and the [Isaac
-    Sim
-    notes](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/reference/ISAAC_SIM_NOTES.md)
-    give the reasons behind the design.
+    (running on the cluster), and the design
+    [notes](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/reference/ISAAC_SIM_NOTES.md).

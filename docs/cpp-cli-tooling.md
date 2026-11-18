@@ -4,9 +4,8 @@ icon: lucide/terminal
 
 # C++ CLI Tooling
 
-Every program needs a way to take input, do some work, and report a result. For
-the tools in this course, that boundary is a CLI. The same executable should run
-by hand, from a script, or in CI without changing the core logic.
+The tools in this course are CLIs. The same executable should run by hand, from
+a script, or in CI without changing the core logic.
 
 ## Start with the CLI contract
 
@@ -17,9 +16,8 @@ effects it has on disk or the network.
 
 ![CLI Contract](assets/images/cli_contract.webp)
 
-The small contract is what makes a CLI easy to script, call from CI, or combine
-with another program. Treat it as an interface rather than whatever happens to
-fall out of `main`.
+Keeping that contract small is what makes a CLI easy to script, call from CI, or
+pipe into another program.
 
 Use this configuration order:
 
@@ -27,9 +25,8 @@ Use this configuration order:
 2. values from a config file; and
 3. command-line flags for this run.
 
-Later sources override earlier ones. That is not the only possible policy, but
-it is easy to explain and test. Whatever order you choose, do not let it depend
-on which parsing function happened to run last.
+Later sources override earlier ones. Whatever order you pick, don't let it
+depend on which parsing function happened to run last.
 
 ## CMake is a graph of targets
 
@@ -101,8 +98,8 @@ Three conventions cover most small tools:
 - Send normal output to `stdout` and diagnostics to `stderr`.
 - Say what failed and include the relevant file, option, or value.
 
-Do not catch an exception only to print `"Error"`. The message should give the
-person running the tool a next step.
+Don't catch an exception just to print `"Error"`. Give the person running the
+tool a next step.
 
 ```cpp
 int main(int argc, char** argv) {
