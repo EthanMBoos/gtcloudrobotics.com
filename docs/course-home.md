@@ -38,27 +38,25 @@ At the start, choose one of the four project areas below. This is the space you
 work in for the semester. You're not committing to a single deliverable; you're
 committing to a problem area.
 
-**[isaacdrones](isaacdrones.md)** — Build an aerial drone simulation on a small
-NVIDIA Isaac Sim base. The boot, fixed-rate physics loop, and RTX camera work;
-no drone is modeled yet. Work on the vehicle model, onboard cameras, lidar or
-radar, the ROS 2 bridge, or a flight stack in the loop.
+**[Fusion in Motion](fusion-in-motion.md)** — Build repeatable sensor-fusion
+experiments for moving robots. Work on sensor models, timing and faults,
+estimators, datasets, or metrics that compare methods on the same measurements
+and truth.
 
-**[Fusion in Motion](fusion-in-motion.md)** — Build controlled sensor-fusion
-experiments for moving ground and aerial vehicles. Work on sensor models, timing
-and faults, estimator integrations, datasets, metrics, or reports that compare
-methods against the same measurements and truth.
+**[World Models](world-models.md)** — Try learned world models as the fast
+low-level layer of a drone, with an LLM giving commands on top. Work on
+reproducing recent papers, logging simulated flights, prediction on unseen
+flights, or planning to a goal image. No repo yet.
+
+**[isaacdrones](isaacdrones.md)** — Build a drone simulation on a small NVIDIA
+Isaac Sim base. The physics loop and camera work, but there's no drone yet. Work
+on the vehicle model, cameras, lidar or radar, the ROS 2 bridge, or a flight
+stack.
 
 **[splatsim](splatsim.md)** — Replay a drone's flight inside a Gaussian splat of
-the place it flew through and score the replay against the log. Work on how far
-from the capture a render can be trusted, poses from the flight log,
-detector-based scores, a side-by-side viewer, or readers for other log formats.
-This is the most open-ended and research-oriented track.
-
-**[World Models](world-models.md)** — Investigate learned world models as the
-fast low-level layer of a drone that a language model commands from above. Work
-on reproducing recent papers, logging simulated flights, prediction on flights
-the model has not seen, planning to a goal image, or the skill interface. There
-is no repository yet.
+the place it flew through and score it against the log. Work on how far from the
+capture a render can be trusted, poses from the log, detector-based scores, a
+viewer, or other log formats. The most research-heavy track.
 
 ### 3. Ship something every two weeks
 
@@ -80,8 +78,7 @@ shipped pieces of work rather than one open-ended project that's perpetually
 
 ### 4. Background modules (optional)
 
-The modules below are optional background reading and context to build up a
-solid foundation. They're here when you want to go deeper on a topic.
+Optional background reading for when you want to go deeper on a topic.
 
 **Modules**:
 

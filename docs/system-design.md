@@ -4,9 +4,9 @@ icon: lucide/workflow
 
 # System Design
 
-A robotics stack is a collection of services doing different jobs and
-exchanging data. This page covers how those services connect, why they run at
-different rates, and what happens when data stops arriving.
+A robotics stack is a bunch of services doing different jobs and passing data
+around. This page covers how they connect, why they run at different rates, and
+what happens when data stops arriving.
 
 ## Robots run at different rates
 
@@ -68,8 +68,8 @@ controller -> map internals
 UI -> actuators
 ```
 
-The first pipeline passes the result of each step forward. The second list makes
-one service depend on how another service does its job.
+The first passes each step's result forward. The second makes one service depend
+on how another does its job.
 
 The same problem appears in a function signature:
 
