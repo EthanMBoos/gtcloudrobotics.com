@@ -38,11 +38,6 @@ At the start, choose one of the four project areas below. This is the space you
 work in for the semester. You're not committing to a single deliverable; you're
 committing to a problem area.
 
-**[Unreal Vehicle Dynamics](unrealvehicledynamics.md)** — Build and test
-aircraft and boat dynamics in a shared C++ core that runs headlessly or inside
-Unreal Engine. Work on vehicle models, reference checks, engineering maneuvers,
-ArduPilot integration, reports, or the boundary between the model and simulator.
-
 **[isaacdrones](isaacdrones.md)** — Build an aerial drone simulation on a small
 NVIDIA Isaac Sim base. The boot, fixed-rate physics loop, and RTX camera work;
 no drone is modeled yet. Work on the vehicle model, onboard cameras, lidar or
@@ -58,6 +53,12 @@ the place it flew through and score the replay against the log. Work on how far
 from the capture a render can be trusted, poses from the flight log,
 detector-based scores, a side-by-side viewer, or readers for other log formats.
 This is the most open-ended and research-oriented track.
+
+**[World Models](world-models.md)** — Investigate learned world models as the
+fast low-level layer of a drone that a language model commands from above. Work
+on reproducing recent papers, logging simulated flights, prediction on flights
+the model has not seen, planning to a goal image, or the skill interface. There
+is no repository yet.
 
 ### 3. Ship something every two weeks
 
