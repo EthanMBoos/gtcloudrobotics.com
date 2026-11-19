@@ -1,4 +1,4 @@
-// Three targets, one sensor that reports unlabelled positions with misses and
+// Three targets, one sensor that reports unlabeled positions with misses and
 // false alarms. Each track is a Kalman filter; the only thing that changes
 // between the two modes is how detections are assigned to tracks.
 
@@ -7,7 +7,7 @@ import { CV } from './lsq.js'
 
 export const SCAN = 0.2 // s between sensor scans
 const GATE = 9.21 // chi-square, 2 dof, 99 %
-const Q = 1 // m/s^2 of unmodelled acceleration
+const Q = 1 // m/s^2 of unmodeled acceleration
 const ALT = 0.9
 const B = [7, 4.6] // clutter is uniform over +-B
 
@@ -84,7 +84,7 @@ export class Tracker {
   }
 }
 
-// Nearest neighbour: tracks choose in order and never give a detection back.
+// Nearest neighbor: tracks choose in order and never give a detection back.
 function greedy(cost, n) {
   const used = new Set()
   return cost.map((row) => {
@@ -135,7 +135,7 @@ export default function mount(fig) {
   const links = new Segs(PATHS.length, C.est)
   stage.scene.add(...craft, ...shade, ...gates.map((g) => g.group), ...trails.map((t) => t.mesh), ...dots, links.mesh)
 
-  const mode = fig.choice([['nn', 'nearest neighbour'], ['global', 'global assignment']], 'nn')
+  const mode = fig.choice([['nn', 'nearest neighbor'], ['global', 'global assignment']], 'nn')
   const clutter = fig.slider('false alarms per scan', { min: 0, max: 8, step: 0.5, value: 1, fmt: (v) => v.toFixed(1) })
   const miss = fig.slider('missed detections', { min: 0, max: 50, step: 5, value: 10, fmt: (v) => v + ' %' })
   const sigma = fig.slider('sensor noise', { min: 0.05, max: 0.6, step: 0.05, value: 0.25, fmt: (v) => v.toFixed(2) + ' m' })
@@ -193,7 +193,7 @@ export default function mount(fig) {
       d.scale.setScalar(fade)
     })
     fig.readout(
-      `tracks that changed target in ${t.toFixed(0)} s · nearest neighbour: <b class="meas">${trackers.nn.swaps}</b> · ` +
+      `tracks that changed target in ${t.toFixed(0)} s · nearest neighbor: <b class="meas">${trackers.nn.swaps}</b> · ` +
         `global assignment: <b class="est">${trackers.global.swaps}</b>`,
     )
   }

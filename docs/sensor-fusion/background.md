@@ -67,7 +67,7 @@ drift of the visual-inertial odometry each time a gate is detected.
 
 A Kalman filter assumes that we know which object produced each measurement.
 A sensor that observes several objects (e.g., a radar, or a lidar detector)
-does not provide this. It reports unlabelled positions, it misses some objects
+does not provide this. It reports unlabeled positions, it misses some objects
 in each scan, and some of its detections are false. We refer to the problem of
 matching detections to tracks as data association. Reid's tracker kept several
 candidate matchings and decided among them with later scans. Most vehicle
@@ -80,13 +80,13 @@ Apollo).
 <figcaption>Dark drones are the true objects. Red points are the detections of
 the latest scan, including false alarms. Each blue circle is the gate of a
 track, and each blue line is the path that the track has reported. With
-"nearest neighbour", each track in turn takes its closest detection. With
+"nearest neighbor", each track in turn takes its closest detection. With
 "global assignment", the tracker chooses the pairing with the lowest total
 cost. The counter runs both rules on the same detections.</figcaption>
 </figure>
 
 With the default settings, global assignment loses its target about half as
-often as nearest neighbour (5.7 against 10.8 times in two minutes, averaged over
+often as nearest neighbor (5.7 against 10.8 times in two minutes, averaged over
 30 runs). The advantage shrinks as false alarms increase, because most errors
 then occur when an object is missed and a false alarm falls inside its gate, and
 no assignment rule can detect this within a single scan. This is the reason that
@@ -105,14 +105,14 @@ distributes the accumulated error along the trajectory. This added constraint is
 called a loop closure.
 
 <figure class="fig" data-figure="posegraph">
-<figcaption>The dark rover drives one lap of the grey track. Each blue point is
+<figcaption>The dark rover drives one lap of the gray track. Each blue point is
 a pose that the robot has kept, joined to the next by an odometry constraint. A
 red line is a constraint between two poses that the robot believes to be the
 same place. "One false match" adds such a constraint between two poses on
 opposite sides of the lap.</figcaption>
 </figure>
 
-Without the loop closure, the gyro bias leaves a gap of a metre or more between
+Without the loop closure, the gyro bias leaves a gap of a meter or more between
 the first pose and the last. With it, the gap closes and the error of every pose
 in the lap is reduced, not only that of the last one. The figure also shows the
 weakness of the method, since a single false match folds the map and produces a
@@ -142,7 +142,7 @@ known, and the camera measures the position of each feature relative to the
 drone.</figcaption>
 </figure>
 
-With the default settings, the inertial estimate is several metres off after one
+With the default settings, the inertial estimate is several meters off after one
 minute and the combined estimate is about 0.3 m off. Reducing the camera range
 leaves fewer features in view, and the combined estimate approaches the inertial
 one. The combined estimate still drifts, because none of its measurements refers
@@ -153,7 +153,7 @@ more measurement.
 ## Localizing against a prior map { #map-localization }
 
 Odometry of any kind drifts, and satellite positioning is accurate to about a
-metre, which is not sufficient to keep a car in its lane. Levinson and Thrun
+meter, which is not sufficient to keep a car in its lane. Levinson and Thrun
 ([2010](https://fileadmin.cs.lth.se/ai/Proceedings/ICRA2010/MainConference/data/papers/1912.pdf))
 removed this error with a map made in advance. The map stores how strongly each
 15 cm cell of the road surface reflects the lidar, and while driving the vehicle
@@ -169,8 +169,8 @@ where the surface is brighter. The surface on the right is the belief over the
 offset between the two positions.</figcaption>
 </figure>
 
-With a dashed centre line, the belief has a single peak and the error falls to a
-few centimetres in both directions. With solid lines only, the scan looks the
+With a dashed center line, the belief has a single peak and the error falls to a
+few centimeters in both directions. With solid lines only, the scan looks the
 same wherever the car is along the road, so the belief becomes a ridge and the
 error along the road is not corrected. A measurement can therefore only correct
 the directions in which the scene varies, and a map-based localizer is only as
@@ -218,7 +218,7 @@ SLAM estimator and a tracker side by side.
 
 <figure class="fig" data-figure="slammot">
 <figcaption>The dark rover and drone are the truth, and the blue ones are the
-estimates. The rover localizes from the grey landmarks, and tracks the drone
+estimates. The rover localizes from the gray landmarks, and tracks the drone
 from range and bearing measurements (red line), which it places in the world
 with its own estimated pose. "Treat the drone as a landmark" gives the localizer
 the drone as if it were fixed where it was first seen.</figcaption>
@@ -228,7 +228,7 @@ The two estimators depend on each other in both directions. Without landmark
 fixes, the rover's estimate drifts and the drone track drifts with it, since the
 track can be no more accurate than the pose that places it. When the drone is
 taken for a landmark, the error enters the other way and the rover's own
-estimate is pulled by more than a metre. The joint estimate that Wang set aside
+estimate is pulled by more than a meter. The joint estimate that Wang set aside
 is now practical with factor graphs, although it is not settled:
 [DynoSAM](https://github.com/ACFR-RPG/DynOSAM) (2025) is built on GTSAM, and its
 authors state that the formulation of the problem remains open. Comparing the

@@ -90,7 +90,7 @@ the best-scoring ones from the previous pass. Model predictive path integral
 control (MPPI) is a closely related method.
 
 <figure class="fig" data-figure="plan">
-  <figcaption>Grey lines are sampled rollouts, green lines are the best-scoring samples, blue is the resulting plan, and dark is the trajectory the drone flew.</figcaption>
+  <figcaption>Gray lines are sampled rollouts, green lines are the best-scoring samples, blue is the resulting plan, and dark is the trajectory the drone flew.</figcaption>
 </figure>
 
 Because the plan is computed in the model but executed in the real dynamics,
