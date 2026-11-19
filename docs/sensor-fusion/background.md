@@ -5,7 +5,7 @@ icon: lucide/file-text
 # Background
 
 This page gives a brief history of sensor fusion for autonomous vehicles and
-drones, and then examines six ideas from that history that you are likely to
+drones, and then examines eight ideas from that history that you are likely to
 meet in current code. The timeline covers the full period. The sections below
 it concentrate on the more recent points, because the earliest ones (the Kalman
 filter and its extensions) are the subject of the [intro page](intro.md). The
@@ -13,20 +13,22 @@ figures are small simulations written for this page and are not recordings of
 real systems.
 
 <div class="tl">
-<div class="tl-item tl-theory"><span class="tl-year">1960</span><span class="tl-name">Kalman filter</span><span class="tl-note">Estimation becomes recursive</span></div>
-<div class="tl-item tl-theory"><span class="tl-year">1961</span><span class="tl-name">Extended Kalman filter</span><span class="tl-note">Nonlinear models; flies on Apollo</span></div>
+<div class="tl-item tl-theory"><span class="tl-year">1960</span><span class="tl-name">Kalman filter</span><span class="tl-note">Recursive estimation; extended for Apollo</span></div>
 <div class="tl-item tl-theory"><span class="tl-year">1979</span><span class="tl-name"><a href="#association">Multiple hypothesis tracking</a></span><span class="tl-note">Which detection is which object</span></div>
 <div class="tl-item tl-theory"><span class="tl-year">1982</span><span class="tl-name">Error-state filter</span><span class="tl-note">The inertial sensor is the motion model</span></div>
 <div class="tl-item tl-theory"><span class="tl-year">1986</span><span class="tl-name">Stochastic map</span><span class="tl-note">Robot and landmarks in one estimate</span></div>
 <div class="tl-item tl-theory"><span class="tl-year">1997</span><span class="tl-name"><a href="#pose-graph">Pose graph</a></span><span class="tl-note">Keep every pose and solve once</span></div>
-<div class="tl-item tl-road"><span class="tl-year">2005</span><span class="tl-name">Stanley</span><span class="tl-note">A fused pose filter crosses the desert</span></div>
 <div class="tl-item tl-road"><span class="tl-year">2007</span><span class="tl-name"><a href="#slammot">SLAMMOT</a></span><span class="tl-note">Moving objects join the estimate</span></div>
 <div class="tl-item tl-air"><span class="tl-year">2007</span><span class="tl-name"><a href="#visual-inertial">MSCKF</a></span><span class="tl-note">Camera and inertial fusion at low cost</span></div>
 <div class="tl-item tl-road"><span class="tl-year">2010</span><span class="tl-name"><a href="#map-localization">Map-based localization</a></span><span class="tl-note">A prior lidar map bounds the error</span></div>
 <div class="tl-item tl-theory"><span class="tl-year">2012</span><span class="tl-name"><a href="#factor-graphs">iSAM2 and GTSAM</a></span><span class="tl-note">Smoothing becomes a shared library</span></div>
-<div class="tl-item tl-road"><span class="tl-year">2012</span><span class="tl-name">KITTI</span><span class="tl-note">Methods compared on the same data</span></div>
 <div class="tl-item tl-air"><span class="tl-year">2014</span><span class="tl-name">Open autopilot EKF</span><span class="tl-note">ArduPilot, then PX4</span></div>
+<div class="tl-item tl-theory"><span class="tl-year">2015</span><span class="tl-name"><a href="#visual-inertial">IMU preintegration</a></span><span class="tl-note">Many inertial samples, one factor</span></div>
+<div class="tl-item tl-theory"><span class="tl-year">2022</span><span class="tl-name">FAST-LIO2</span><span class="tl-note">Raw lidar points into a filter</span></div>
+<div class="tl-item tl-road"><span class="tl-year">2022</span><span class="tl-name"><a href="#learned-measurements">BEVFusion</a></span><span class="tl-note">Fusion moves inside the detector</span></div>
 <div class="tl-item tl-air"><span class="tl-year">2023</span><span class="tl-name">Swift</span><span class="tl-note">Learning around a Kalman filter</span></div>
+<div class="tl-item tl-theory"><span class="tl-year">2025</span><span class="tl-name"><a href="#submaps">Feed-forward SLAM</a></span><span class="tl-note">A network supplies geometry; graph stays</span></div>
+<div class="tl-item tl-theory"><span class="tl-year">2025</span><span class="tl-name"><a href="#slammot">DynoSAM</a></span><span class="tl-note">Robot, map, and objects in one graph</span></div>
 </div>
 <div class="tl-key"><span class="tl-theory">shared theory</span><span class="tl-road">road vehicles</span><span class="tl-air">drones</span></div>
 
@@ -62,6 +64,14 @@ and the same derivation became the default estimator of PX4 in 2016.
 [Swift](https://doi.org/10.1038/s41586-023-06419-4) (2023) beat human champions
 at drone racing with a learned policy, and inside it a Kalman filter corrects the
 drift of the visual-inertial odometry each time a gate is detected.
+
+Lidar followed the same course as the camera. [LOAM](https://doi.org/10.15607/RSS.2014.X.007)
+(2014) estimated motion by matching edges and planes between successive scans,
+and [FAST-LIO2](https://doi.org/10.1109/TRO.2022.3141876) (2022) matched raw
+points directly inside an error-state Kalman filter driven by the inertial
+sensor. The estimator in both is one that this page has already described, and
+the progress since has been in robustness, i.e., in how rarely a system fails
+on a sensor or a scene that it was not tuned for.
 
 ## Which detection belongs to which track { #association }
 
@@ -130,7 +140,7 @@ how far the camera moved between them. The multi-state constraint Kalman filter
 camera poses in the filter and leaving the observed points out of it. A second
 idea, [preintegration](https://doi.org/10.15607/RSS.2015.XI.006) (2015, with two
 Georgia Tech authors), summarizes the hundreds of inertial samples between two
-camera frames as a single constraint. We refer to the result as visual-inertial
+selected camera frames as a single factor in a graph. We refer to the result as visual-inertial
 odometry, and it is the standard source of position for a drone without GPS.
 
 <figure class="fig" data-figure="vio">
@@ -205,16 +215,89 @@ once the window spans one interval between fixes. This matters whenever earlier
 poses are used again (e.g., to place lidar scans in a map, or to apply a
 measurement that arrives late).
 
-## Moving objects in the estimate { #slammot }
+## A measurement that states its own noise { #learned-measurements }
 
-SLAM assumes that the world is static, and tracking assumes that the pose of the
-sensor is known. In traffic both assumptions fail at once. Wang and colleagues
-at Carnegie Mellon ([2007](https://doi.org/10.1177/0278364907081229)) named the
-combined problem SLAMMOT: simultaneous localization, mapping, and moving object
-tracking. They described two solutions. The first is a joint estimate over the
-robot, the map, and every moving object, which they judged infeasible at the
-time. The second separates the measurements into static and moving, and runs a
-SLAM estimator and a tracker side by side.
+The detections that a tracker receives now come from a network, and since 2022
+the camera and the lidar are usually combined inside it.
+[BEVFusion](https://arxiv.org/abs/2205.13542) projects the features of both
+sensors into one top-down grid and detects objects from that grid. This is a
+second meaning of "sensor fusion", and it differs from the rest of this page
+because its output is a detection and not an estimate with a covariance. The
+open driving stacks therefore run such a detector in front of the same
+[Kalman tracker](https://github.com/autowarefoundation/autoware_universe/blob/main/perception/autoware_multi_object_tracker/README.md)
+as before. A Kalman filter weights each measurement by the noise that is stated
+for it, and the confidence of a detector is a score for the class of the object
+and not a statement about its position. Networks that do report an uncertainty
+tend to understate it (e.g., one [2026 audit](https://arxiv.org/abs/2608.29705)
+of feed-forward 3D models found errors at least 2.4 times larger than stated).
+
+<figure class="fig" data-figure="trust">
+<figcaption>The dark drone is the truth, and red points are detections from the
+sensor on the left, whose noise grows with range. The blue ellipse is the region
+in which the filter claims the drone lies 95% of the time. The slider sets the
+noise that the filter is told, as a multiple of the true noise. The detector
+here is a noise model and not a network, and the motion model of the filter was
+chosen so that the claim holds when the noise is stated correctly.</figcaption>
+</figure>
+
+When the stated noise is 0.4 times the true noise, the drone is inside the 95%
+ellipse only 44% of the time. The error of the estimate hardly changes (36 cm
+against 34 cm), so the damage is not to the estimate but to what the filter
+believes about it, and it appears wherever that belief is used. With the gate
+enabled, the same filter rejects 69% of the correct detections and loses the
+track, where a correctly informed filter rejects 1%. Overstating the noise is
+the safer error, since it costs accuracy (48 cm at 2.4 times) and nothing else.
+Checking a filter in this way requires the truth, which a simulator such as
+[ripple](../ripple.md) provides. The same overconfidence matters more in the
+last section, where a detection affects the estimate of the robot as well as
+the track.
+
+## Submaps without a common scale { #submaps }
+
+The most visible recent change is in how geometry is obtained from images.
+[DUSt3R](https://arxiv.org/abs/2312.14132) (2023) and
+[VGGT](https://arxiv.org/abs/2503.11651) (2025) are networks that output dense
+3D points and camera poses for a few images in one pass, with no calibration
+and no optimization. We refer to them as feed-forward models. They accept only
+a limited number of images at a time, so a long sequence is processed as
+overlapping submaps, and each submap comes out in its own frame and at its own
+scale. [VGGT-SLAM](https://arxiv.org/abs/2505.12549) (2025) joins the submaps
+with a factor graph built on GTSAM, in which the unknown between two submaps is
+more than a rigid transform. The figure reduces this to a single additional
+unknown per submap, its scale.
+
+<figure class="fig" data-figure="scale">
+<figcaption>The rover built a submap at each of twelve places around the loop.
+Dark points are the true landmarks, and blue points are the landmarks of every
+submap, placed with its estimated pose. Each submap has the correct shape and
+its own scale. "Align submaps rigidly" solves a pose graph that treats every
+submap as metric, and "also solve for each scale" adds one scale per submap.
+The scale of the first submap is taken as known.</figcaption>
+</figure>
+
+When the scales differ by 15%, rigid alignment leaves the landmarks 56 cm from
+their true positions on average, and the same landmark appears at several
+places in the map. With a scale per submap, the error is 10 cm, which is the
+level set by the noise of the matching, and it does not depend on how much the
+scales differ. The network has therefore replaced the front of the system, and
+the back is the pose graph of the earlier section with one more variable at
+each node. These systems remain research: the onboard result that we found ran
+at 3.5 frames per second on a ground robot, and several of the models are
+released for non-commercial use only. Recovering camera poses for a
+Gaussian-splat reconstruction is the same alignment problem, which is the
+connection to the [splatsim](../splatsim.md) track.
+
+## SLAMMOT: localizing and tracking together { #slammot }
+
+The preceding sections treat two problems apart. SLAM assumes that the world is
+static, and tracking assumes that the pose of the sensor is known. In traffic
+both assumptions fail at once. Wang and colleagues at Carnegie Mellon
+([2007](https://doi.org/10.1177/0278364907081229)) named the combined problem
+SLAMMOT: simultaneous localization, mapping, and moving object tracking. They
+described two solutions. The first is a joint estimate over the robot, the map,
+and every moving object, which they judged infeasible at the time. The second
+separates the measurements into static and moving, and runs a SLAM estimator
+and a tracker side by side.
 
 <figure class="fig" data-figure="slammot">
 <figcaption>The dark rover and drone are the truth, and the blue ones are the
@@ -224,15 +307,69 @@ with its own estimated pose. "Treat the drone as a landmark" gives the localizer
 the drone as if it were fixed where it was first seen.</figcaption>
 </figure>
 
-The two estimators depend on each other in both directions. Without landmark
-fixes, the rover's estimate drifts and the drone track drifts with it, since the
-track can be no more accurate than the pose that places it. When the drone is
-taken for a landmark, the error enters the other way and the rover's own
-estimate is pulled by more than a meter. The joint estimate that Wang set aside
-is now practical with factor graphs, although it is not settled:
-[DynoSAM](https://github.com/ACFR-RPG/DynOSAM) (2025) is built on GTSAM, and its
-authors state that the formulation of the problem remains open. Comparing the
-separate and the joint estimators is the long-term goal of the ripple track.
+This figure runs the second solution, and it shows that the two estimators
+depend on each other in both directions. Without landmark fixes, the rover's
+estimate drifts and the drone track drifts with it, since the track can be no
+more accurate than the pose that places it. When the drone is taken for a
+landmark, the error enters the other way and the rover's own estimate is pulled
+by more than a meter.
+
+Later systems treat a moving object in one of three ways. The first is to
+discard it: [DynaSLAM](https://doi.org/10.1109/LRA.2018.2860039) (2018) removes
+the pixels of anything that may move before it runs SLAM on the rest. The second
+is to track it separately, which is Wang's second solution and the arrangement
+of the open driving stacks today (e.g., Autoware keeps map-based localization
+apart from its object tracker). The third is to estimate it jointly.
+[CubeSLAM](https://doi.org/10.1109/TRO.2019.2909168) (2019) showed that a moving
+object with a motion model adds constraints on the camera, so that tracking
+improves localization. [LIMOT](https://doi.org/10.1109/LRA.2024.3405385) (2024)
+places the pose of a lidar-inertial vehicle and the states of the objects around
+it in one sliding-window factor graph, and
+[DynoSAM](https://arxiv.org/abs/2501.11893) (2025) is a general framework for
+the joint problem, built on GTSAM. In our view, three ideas from the earlier
+sections made the joint estimate practical: factor graphs, whose sparse
+structure keeps a problem with many objects solvable, preintegration, and
+learned detectors, which settle most of the association before the estimator
+receives a measurement.
+
+<figure class="fig" data-figure="joint">
+<figcaption>The dark rover and drone are the truth, and the blue ones are the
+estimates of the selected method. The rover has noisy odometry, receives a
+landmark fix at the interval set by the slider, and measures the position of the
+drone relative to itself (red line). "Localize and track separately" estimates
+the rover from odometry and fixes, and then tracks the drone with that estimate.
+"One filter for both" holds the rover, the drone, and the drone's velocity in a
+single Kalman filter. Both run on the same data. The heading is taken as known,
+and the drone moves according to the motion model that both methods assume.</figcaption>
+</figure>
+
+With a fix every 15 seconds, the separate estimators are 95 cm off for the rover
+and 81 cm off for the drone on average, and the joint filter is 38 cm and 36 cm
+off. The measurements are the same in both cases, and the difference lies in
+what each estimator does with the measurement of the drone. The separate
+tracker uses it only to place the drone. The joint filter also uses it to place
+the rover, because the drone moves smoothly while the odometry is noisy, so a
+sudden change in the relative position is attributed to the rover. The drone
+therefore serves as a landmark whose position is unknown but whose motion is
+predictable. The benefit also runs the other way. The joint filter records that
+the errors of the rover and the drone are correlated, so a landmark fix on the
+rover corrects the drone at the same instant, whereas the separate tracker must
+wait for new measurements. The gain depends on how predictable the object is:
+when the drone moves four times as erratically, the joint filter improves the
+rover only from 95 cm to 77 cm, and when it moves a quarter as erratically, the
+error is 18 cm.
+
+The joint filter is never worse in this figure, because it is the optimal
+estimator for a model that is correct. The first figure shows the cost when the
+model is wrong: an object that is wrongly classified, or that does not move as
+assumed, now damages the localization as well as the track. An overconfident
+detection has the same effect, which is why the
+[stated noise](#learned-measurements) of a learned measurement matters more
+here than in a tracker alone. Deployed systems keep the two estimators separate
+for this reason, and the authors of DynoSAM state that the formulation of the
+joint problem remains open. Measuring when the joint estimate is better than
+the separate one, on the same data, is the long-term goal of the
+[ripple](../ripple.md) track.
 
 ## Where the field is now
 
@@ -243,27 +380,40 @@ computer. The open driving stacks match lidar scans to a map, fuse the result in
 an EKF, and track objects with Kalman filters. In the 2026 Hilti-Trimble SLAM
 challenge, every leading entry was a classical visual-inertial system.
 
-Learned methods have so far been adopted around these estimators. Networks
-produce the detections that a tracker associates and the features that an
-odometry system follows, and learned driving and racing policies consume the
-output of a filter. Systems that replace the estimator itself (e.g., SLAM built
-on feed-forward 3D models, or learned inertial odometry) remain research. Their
-main open problem is that a network does not report a trustworthy uncertainty,
-which is what a probabilistic estimator requires of each input.
+We found no landmark from 2026 of the kind that the world models page has.
+The change of the past decade has been gradual, and it has been in what the
+estimator receives. Networks produce the detections that a tracker associates,
+the features that an odometry system follows, and, in research systems, the
+geometry itself, and a classical filter or factor graph still combines them.
+The winner of the 2025 autonomous drone race
+([MonoRace](https://arxiv.org/abs/2601.15222)) ran one EKF on an inertial
+sensor and on gate positions from a network. The open problem is the one in
+the [section above](#learned-measurements): the confidence of a network is a
+useful relative weight and a poor covariance, and a probabilistic estimator
+requires a covariance of each input.
 
-Several of the most cited systems (ORB-SLAM3, VINS-Fusion, LIO-SAM, and
-Cartographer) are no longer maintained, and we suggest reading them as reference
-code. The projects below were active in late 2026.
+For lidar, current systems compete on how rarely they fail under a single
+configuration, and on the hardest driving benchmark of 2026
+([Boreas Road Trip](https://arxiv.org/abs/2602.16870)) the only method that
+completed every route measured velocity with a Doppler radar.
+
+Several of the most cited systems (ORB-SLAM3, VINS-Fusion, LIO-SAM, FAST-LIO2,
+and Cartographer) are no longer maintained, and we suggest reading them as
+reference code. The same holds for the Kalibr calibration toolbox. The projects
+below were active in 2026, except where noted.
 
 | Project | What it provides |
 |---|---|
-| [GTSAM](https://github.com/borglab/gtsam) | Factor graphs, iSAM2, and preintegration, with Python bindings and notebooks |
+| [GTSAM](https://github.com/borglab/gtsam) | Factor graphs, iSAM2, and preintegration, with Python bindings and notebooks. Version 4.3 adds invariant and equivariant filters |
 | [FilterPy](https://github.com/rlabbe/filterpy) | Small, readable Kalman, unscented, and particle filters |
 | [PX4 EKF2](https://github.com/PX4/PX4-Autopilot) | A flight-tested error-state EKF that runs in simulation on a laptop |
 | [robot_localization](https://github.com/cra-ros-pkg/robot_localization) | The standard ROS 2 package for fusing odometry, inertial, and GPS data |
 | [Stone Soup](https://github.com/dstl/Stone-Soup) | Tracking and data association |
-| [KISS-ICP](https://github.com/PRBonn/kiss-icp) | Lidar odometry that installs with pip |
-| [OpenVINS](https://github.com/rpng/open_vins) | An MSCKF visual-inertial estimator written to be read |
+| [KISS-ICP](https://github.com/PRBonn/kiss-icp) and [RKO-LIO](https://github.com/PRBonn/rko_lio) | Lidar and lidar-inertial odometry that install with pip |
+| [GLIM](https://github.com/koide3/glim) | Lidar-inertial mapping built on GTSAM |
+| [OpenVINS](https://github.com/rpng/open_vins) | An MSCKF visual-inertial estimator written to be read (last updated in late 2025) |
+| [OKVIS2-X](https://github.com/ethz-mrl/OKVIS2-X) | The visual-inertial system behind the leading 2026 Hilti-Trimble entry |
+| [VGGT-SLAM](https://github.com/MIT-SPARK/VGGT-SLAM) | Feed-forward submaps aligned in a GTSAM factor graph |
 | [DynoSAM](https://github.com/ACFR-RPG/DynOSAM) | Joint estimation of the camera, the map, and moving objects |
 | [evo](https://github.com/MichaelGrupp/evo) | The standard trajectory error metrics |
 
