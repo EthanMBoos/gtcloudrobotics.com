@@ -51,11 +51,11 @@ nav = [
      "course-home.md",
      {"Sensor fusion" = [
         {"Intro" = "sensor-fusion/intro.md"},
-        {"Literature review" = "sensor-fusion/literature-review.md"}
+        {"Background" = "sensor-fusion/background.md"}
      ]},
      {"World models" = [
         {"Intro" = "world-models/intro.md"},
-        {"Literature review" = "world-models/literature-review.md"}
+        {"Background" = "world-models/background.md"}
      ]}
   ]},
   {"ripple" = "ripple.md"},

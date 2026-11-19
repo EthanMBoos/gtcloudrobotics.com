@@ -40,7 +40,7 @@ https://gtcloudrobotics.com via GitHub Pages.
 - When a page has an assignment, end with an **Assignment** section and link
   the template repository and local/CI checks. None do yet.
 
-## Intro pages, literature reviews, and figures
+## Intro pages, background pages, and figures
 
 `sensor-fusion/intro.md` and `world-models/intro.md` are the top-level
 page for each half of the course: long single-page explainers in the style of
@@ -63,7 +63,7 @@ for each is "Intro".
 
 The other pages in each folder are deep dives into one specific topic. In the
 nav each folder is a group with a plain, non-clickable heading ("Sensor
-fusion", "World models"), then the explainer labelled "Intro", then "Literature review", then any
+fusion", "World models"), then the explainer labelled "Intro", then "Background", then any
 deep dives. Don't name the intro `index.md`: with `navigation.indexes` on, that
 turns the group heading into a link to it.
 
@@ -92,7 +92,7 @@ turns the group heading into a link to it.
 | `course-home.md` | Course structure: project tracks, 2-week demo cycles, logistics, and links to the two intro pages |
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
-| `literature-review.md` in those two folders | Literature review for each half; currently a "Coming soon" stub that Ethan plans to write in depth |
+| `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
 | `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, a "Working up to …" section of two paragraphs, and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
 
 The course splits conceptually into classical sensor fusion and learned world
