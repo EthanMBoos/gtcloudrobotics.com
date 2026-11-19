@@ -142,7 +142,7 @@ body.home-page .md-footer {
 }
 
 /* ---------------------------------------------------------------------------
-   Lesson figures (docs/javascripts/figures). Colours match C in lib.js.
+   Lesson figures (docs/javascripts/figures). Colors match C in lib.js.
    --------------------------------------------------------------------------- */
 .md-typeset figure.fig {
   display: block;
@@ -322,7 +322,7 @@ body.home-page .md-footer {
   .fig-slider input { width: 5.5rem; }
 }
 
-/* Horizontal timeline on the background pages. Dot colours match C in lib.js. */
+/* Horizontal timeline on the background pages. Dot colors match C in lib.js. */
 .tl {
   display: flex;
   overflow-x: auto;
@@ -357,6 +357,7 @@ body.home-page .md-footer {
 .tl-theory, .tl-key .tl-theory { --dot: #2e2e33; }
 .tl-road { --dot: #3a74b8; }
 .tl-air { --dot: #2f8f83; }
+.tl-arm { --dot: #b08d3f; }
 .tl-year { font-size: 0.82rem; font-weight: 700; color: #2e2e33; }
 .tl-name { font-weight: 600; color: #2e2e33; }
 .tl-note { color: #6b6b72; }

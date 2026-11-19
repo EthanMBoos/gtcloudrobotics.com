@@ -16,7 +16,7 @@ const INSET = [0.64, 0.24, 0.34, 0.56]
 const bump = (d, w) => Math.exp(-((d / w) ** 2))
 const edge = (v) => 1 / (1 + Math.exp(-v / 0.08))
 
-// Road brightness in [0, 1]: two edge lines and a centre line, dashed or solid.
+// Road brightness in [0, 1]: two edge lines and a center line, dashed or solid.
 export function refl(x, y, dashed) {
   let v = Math.abs(y) > 2.5 ? 0.42 : 0.25
   v = Math.max(v, 0.25 + 0.65 * bump(Math.abs(y) - 1.9, 0.14))
@@ -81,7 +81,7 @@ export class MapLoc {
           const d = this.scan[k] - refl(gps[0] - ox + PATTERN[k][0], gps[1] - oy + PATTERN[k][1], dashed)
           s += d * d
         }
-        ll[j * G + i] = -s / (2 * NOISE * NOISE * 12) // tempered: neighbouring points are not independent
+        ll[j * G + i] = -s / (2 * NOISE * NOISE * 12) // tempered: neighboring points are not independent
         top = Math.max(top, ll[j * G + i])
       }
     }
@@ -164,7 +164,7 @@ export default function mount(fig) {
   stage.tag('belief over the position offset', 0.64, 0.14)
   stage.tag('← along the road →', 0.72, 0.76)
 
-  const dashed = fig.toggle('dashed centre line', true)
+  const dashed = fig.toggle('dashed center line', true)
   const size = fig.slider('satellite error', { min: 0.1, max: 1, step: 0.05, value: 0.7, fmt: (v) => v.toFixed(2) + ' m' })
   const speed = fig.slider('speed', { min: 1, max: 12, step: 0.5, value: 5, fmt: (v) => v.toFixed(1) + ' m/s' })
   dashed.on = (v) => {

@@ -22,6 +22,15 @@ const registry = {
   plan: () => import('./wm/plan.js'),
   unseen: () => import('./wm/unseen.js'),
   rates: () => import('./wm/rates.js'),
+  exploit: () => import('./wm/exploit.js'),
+  branch: () => import('./wm/branch.js'),
+  horizon: () => import('./wm/horizon.js'),
+  residual: () => import('./wm/residual.js'),
+  coverage: () => import('./wm/coverage.js'),
+  collapse: () => import('./wm/collapse.js'),
+  rank: () => import('./wm/rank.js'),
+  chunks: () => import('./wm/chunks.js'),
+  aux: () => import('./wm/aux.js'),
 }
 
 const mounted = new Map() // element -> dispose

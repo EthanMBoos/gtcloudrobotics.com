@@ -19,7 +19,7 @@ export class Smoother {
     this.k = 0
     this.truth = path(0)
     // Window of poses, oldest first. prior = [mean x, mean y, variance] is
-    // everything older than the window, summarised by a Kalman filter.
+    // everything older than the window, summarized by a Kalman filter.
     this.win = [{ est: [...this.truth], truth: this.truth, odo: null, fix: null }]
     this.prior = [...this.truth, 1e-4]
     this.live = [] // each pose as it was first estimated
