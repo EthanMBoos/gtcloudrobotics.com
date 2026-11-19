@@ -6,12 +6,9 @@ hide:
 
 # DiffMPC on drones
 
-[:fontawesome-brands-github: DiffMPC on
-GitHub](https://github.com/ToyotaResearchInstitute/diffmpc){ .md-button }
-
-This track has no repo yet. **DiffMPC**
-([arXiv 2510.06179](https://arxiv.org/abs/2510.06179)), from Toyota Research
-Institute, tunes a model predictive controller by training it. It simulates the
+**DiffMPC** ([paper](https://arxiv.org/abs/2510.06179),
+[code](https://github.com/ToyotaResearchInstitute/diffmpc)), from Toyota
+Research Institute, tunes a model predictive controller by training it. It simulates the
 controller under randomized conditions, takes the gradient of the reward through
 the controller, and adjusts the cost weights and the physical parameters of the
 model the controller plans with. The authors used it to drift a Toyota Supra
@@ -22,7 +19,7 @@ hand-tuned one does not.
 
 ## Working up to a first experiment
 
-The repo already includes a quadrotor model and a notebook that trains the cost
+Toyota's repo already includes a quadrotor model and a notebook that trains the cost
 weights of a hover controller, so the method runs on a drone on the first day.
 The notebook has one drone, no randomization, and no actuator limits, and the
 work of this track is what it leaves out. Two things look hard. The solver has no
@@ -45,9 +42,10 @@ is a controller that learns to assume less thrust than it has, and because the
 learned parameters are physical quantities, we can check whether they make
 sense.
 
-!!! note "Not run yet"
+!!! note "No repo yet"
 
-    Nothing on this page has been run. The drifting result took 14 hours on an
+    This track has no repo yet, and nothing on this page has been run. The
+    drifting result took 14 hours on an
     RTX 4090, and the authors report that training can diverge from a poor
-    initial guess. The repo's license is non-standard, so read `LICENSE.txt`
-    before building on it.
+    initial guess. The license on Toyota's repo is non-standard, so read `LICENSE.txt` before
+    building on it.
