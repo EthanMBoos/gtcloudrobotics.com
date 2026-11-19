@@ -49,11 +49,16 @@ nav = [
   {"Home" = "index.md"},
   {"Robotics Course" = [
      "course-home.md",
-     "cpp-cli-tooling.md",
-     "system-design.md"
+     {"Sensor fusion" = [
+        {"Intro" = "sensor-fusion/intro.md"},
+        {"Literature review" = "sensor-fusion/literature-review.md"}
+     ]},
+     {"World models" = [
+        {"Intro" = "world-models/intro.md"},
+        {"Literature review" = "world-models/literature-review.md"}
+     ]}
   ]},
-  {"Fusion in Motion" = "fusion-in-motion.md"},
-  {"World Models" = "world-models.md"},
+  {"ripple" = "ripple.md"},
   {"isaacdrones" = "isaacdrones.md"},
   {"splatsim" = "splatsim.md"},
 ]
@@ -296,15 +301,9 @@ logo = "assets/images/logo-black.svg"
 # Read more:
 # - https://zensical.org/docs/setup/colors/
 # ----------------------------------------------------------------------------
+# Light only. The home page hero switches itself to "slate" in extra.js.
 [[project.theme.palette]]
 scheme = "default"
-toggle.icon = "lucide/sun"
-toggle.name = "Switch to dark mode"
-
-[[project.theme.palette]]
-scheme = "slate"
-toggle.icon = "lucide/moon"
-toggle.name = "Switch to light mode"
 
 # ----------------------------------------------------------------------------
 # The "extra" section contains miscellaneous settings.

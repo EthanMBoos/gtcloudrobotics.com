@@ -1,5 +1,5 @@
 ---
-icon: lucide/book-open
+icon: lucide/house
 ---
 
 # Course Home
@@ -34,16 +34,21 @@ building evidence for them, every two weeks, for a semester.
 
 ### 2. Pick a track
 
-At the start, choose one of the four project areas below. This is the space you
+At the start, choose one of the project areas below. This is the space you
 work in for the semester. You're not committing to a single deliverable; you're
 committing to a problem area.
 
-**[Fusion in Motion](fusion-in-motion.md)** — Build repeatable sensor-fusion
+**[Fusion in Motion](https://github.com/EthanMBoos/fusion-in-motion)** — Build repeatable sensor-fusion
 experiments for moving robots. Work on sensor models, timing and faults,
 estimators, datasets, or metrics that compare methods on the same measurements
 and truth.
 
-**[World Models](world-models.md)** — Try learned world models as the fast
+**[ripple](ripple.md)** — Run sensor-fusion experiments on drones in a
+multi-agent simulator that keeps truth and belief apart. Work on sensors,
+localization and tracking estimators, or factor graphs, building up to SLAMMOT:
+localization, mapping, and moving object tracking in one estimator.
+
+**[World Models](world-models/intro.md)** — Try learned world models as the fast
 low-level layer of a drone, with an LLM giving commands on top. Work on
 reproducing recent papers, logging simulated flights, prediction on unseen
 flights, or planning to a goal image. No repo yet.
@@ -76,17 +81,16 @@ on, still inside your track. Over a semester you stack up several distinct,
 shipped pieces of work rather than one open-ended project that's perpetually
 "almost there."
 
-### 4. Background modules (optional)
+### 4. Get up to speed
 
-Optional background reading for when you want to go deeper on a topic.
+Two intro pages, one per half of the course. They're mostly figures you can
+drag and break, with a few lines of text between them. Start with the one
+closest to your track.
 
-**Modules**:
+**[Sensor Fusion](sensor-fusion/intro.md)** — noise and bias, predict
+and update, drift, bearings and ranges, frames, late measurements, and what
+speed does to all of it.
 
-1. **[C++ CLI tooling](cpp-cli-tooling.md)** — CMake fundamentals and the
-   workflow to spin up a useful utility from scratch.
-
-2. **[System design](system-design.md)** — how robotics services connect, why
-   they run at different rates, and what happens when sensor data stops
-   arriving.
-
-... more coming soon ...
+**[World Models](world-models/intro.md)** — latents, predicting the next
+one, rollouts, planning by sampling, flights the model never saw, and why an
+LLM sits on top instead of flying.

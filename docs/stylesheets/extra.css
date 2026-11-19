@@ -140,3 +140,184 @@ body.home-page .md-footer {
 [data-md-color-scheme="slate"] .md-logo img {
   content: url('../assets/images/logo-white.svg');
 }
+
+/* ---------------------------------------------------------------------------
+   Lesson figures (docs/javascripts/figures). Colours match C in lib.js.
+   --------------------------------------------------------------------------- */
+.md-typeset figure.fig {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 1.6em 0;
+  text-align: left;
+}
+
+.fig-canvas {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: #f2f1ed;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fig-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fig-labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fig-label,
+.fig-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.62rem;
+  line-height: 1.2;
+  color: #55555c;
+  white-space: nowrap;
+  text-shadow: 0 0 3px #f2f1ed, 0 0 3px #f2f1ed, 0 0 6px #f2f1ed;
+}
+
+.fig-tag {
+  padding: 0.3rem 0.1rem;
+  color: #71717a;
+}
+
+.fig .est { color: #3a74b8; }
+.fig .meas { color: #c0392b; }
+.fig .goal { color: #2f8f83; }
+.fig .brass { color: #8f7230; }
+
+.fig-readout {
+  min-height: 1.5em;
+  margin-top: 0.55rem;
+  font-size: 0.72rem;
+  color: #55555c;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.fig-readout b { color: #2a2a2e; }
+
+.fig-row {
+  display: inline-block;
+  margin: 0 0.7em;
+  white-space: nowrap;
+}
+
+.fig-row i {
+  font-style: normal;
+  color: #9a9aa2;
+  margin-right: 0.35em;
+}
+
+.fig-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem 1rem;
+  margin-top: 0.55rem;
+  font-size: 0.68rem;
+}
+
+.fig-slider {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #55555c;
+}
+
+.fig-slider input {
+  width: 7rem;
+  accent-color: #2e2e33;
+}
+
+.fig-slider output {
+  min-width: 3.6em;
+  color: #2a2a2e;
+  font-variant-numeric: tabular-nums;
+}
+
+.fig-btn {
+  font: inherit;
+  color: #2a2a2e;
+  background: transparent;
+  border: 1.5px solid #c9c6bd;
+  border-radius: 999px;
+  padding: 0.12rem 0.7rem;
+  cursor: pointer;
+}
+
+.fig-btn:hover { border-color: #2e2e33; }
+
+.fig-btn[aria-pressed="true"] {
+  color: #fff;
+  background: #2e2e33;
+  border-color: #2e2e33;
+}
+
+.fig-choice {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.fig-chart {
+  position: relative;
+  height: 3.4rem;
+  margin-top: 0.6rem;
+  border-left: 1px solid #c9c6bd;
+  border-bottom: 1px solid #c9c6bd;
+}
+
+.fig-chart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fig-chart span {
+  position: absolute;
+  font-size: 0.58rem;
+  color: #71717a;
+}
+
+.fig-chart-y { left: 0.4rem; top: 0; }
+.fig-chart-x { right: 0.2rem; bottom: 0.1rem; }
+
+.fig-strip {
+  display: block;
+  width: 100%;
+  height: 4.2rem;
+  margin-top: 0.6rem;
+}
+
+.md-typeset figure.fig figcaption {
+  max-width: none;
+  margin: 0.6rem auto 0;
+  font-size: 0.66rem;
+  font-style: normal;
+  color: #71717a;
+  text-align: center;
+}
+
+.fig-error {
+  padding: 2rem 1rem;
+  background: #f2f1ed;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  color: #71717a;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .fig-canvas { aspect-ratio: 1 / 1; }
+  .fig-slider input { width: 5.5rem; }
+}
