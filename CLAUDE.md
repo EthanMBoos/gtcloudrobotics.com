@@ -68,7 +68,7 @@ deep dives. Don't name the intro `index.md`: with `navigation.indexes` on, that
 turns the group heading into a link to it.
 
 - A figure is `<figure class="fig" data-figure="NAME">` in the markdown, plus a
-  module in `docs/javascripts/figures/{fusion,wm}/NAME.js` that default-exports
+  module in `docs/javascripts/figures/{fusion,wm}/NAME.js` (the sensor fusion background page's figures are in `fusion/` too, with shared solvers in `fusion/lsq.js`) that default-exports
   `mount(fig)`, plus an entry in the registry in `figures/index.js`.
 - `figures/lib.js` is the shared harness: `Stage` (renderer, orbit camera,
   labels, insets), `Fig` (sliders, toggles, buttons, readout, chart), meshes
@@ -92,7 +92,8 @@ turns the group heading into a link to it.
 | `course-home.md` | Course structure: project tracks, 2-week demo cycles, logistics, and links to the two intro pages |
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
-| `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
+| `sensor-fusion/background.md` | Brief history: a horizontal timeline of 14 points (`.tl` in `extra.css`), a short prose history, six figure sections on the recent ideas (association, pose graph, visual-inertial, map localization, factor graphs, SLAMMOT), then current state and maintained open-source projects. Sources are in `reports/Sensor fusion history for AVs and drones.md` |
+| `world-models/background.md` | Stub; will get the same treatment |
 | `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, a "Working up to …" section of two paragraphs, and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
 
 The course splits conceptually into classical sensor fusion and learned world
