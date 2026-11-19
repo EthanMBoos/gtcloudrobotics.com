@@ -142,7 +142,7 @@ body.home-page .md-footer {
 }
 
 /* ---------------------------------------------------------------------------
-   Lesson figures (docs/javascripts/figures). Colors match C in lib.js.
+   Lesson figures (docs/javascripts/figures). Colours match C in lib.js.
    --------------------------------------------------------------------------- */
 .md-typeset figure.fig {
   display: block;
@@ -320,61 +320,4 @@ body.home-page .md-footer {
 @media (max-width: 600px) {
   .fig-canvas { aspect-ratio: 1 / 1; }
   .fig-slider input { width: 5.5rem; }
-}
-
-/* Horizontal timeline on the background pages. Dot colors match C in lib.js. */
-.tl {
-  display: flex;
-  overflow-x: auto;
-  margin: 1.4rem 0 0.3rem;
-  padding: 0.5rem 0 0.7rem;
-  scrollbar-width: thin;
-  /* fade the right edge to show that the strip scrolls */
-  -webkit-mask-image: linear-gradient(to right, #000 88%, transparent);
-  mask-image: linear-gradient(to right, #000 88%, transparent);
-}
-.tl-item {
-  flex: 0 0 7.6rem;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.12rem;
-  padding: 0.75rem 0.8rem 0 0;
-  border-top: 2px solid #cfccc4;
-  font-size: 0.66rem;
-  line-height: 1.3;
-}
-.tl-item::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--dot);
-}
-.tl-theory, .tl-key .tl-theory { --dot: #2e2e33; }
-.tl-road { --dot: #3a74b8; }
-.tl-air { --dot: #2f8f83; }
-.tl-arm { --dot: #b08d3f; }
-.tl-year { font-size: 0.82rem; font-weight: 700; color: #2e2e33; }
-.tl-name { font-weight: 600; color: #2e2e33; }
-.tl-note { color: #6b6b72; }
-.md-typeset .tl-key {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 1.1rem;
-  margin: 0 0 1.4rem;
-  font-size: 0.66rem;
-  color: #6b6b72;
-}
-.tl-key span::before {
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: 0.35rem;
-  border-radius: 50%;
-  background: var(--dot);
 }
