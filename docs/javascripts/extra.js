@@ -1,11 +1,10 @@
+// The site is light-only, except the home page hero, which sits on a dark image.
+// Lesson figures (<figure data-figure>) are mounted from figures/index.js.
+const figuresUrl = new URL('figures/index.js', document.currentScript.src).href
+
 document$.subscribe(function () {
-  if (document.querySelector('.hero-section')) {
-    document.body.setAttribute('data-md-color-scheme', 'slate')
-    document.body.classList.add('home-page')
-  } else {
-    const stored = __md_get('__palette')
-    const scheme = stored?.color?.scheme ?? 'default'
-    document.body.setAttribute('data-md-color-scheme', scheme)
-    document.body.classList.remove('home-page')
-  }
+  const home = !!document.querySelector('.hero-section')
+  document.body.setAttribute('data-md-color-scheme', home ? 'slate' : 'default')
+  document.body.classList.toggle('home-page', home)
+  import(figuresUrl).then((m) => m.scan())
 })

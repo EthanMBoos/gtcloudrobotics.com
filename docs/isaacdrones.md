@@ -11,47 +11,31 @@ GitHub](https://github.com/EthanMBoos/isaacdrones){ .md-button }
 
 **isaacdrones** is a small base for simulating drones in
 [NVIDIA Isaac Sim](https://docs.isaacsim.omniverse.nvidia.com/latest/) 6.2. It
-boots in under 10 s, steps physics at a fixed 60 Hz, and renders an RTX camera.
-The only scene is a cube on a ground plane. There's no drone yet.
+starts in under 10 s, steps physics at a fixed 60 Hz, and renders an RTX camera.
+The only scene is a cube on a ground plane, and there is no drone yet. Isaac Sim
+requires an NVIDIA RTX GPU, which for this course means running on PACE ICE.
 
 ```sh
-uv run isaacdrones                              # a window and a ground plane
-uv run isaacdrones --headless --steps 100       # no window, 100 frames
-uv run isaacdrones --headless --camera out.png  # one image of the cube
-uv run isaacdrones --headless --video DIR       # the cube falling, 120 frames
+uv run isaacdrones --headless --camera out.png
 ```
 
-## Where to start
+## Working up to a flying drone
 
-Make a rigid body that takes thrust and torque each physics step. Skip the rotor
-model for now. Then put a camera on it and set the near clip well below Isaac
-Sim's 1 m default, since a drone camera gets close to things.
+The goal of this track is a simulated drone whose camera and other sensors are
+realistic enough to develop autonomy against. Since the physics loop and the
+camera already work, the work begins with the vehicle: a rigid body that
+receives a thrust and a torque at each physics step, without a rotor model.
 
-After that it depends on your demo: the ROS 2 bridge, RTX lidar or radar, or a
-flight stack.
-
-## Code layout
-
-It's built on Isaac Sim directly, not Isaac Lab. Only `src/isaacdrones/sim/`
-imports Isaac Sim, through one class, `Simulation`, which owns the loop.
-Everything else imports on any machine.
-
-Use simulation time, not the wall clock. Quaternions are `wxyz`, units are
-meters and radians, and Z is up.
-
-## Limits
-
-Isaac Sim needs Linux or Windows with an NVIDIA RTX GPU, which for us means PACE
-ICE. It won't run on macOS, though the package installs there and the non-sim
-tests run.
-
-`--video` and `--stream` haven't been checked recently. Lidar and radar are
-untried.
+A camera is then mounted on that body, with the near clipping distance set well
+below the 1 m default of Isaac Sim, because a drone camera operates close to
+surfaces. The steps after that depend on the demo, and include the ROS 2 bridge,
+RTX lidar or radar, and a flight stack.
 
 !!! note "Docs"
 
-    [README](https://github.com/EthanMBoos/isaacdrones#readme),
-    [TODO.md](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/TODO.md),
+    The [README](https://github.com/EthanMBoos/isaacdrones#readme) covers
+    everything else. Start with
     [PACE.md](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/PACE.md)
-    (running on the cluster), and the design
-    [notes](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/reference/ISAAC_SIM_NOTES.md).
+    for running on the cluster and
+    [TODO.md](https://github.com/EthanMBoos/isaacdrones/blob/main/docs/TODO.md)
+    for open work.
