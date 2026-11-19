@@ -7,7 +7,7 @@ import { OrbitControls } from '../vendor/OrbitControls.js'
 
 export { THREE }
 
-// One meaning per color across every lesson.
+// One meaning per colour across every lesson.
 export const C = {
   bg: 0xf2f1ed,
   grid: 0xdedcd5,
