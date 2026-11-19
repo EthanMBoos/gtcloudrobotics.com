@@ -47,7 +47,7 @@ page for each half of the course: long single-page explainers in the style of
 https://glinscott.github.io/beam-engine/, with one `##` section per idea, an
 interactive three.js figure in each, and a short paragraph before and after it.
 
-The prose on these two pages, and on the three track pages, follows the plain, deductive
+The prose on these two pages, and on the four track pages, follows the plain, deductive
 style of the π0.5 paper (arXiv 2504.16054), not the casual voice of the older
 pages. Prefer paragraphs to bulleted lists, including for roadmaps. Each
 section opens with the general statement, motivated by the section before it,
@@ -94,6 +94,7 @@ turns the group heading into a link to it.
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
 | `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
 | `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, a "Working up to …" section of two paragraphs, and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
+| `diffmpc.md` | Fourth project track: DiffMPC (Toyota Research Institute) on drones. Same shape as the other track pages, but there is no repo yet, so the button links to TRI's repo and the closing note says nothing has been run |
 
 The course splits conceptually into classical sensor fusion and learned world
 models; the two intro pages follow that split and are linked from
