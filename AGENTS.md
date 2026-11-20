@@ -93,7 +93,7 @@ turns the group heading into a link to it.
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
 | `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
-| `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, a "Working up to …" section of two paragraphs, and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
+| `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
 | `diffmpc.md` | Project track page for the `diffmpc-drones` repo (DiffMPC from Toyota Research Institute, on drones), in the same shape as the other three. DiffMPC is CC BY-NC-ND, so the repo uses it as an unmodified submodule |
 
 The course splits conceptually into classical sensor fusion and learned world

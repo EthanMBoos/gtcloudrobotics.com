@@ -20,8 +20,6 @@ the cost weights, and it runs on a laptop CPU.
 uv run diffmpc-drones --train 10
 ```
 
-## Working up to a robust controller
-
 The goal of this track is a controller that survives a disturbance (e.g., a wind
 gust or a dropped payload) that a hand-tuned one does not. The DiffMPC authors
 showed this for a car, which they trained to drift through water puddles where
