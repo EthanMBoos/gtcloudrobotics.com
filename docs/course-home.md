@@ -64,10 +64,10 @@ capture a render can be trusted, poses from the log, detector-based scores, a
 viewer, or other log formats. The most research-heavy track.
 
 **[diffmpc-drones](diffmpc.md)** — Tune a drone's model predictive controller
-by training it, using Toyota Research Institute's DiffMPC. A quadrotor hovers
-and its cost weights train, but nothing is trained for robustness yet. Work on a
-differentiable drone simulator, thrust limits, wind and payload disturbances, or
-testing a trained controller in Isaac Sim.
+by training it, using Toyota Research Institute's DiffMPC. The repo reproduces
+DiffMPC's quadrotor example, and nothing is trained for robustness yet. Work on
+a differentiable drone simulator, thrust limits, wind and payload disturbances,
+or testing a trained controller in ripple.
 
 ### 3. Ship something every two weeks
 
