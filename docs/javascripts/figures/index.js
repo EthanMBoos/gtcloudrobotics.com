@@ -16,6 +16,14 @@ const registry = {
   plan: () => import('./wm/plan.js'),
   unseen: () => import('./wm/unseen.js'),
   rates: () => import('./wm/rates.js'),
+  feedback: () => import('./control/feedback.js'),
+  integral: () => import('./control/integral.js'),
+  limit: () => import('./control/limit.js'),
+  gain: () => import('./control/gain.js'),
+  cascade: () => import('./control/cascade.js'),
+  lqr: () => import('./control/lqr.js'),
+  mpc: () => import('./control/mpc.js'),
+  train: () => import('./control/train.js'),
 }
 
 const mounted = new Map() // element -> dispose

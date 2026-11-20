@@ -19,7 +19,7 @@ https://gtcloudrobotics.com via GitHub Pages.
 ## Authoring conventions
 
 - Frontmatter: `icon: lucide/<name>` on every page; project pages hide the
-  ToC; the two intro pages keep it.
+  ToC; the three intro pages keep it.
 - The site is light mode only. The home page hero sets itself to `slate` in
   `docs/javascripts/extra.js`; nothing else should.
 - Material markdown is enabled: admonitions (`!!! note`), grid cards, content
@@ -42,12 +42,12 @@ https://gtcloudrobotics.com via GitHub Pages.
 
 ## Intro pages, background pages, and figures
 
-`sensor-fusion/intro.md` and `world-models/intro.md` are the top-level
-page for each half of the course: long single-page explainers in the style of
+`sensor-fusion/intro.md`, `control/intro.md`, and `world-models/intro.md` are
+the top-level page for each focus area: long single-page explainers in the style of
 https://glinscott.github.io/beam-engine/, with one `##` section per idea, an
 interactive three.js figure in each, and a short paragraph before and after it.
 
-The prose on these two pages, and on the four track pages, follows the plain, deductive
+The prose on these three pages, and on the four track pages, follows the plain, deductive
 style of the π0.5 paper (arXiv 2504.16054), not the casual voice of the older
 pages. Prefer paragraphs to bulleted lists, including for roadmaps. Each
 section opens with the general statement, motivated by the section before it,
@@ -58,20 +58,19 @@ in parentheses with "e.g.,", and state causes explicitly ("because", "so",
 "therefore"). No rhetorical questions, aphorisms, or one-line punchy
 paragraphs. Captions say what each colour or panel is.
 
-Their page titles are just "Sensor Fusion" and "World Models"; the nav label
-for each is "Intro".
+Their page titles are just "Sensor Fusion", "Control", and "World Models"; the
+nav label for each is "Intro".
 
 The other pages in each folder are deep dives into one specific topic. The nav
 under "Robotics Course" has one group per focus area, each with a plain,
 non-clickable heading: "Sensor fusion" (Intro, Background, ripple), "Control"
-(Intro and Background, both "coming soon" stubs in `docs/control/`, then
-diffmpc-drones), and "Learning" (the world models Intro and Background, then
+(Intro, a "coming soon" Background stub, then diffmpc-drones), and "Learning" (the world models Intro and Background, then
 isaacdrones and splatsim). The project pages are in those groups, not in the
 top bar. Don't name the intro `index.md`: with `navigation.indexes` on, that
 turns the group heading into a link to it.
 
 - A figure is `<figure class="fig" data-figure="NAME">` in the markdown, plus a
-  module in `docs/javascripts/figures/{fusion,wm}/NAME.js` that default-exports
+  module in `docs/javascripts/figures/{fusion,control,wm}/NAME.js` that default-exports
   `mount(fig)`, plus an entry in the registry in `figures/index.js`.
 - `figures/lib.js` is the shared harness: `Stage` (renderer, orbit camera,
   labels, insets), `Fig` (sliders, toggles, buttons, readout, chart), meshes
@@ -86,16 +85,21 @@ turns the group heading into a link to it.
   ones that left the page.
 - The world-model figures run a toy (`figures/wm/world.js`), not a trained
   model. Say so in the caption when a figure could be mistaken for one.
+- The control figures share `figures/control/sim.js` (vehicle models, PID,
+  LQR, and a small MPC solver). It has no rendering code, so it runs under
+  node; check any number quoted in `control/intro.md` against it before
+  changing a default.
 
 ## Content map
 
 | Page | What it is |
 |---|---|
 | `index.md` | Hero landing (adds `home-page` body class via inline script) |
-| `course-home.md` | The premise (one multi-semester project), then three focus areas (sensor fusion with ripple, control with diffmpc-drones, learning with isaacdrones and splatsim), each with the one problem Ethan wants solved and why, then the 2-week demo cycle. Links the two intro pages |
+| `course-home.md` | The premise (one multi-semester project), then three focus areas (sensor fusion with ripple, control with diffmpc-drones, learning with isaacdrones and splatsim), each with the one problem Ethan wants solved and why, then the 2-week demo cycle. Links the three intro pages |
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
+| `control/intro.md` | Intro explainer: feedback (P and D), integral action, the thrust limit, limits on the gain, cascaded loops, LQR, MPC, trained weights. Ends at diffmpc-drones |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
-| `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
+| `background.md` in the three folders | Background for each area: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
 | `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
 | `demos.md` | Top-bar tab for student demos. Currently a one-line "coming soon" stub |
 | `resources.md` | Top-bar tab for Ethan's opinionated robotics resources and reading, framed around "how do I get started in robotics". Currently a stub; the picks are his to write |

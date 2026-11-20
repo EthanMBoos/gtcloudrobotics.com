@@ -335,16 +335,19 @@ export class Fig {
     this.readoutEl.innerHTML = html
   }
 
-  // Small line chart under the canvas. set(points [[x, y]...], markerX)
-  chart({ xlabel = '', ylabel = '', color = C.meas } = {}) {
+  // Small line chart under the canvas. set(points [[x, y]...], markerX, ymax,
+  // second series, y of a horizontal rule)
+  chart({ xlabel = '', ylabel = '', color = C.meas, color2 = C.truth } = {}) {
     const box = h('div', 'fig-chart')
     const NS = 'http://www.w3.org/2000/svg'
     const svg = document.createElementNS(NS, 'svg')
     svg.setAttribute('viewBox', '0 0 100 30')
     svg.setAttribute('preserveAspectRatio', 'none')
     const path = document.createElementNS(NS, 'path')
+    const path2 = document.createElementNS(NS, 'path')
+    const rule = document.createElementNS(NS, 'line')
     const mark = document.createElementNS(NS, 'line')
-    for (const p of [path, mark]) {
+    for (const p of [path, path2, rule, mark]) {
       p.setAttribute('fill', 'none')
       p.setAttribute('vector-effect', 'non-scaling-stroke')
     }
@@ -352,19 +355,28 @@ export class Fig {
     path.setAttribute('stroke-width', '2')
     mark.setAttribute('stroke', hex(C.truth))
     mark.setAttribute('stroke-width', '1')
-    svg.append(path, mark)
+    path2.setAttribute('stroke', hex(color2))
+    path2.setAttribute('stroke-width', '2')
+    rule.setAttribute('stroke', hex(C.brass))
+    rule.setAttribute('stroke-width', '1.5')
+    rule.setAttribute('stroke-dasharray', '5 4')
+    svg.append(rule, path, path2, mark)
     const yl = h('span', 'fig-chart-y', ylabel)
     const xl = h('span', 'fig-chart-x', xlabel)
     box.append(svg, yl, xl)
     this.extra.append(box)
     return {
-      set(pts, markerX, ymax) {
+      set(pts, markerX, ymax, pts2, ruleY) {
         const x0 = pts[0][0]
         const x1 = pts[pts.length - 1][0]
         const top = ymax || Math.max(...pts.map((p) => p[1]), 1e-9) * 1.1
         const X = (x) => ((x - x0) / (x1 - x0 || 1)) * 100
         const Y = (y) => 29 - clamp(y / top, 0, 1) * 28
-        path.setAttribute('d', pts.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(2) + ' ' + Y(p[1]).toFixed(2)).join(''))
+        const d = (list) => list.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(2) + ' ' + Y(p[1]).toFixed(2)).join('')
+        path.setAttribute('d', d(pts))
+        path2.setAttribute('d', pts2 ? d(pts2) : '')
+        const ry = ruleY == null ? -10 : Y(ruleY)
+        for (const [k, v] of [['x1', 0], ['x2', 100], ['y1', ry], ['y2', ry]]) rule.setAttribute(k, v)
         const mx = markerX == null ? -10 : X(markerX)
         mark.setAttribute('x1', mx)
         mark.setAttribute('x2', mx)

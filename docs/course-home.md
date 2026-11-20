@@ -45,6 +45,8 @@ of it. A trained MPC keeps the model and the constraints and still gets tuned
 on thousands of randomized flights. Toyota showed this on a car, and whether it
 carries over to a drone is open.
 
+Read the [Control intro](control/intro.md) first.
+
 ## Learning
 
 A learned model needs many flights to train on and somewhere to fail safely, and
