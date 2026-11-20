@@ -89,7 +89,7 @@ turns the group heading into a link to it.
 | Page | What it is |
 |---|---|
 | `index.md` | Hero landing (adds `home-page` body class via inline script) |
-| `course-home.md` | Course structure: project tracks, 2-week demo cycles, logistics, and links to the two intro pages |
+| `course-home.md` | The premise (one multi-semester project), then three focus areas (sensor fusion with ripple, control with diffmpc-drones, learning with isaacdrones and splatsim), each with the one problem Ethan wants solved and why, then the 2-week demo cycle. Links the two intro pages |
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
 | `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
