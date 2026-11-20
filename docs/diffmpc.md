@@ -21,8 +21,8 @@ CPU.
 uv run diffmpc-drones
 ```
 
-The goal of this track is a controller that survives a disturbance (e.g., a wind
-gust or a dropped payload) that a hand-tuned one does not. The DiffMPC authors
+The goal of this track is a controller that survives a disturbance (e.g., a gust
+of wind or heavy rain) that a hand-tuned one does not. The DiffMPC authors
 showed this for a car, which they trained to drift through water puddles where
 the hand-tuned controller spun out.
 
