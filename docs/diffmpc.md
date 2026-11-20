@@ -13,11 +13,12 @@ GitHub](https://github.com/EthanMBoos/diffmpc-drones){ .md-button }
 It is built on [DiffMPC](https://arxiv.org/abs/2510.06179), a solver from Toyota
 Research Institute that returns the gradient of a controller's output with
 respect to its cost weights and model parameters, so both can be adjusted by
-gradient ascent on a reward. The repo flies a quadrotor to a hover and trains
-the cost weights, and it runs on a laptop CPU.
+gradient ascent on a reward. The repo so far reproduces DiffMPC's quadrotor
+example, which trains a hover controller's cost weights, and it runs on a laptop
+CPU.
 
 ```sh
-uv run diffmpc-drones --train 10
+uv run diffmpc-drones
 ```
 
 The goal of this track is a controller that survives a disturbance (e.g., a wind
