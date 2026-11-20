@@ -37,8 +37,8 @@ Read the [Sensor Fusion intro](sensor-fusion/intro.md) first.
 The repo is [diffmpc-drones](diffmpc.md), which tunes a drone's model predictive
 controller by training it, using Toyota Research Institute's DiffMPC.
 
-The problem is a controller that survives a disturbance (e.g., a wind gust or a
-dropped payload) that a hand-tuned one does not. A hand-tuned controller is
+The problem is a controller that survives a disturbance (e.g., a gust of wind
+or heavy rain) that a hand-tuned one does not. A hand-tuned controller is
 tuned on the few cases someone thought to try. A neural network policy is
 trained on thousands of cases, but you can't read a model or a constraint out
 of it. A trained MPC keeps the model and the constraints and still gets tuned
