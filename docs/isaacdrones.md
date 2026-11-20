@@ -19,8 +19,6 @@ requires an NVIDIA RTX GPU, which for this course means running on PACE ICE.
 uv run isaacdrones --headless --camera out.png
 ```
 
-## Working up to a flying drone
-
 The goal of this track is a simulated drone whose camera and other sensors are
 realistic enough to develop autonomy against. Since the physics loop and the
 camera already work, the work begins with the vehicle: a rigid body that

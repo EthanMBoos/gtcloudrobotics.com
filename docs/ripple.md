@@ -21,8 +21,6 @@ cargo install --path crates/cli --locked
 ripple run crates/starter/missions/position-kalman.yaml --viewer
 ```
 
-## Working up to SLAMMOT
-
 The long-term goal of this track is SLAMMOT: simultaneous localization, mapping,
 and moving object tracking, in which a single estimator determines where the
 drone is, what the static environment looks like, and where the other moving

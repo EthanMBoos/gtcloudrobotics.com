@@ -21,8 +21,6 @@ uv run python -m splatsim.flightlog export data/street \
   data/pivot/orbit_low.mcap data/pivot/orbit_high.mcap
 ```
 
-## Working up to trusted replay
-
 The goal of this track is to replay a flight with something changed (e.g., the
 same moment from another height, or with a different detector) and to trust the
 result. This requires knowing how far from the captured flights a render remains
