@@ -8,18 +8,15 @@ icon: lucide/house
 
     Taught by **Ethan Boos**, robotics engineer at [Georgia Tech Research
     Institute](https://www.gtri.gatech.edu/) and part-time Robotics PhD student
-    at Georgia Tech researching autonomy behavior architectures.
+    at Georgia Tech researching how drones stay reliable when their model of
+    the world is wrong.
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
-course at Georgia Tech. VIP courses are project based and you can take them for
-several semesters, so this one is built around a single project that you stay
-with long enough to go deep on.
-
-The projects are all on drones, and they fall into three focus areas: sensor
-fusion, control, and learning. Each area has a repo that already runs and one
-problem I want to solve with it. You pick an area, group up into a subteam for
-it, and work toward that problem. Each subteam commits to a demo of its progress
-every two weeks.
+course at Georgia Tech. The projects are all on drones, and they fall into three
+focus areas: sensor fusion, control, and learning. Each area has a repo that
+already runs and one problem I want to solve with it. You pick an area, group up
+into a subteam for it, and work toward that problem. Each subteam commits to a
+demo of its progress every two weeks.
 
 ## Sensor fusion
 

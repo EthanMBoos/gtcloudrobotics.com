@@ -6,10 +6,10 @@ icon: lucide/rocket
 
 <div class="hero-section" markdown>
 
-# Autonomous Robotics Systems,<br>Testbed & Evaluation Toolkits
+# Sensor Fusion, Control, and<br>Learning for Autonomous Drones
 
-A Georgia Tech VIP course where students build, test, and demo<br>working
-software for mobile robots.
+A Georgia Tech VIP course on how drones stay reliable when<br>their model of
+the world is wrong.
 
 [Course home](course-home.md){ .md-button .md-button--primary }
 
