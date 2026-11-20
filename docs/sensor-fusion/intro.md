@@ -165,10 +165,19 @@ As a result, the estimation error grows with speed even though the path, the
 sensors, and the filter are unchanged. Increasing the camera rate recovers part
 of the accuracy, since it restores the density of fixes along the path.
 
-## Running the experiment
+## Running an experiment
 
-[Fusion in Motion](https://github.com/EthanMBoos/fusion-in-motion) implements the setup on this page as
-a repeatable experiment: a planar robot, bearing and range measurements to known
-landmarks, a small EKF as the baseline estimator, a configurable latency for
-each sensor, and a `motion_speed_factor` parameter that drives the same path at
-a higher speed.
+[ripple](../ripple.md) is the simulator we use for sensor fusion experiments. It
+maintains the true state of every vehicle separately from the estimated state,
+and the controller reads only the estimate, so the effect of an estimation error
+on the flown path can be measured. The starter mission runs a Kalman filter on
+noisy position measurements:
+
+```sh
+ripple run crates/starter/missions/position-kalman.yaml --viewer
+```
+
+ripple does not yet have the bearing and range measurements used on this page.
+Adding that sensor is the first piece of work in the sensor fusion area, and it
+makes the experiments on this page (e.g., the growth of error with speed)
+repeatable in ripple.
