@@ -61,10 +61,13 @@ paragraphs. Captions say what each colour or panel is.
 Their page titles are just "Sensor Fusion" and "World Models"; the nav label
 for each is "Intro".
 
-The other pages in each folder are deep dives into one specific topic. In the
-nav each folder is a group with a plain, non-clickable heading ("Sensor
-fusion", "World models"), then the explainer labelled "Intro", then "Background", then any
-deep dives. Don't name the intro `index.md`: with `navigation.indexes` on, that
+The other pages in each folder are deep dives into one specific topic. The nav
+under "Robotics Course" has one group per focus area, each with a plain,
+non-clickable heading: "Sensor fusion" (Intro, Background, ripple), "Control"
+(Intro and Background, both "coming soon" stubs in `docs/control/`, then
+diffmpc-drones), and "Learning" (the world models Intro and Background, then
+isaacdrones and splatsim). The project pages are in those groups, not in the
+top bar. Don't name the intro `index.md`: with `navigation.indexes` on, that
 turns the group heading into a link to it.
 
 - A figure is `<figure class="fig" data-figure="NAME">` in the markdown, plus a
@@ -94,6 +97,7 @@ turns the group heading into a link to it.
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
 | `background.md` in those two folders | Background for each half: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
 | `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
+| `demos.md` | Top-bar tab for student demos. Currently a one-line "coming soon" stub |
 | `diffmpc.md` | Project track page for the `diffmpc-drones` repo (DiffMPC from Toyota Research Institute, on drones), in the same shape as the other three. DiffMPC is CC BY-NC-ND, so the repo uses it as an unmodified submodule |
 
 The course splits conceptually into classical sensor fusion and learned world
