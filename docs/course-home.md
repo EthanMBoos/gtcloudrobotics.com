@@ -11,92 +11,55 @@ icon: lucide/house
     at Georgia Tech researching autonomy behavior architectures.
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
-course at Georgia Tech centered around rapid robotics software prototyping.
-Students pick a focus area and develop a full demo of a working program every
-two weeks.
+course at Georgia Tech. VIP courses are project based and you can take them for
+several semesters, so this one is built around a single project that you stay
+with long enough to go deep on.
 
-This course is about mobile robots in the real world: ground, water, and air
-vehicles that have to navigate an unpredictable environment and then carry out a
-long-horizon task. Not self-driving cars, not robot arms. Those live in
-structured or controlled settings; the hard part here is staying reliable across
-a long mission in a world that won't hold still.
+The projects are all on drones, and they fall into three focus areas: sensor
+fusion, control, and learning. Each area has a repo that already runs and one
+problem I want to solve with it. You pick an area, group up into a subteam for
+it, and work toward that problem. Each subteam commits to a demo of its progress
+every two weeks.
 
-## How the course works
+## Sensor fusion
 
-### 1. Figure out what you're aiming at
+The repo is [ripple](ripple.md), a multi-agent simulator that keeps apart where
+a drone is and where its software thinks it is.
 
-Before you pick a track, research 5-10 companies with open job postings you'd
-want and could plausibly get. Pull out the skills they're hiring for.
-Cross-reference Glassdoor and levels.fyi.
+The problem is SLAMMOT: localization, mapping, and moving object tracking in one
+estimator. These are usually solved separately, and each one assumes the others
+are already right. A drone flying among other vehicles gets none of that, so its
+position error ends up in every track and moving objects end up in the map. I
+want to know how much a joint estimator gains over separate ones, and what it
+costs to run.
 
-The output is a list of skills you can name. Everything after this is you
-building evidence for them, every two weeks, for a semester.
+Read the [Sensor Fusion intro](sensor-fusion/intro.md) first.
 
-### 2. Pick a track
+## Control
 
-At the start, choose one of the project areas below. This is the space you
-work in for the semester. You're not committing to a single deliverable; you're
-committing to a problem area.
+The repo is [diffmpc-drones](diffmpc.md), which tunes a drone's model predictive
+controller by training it, using Toyota Research Institute's DiffMPC.
 
-**[Fusion in Motion](https://github.com/EthanMBoos/fusion-in-motion)** — Build repeatable sensor-fusion
-experiments for moving robots. Work on sensor models, timing and faults,
-estimators, datasets, or metrics that compare methods on the same measurements
-and truth.
+The problem is a controller that survives a disturbance (e.g., a wind gust or a
+dropped payload) that a hand-tuned one does not. A hand-tuned controller is
+tuned on the few cases someone thought to try. A neural network policy is
+trained on thousands of cases, but you can't read a model or a constraint out
+of it. A trained MPC keeps the model and the constraints and still gets tuned
+on thousands of randomized flights. Toyota showed this on a car, and whether it
+carries over to a drone is open.
 
-**[ripple](ripple.md)** — Run sensor-fusion experiments on drones in a
-multi-agent simulator that keeps truth and belief apart. Work on sensors,
-localization and tracking estimators, or factor graphs, building up to SLAMMOT:
-localization, mapping, and moving object tracking in one estimator.
+## Learning
 
-**[World Models](world-models/intro.md)** — Try learned world models as the fast
-low-level layer of a drone, with an LLM giving commands on top. Work on
-reproducing recent papers, logging simulated flights, prediction on unseen
-flights, or planning to a goal image. No repo yet.
+A learned model needs many flights to train on and somewhere to fail safely, and
+both come from simulation. So the learning work right now is simulation work, in
+two repos: [isaacdrones](isaacdrones.md), a small drone simulation base on
+NVIDIA Isaac Sim, and [splatsim](splatsim.md), which replays a real flight
+inside a Gaussian splat of the place it flew through.
 
-**[isaacdrones](isaacdrones.md)** — Build a drone simulation on a small NVIDIA
-Isaac Sim base. The physics loop and camera work, but there's no drone yet. Work
-on the vehicle model, cameras, lidar or radar, the ROS 2 bridge, or a flight
-stack.
+The problem is knowing when a simulated image can be trusted. A model trained or
+tested in simulation is only as good as the simulation, and right now nobody can
+say how good that is for a given frame. I want a way to predict it before
+relying on the render.
 
-**[splatsim](splatsim.md)** — Replay a drone's flight inside a Gaussian splat of
-the place it flew through and score it against the log. Work on how far from the
-capture a render can be trusted, poses from the log, detector-based scores, a
-viewer, or other log formats. The most research-heavy track.
-
-**[diffmpc-drones](diffmpc.md)** — Tune a drone's model predictive controller
-by training it, using Toyota Research Institute's DiffMPC. The repo reproduces
-DiffMPC's quadrotor example, and nothing is trained for robustness yet. Work on
-a differentiable drone simulator, thrust limits, wind and payload disturbances,
-or testing a trained controller in ripple.
-
-### 3. Ship something every two weeks
-
-Work runs in two-week cycles. Each cycle you commit to one thing you can demo,
-and you show it at the Wednesday sync. If you're on a subteam, you commit as a
-team. Demoing is mandatory. A demo means it works in front of people: a running
-node, a passing eval, a vehicle doing the thing in sim. Not slides, not a status
-update.
-
-If it flops, that's fine. You still get up, share your code, and talk through
-it: what you were going for, where it broke, and why. A demo that fails and gets
-explained is worth more than a status update that hides the failure. What isn't
-acceptable is showing up with nothing.
-
-When a cycle closes, that deliverable is done. You pick a new problem to work
-on, still inside your track. Over a semester you stack up several distinct,
-shipped pieces of work rather than one open-ended project that's perpetually
-"almost there."
-
-### 4. Get up to speed
-
-Two intro pages, one per half of the course. They're mostly figures you can
-drag and break, with a few lines of text between them. Start with the one
-closest to your track.
-
-**[Sensor Fusion](sensor-fusion/intro.md)** — noise and bias, predict
-and update, drift, bearings and ranges, frames, late measurements, and what
-speed does to all of it.
-
-**[World Models](world-models/intro.md)** — latents, predicting the next
-one, rollouts, planning by sampling, flights the model never saw, and why an
-LLM sits on top instead of flying.
+The [World Models intro](world-models/intro.md) covers what gets trained once
+the simulation is there.
