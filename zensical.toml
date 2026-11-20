@@ -51,17 +51,22 @@ nav = [
      "course-home.md",
      {"Sensor fusion" = [
         {"Intro" = "sensor-fusion/intro.md"},
-        {"Background" = "sensor-fusion/background.md"}
+        {"Background" = "sensor-fusion/background.md"},
+        {"ripple" = "ripple.md"}
      ]},
-     {"World models" = [
+     {"Control" = [
+        {"Intro" = "control/intro.md"},
+        {"Background" = "control/background.md"},
+        {"diffmpc-drones" = "diffmpc.md"}
+     ]},
+     {"Learning" = [
         {"Intro" = "world-models/intro.md"},
-        {"Background" = "world-models/background.md"}
+        {"Background" = "world-models/background.md"},
+        {"isaacdrones" = "isaacdrones.md"},
+        {"splatsim" = "splatsim.md"}
      ]}
   ]},
-  {"ripple" = "ripple.md"},
-  {"isaacdrones" = "isaacdrones.md"},
-  {"splatsim" = "splatsim.md"},
-  {"diffmpc-drones" = "diffmpc.md"},
+  {"Demos" = "demos.md"},
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
