@@ -37,5 +37,7 @@ disturbance that neither was trained on.
 
     The [README](https://github.com/EthanMBoos/diffmpc-drones#readme) covers
     everything else. Start with
+    [DIFFMPC.md](https://github.com/EthanMBoos/diffmpc-drones/blob/main/docs/DIFFMPC.md)
+    for how DiffMPC works and
     [TODO.md](https://github.com/EthanMBoos/diffmpc-drones/blob/main/docs/TODO.md)
     for open work.
