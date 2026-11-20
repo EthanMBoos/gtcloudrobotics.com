@@ -40,7 +40,7 @@ https://gtcloudrobotics.com via GitHub Pages.
 - When a page has an assignment, end with an **Assignment** section and link
   the template repository and local/CI checks. None do yet.
 
-## Intro pages, background pages, and figures
+## Intro pages and figures
 
 `sensor-fusion/intro.md`, `control/intro.md`, and `world-models/intro.md` are
 the top-level page for each focus area: long single-page explainers in the style of
@@ -61,11 +61,12 @@ paragraphs. Captions say what each colour or panel is.
 Their page titles are just "Sensor Fusion", "Control", and "World Models"; the
 nav label for each is "Intro".
 
-The other pages in each folder are deep dives into one specific topic. The nav
+The nav
 under "Robotics Course" has one group per focus area, each with a plain,
-non-clickable heading: "Sensor fusion" (Intro, Background, ripple), "Control"
-(Intro, a "coming soon" Background stub, then diffmpc-drones), and "Learning" (the world models Intro and Background, then
-isaacdrones and splatsim). The project pages are in those groups, not in the
+non-clickable heading: "Sensor fusion" (Intro, ripple), "Control" (Intro, diffmpc-drones), and
+"Learning" (the world models Intro, then isaacdrones and splatsim). There are
+no separate background pages: the intro carries the background, and each
+project page explains its own approach. The project pages are in those groups, not in the
 top bar. Don't name the intro `index.md`: with `navigation.indexes` on, that
 turns the group heading into a link to it.
 
@@ -99,7 +100,6 @@ turns the group heading into a link to it.
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
 | `control/intro.md` | Intro explainer: feedback (P and D), integral action, the thrust limit, limits on the gain, cascaded loops, LQR, MPC, trained weights. Ends at diffmpc-drones |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
-| `background.md` in the three folders | Background for each area: a short timeline of techniques, then the current state and the top open-source resources and approaches. Currently a stub saying so; Ethan plans to write them |
 | `ripple.md`, `isaacdrones.md`, `splatsim.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
 | `demos.md` | Top-bar tab for student demos. Currently a one-line "coming soon" stub |
 | `resources.md` | Top-bar tab for Ethan's opinionated robotics resources and reading, framed around "how do I get started in robotics". Currently a stub; the picks are his to write |
