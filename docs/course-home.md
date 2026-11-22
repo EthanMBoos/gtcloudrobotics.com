@@ -20,14 +20,15 @@ demo of its progress every two weeks.
 
 ## Sensor fusion
 
-The repo is [isaacdrones](isaacdrones.md), a small drone simulation base on
-NVIDIA Isaac Sim.
+The repo is [isaacdrones](isaacdrones.md), which simulates a drone's sensors in
+NVIDIA Isaac Sim and publishes them over ROS 2.
 
 The problem is whether simulated sensors are good enough to develop an estimator
-against. Isaac Sim provides a camera, a lidar, a radar, and an IMU, and I don't
-know yet how any of them behave on a drone. The first step is to find out: put
-the sensors on a simulated drone, feed them to a ROS 2 robot, and see what an
-estimator makes of them.
+against. Right now the drone has one sensor, a camera, and it can fly through a
+warehouse or over the Georgia Tech campus. The work is to make that camera
+behave like a real one, add an IMU and a lidar, and then build an estimator on
+them in ROS 2. The simulator knows where the drone really is, so you can always
+check your answer.
 
 Read the [Sensor Fusion intro](sensor-fusion/intro.md) first.
 

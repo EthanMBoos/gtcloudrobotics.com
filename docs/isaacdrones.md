@@ -9,26 +9,29 @@ hide:
 [:fontawesome-brands-github: View on
 GitHub](https://github.com/EthanMBoos/isaacdrones){ .md-button }
 
-**isaacdrones** is a small base for simulating drones in
+**isaacdrones** is a small base for simulating a drone's sensors in
 [NVIDIA Isaac Sim](https://docs.isaacsim.omniverse.nvidia.com/latest/) 6.2. It
-starts in under 10 s, steps physics at a fixed 60 Hz, and renders an RTX camera.
-The only scene is a cube on a ground plane, and there is no drone yet. Isaac Sim
-requires an NVIDIA RTX GPU, which for this course means running on PACE ICE.
+flies a rigid-body drone along a scripted path, renders an RTX camera mounted on
+it, and publishes the images and the drone's true pose over ROS 2. The drone can
+fly at a cube, through NVIDIA's warehouse, or over the Georgia Tech campus in
+Google's 3D tiles. Isaac Sim requires an NVIDIA RTX GPU, which for this course
+means running on PACE ICE.
 
 ```sh
-uv run isaacdrones --headless --camera out.png
+uv run isaacdrones --headless --ros --scene warehouse
 ```
 
-The goal of this track is a simulated drone whose sensors are realistic enough
-to develop an estimator against. Since the physics loop and the camera already
-work, the work begins with the vehicle: a rigid body that receives a thrust and
-a torque at each physics step, without a rotor model.
+The goal of this track is a set of simulated sensors realistic enough to develop
+an estimator against. A simulator suits this because it knows the true state of
+the drone at every step, so each sensor, and each piece of software that reads
+one, can be checked against the truth.
 
-A camera and an IMU are then mounted on that body, with the camera's near
-clipping distance set well below the 1 m default of Isaac Sim, because a drone
-camera operates close to surfaces. The ROS 2 bridge follows, so that the sensor
-data feeds a robot's software as it would on a real vehicle. RTX lidar and radar
-are untried, and we add them when an estimator needs them.
+The camera comes first, because it is the only sensor so far. We give it the
+properties of a real one (e.g., lens distortion, noise, and motion blur) and add
+a depth output. The sensors that are missing follow: an IMU, a lidar, and an
+altimeter. With those in place, we build the software a real drone would run on
+them in ROS 2 (e.g., tag detection, visual odometry, and an estimator that fuses
+the camera with the IMU), and compare what it reports with what was true.
 
 !!! note "Docs"
 
