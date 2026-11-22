@@ -51,7 +51,7 @@ nav = [
      "course-home.md",
      {"Sensor fusion" = [
         {"Intro" = "sensor-fusion/intro.md"},
-        {"ripple" = "ripple.md"}
+        {"isaacdrones" = "isaacdrones.md"}
      ]},
      {"Control" = [
         {"Intro" = "control/intro.md"},
@@ -60,7 +60,6 @@ nav = [
      ]},
      {"Learning" = [
         {"Intro" = "world-models/intro.md"},
-        {"isaacdrones" = "isaacdrones.md"},
         {"splatsim" = "splatsim.md"}
      ]}
   ]},

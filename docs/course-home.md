@@ -20,14 +20,14 @@ demo of its progress every two weeks.
 
 ## Sensor fusion
 
-The repo is [ripple](ripple.md), a multi-agent simulator that keeps apart where
-a drone is and where its software thinks it is.
+The repo is [isaacdrones](isaacdrones.md), a small drone simulation base on
+NVIDIA Isaac Sim.
 
-The problem is SLAMMOT: localization, mapping, and moving object tracking in one
-estimator. These are usually solved separately, and each one assumes the others
-are already right. A drone flying among other vehicles gets none of that, so its
-position error ends up in every track and moving objects end up in the map. I
-want to know how much a joint estimator gains over separate ones.
+The problem is whether simulated sensors are good enough to develop an estimator
+against. Isaac Sim provides a camera, a lidar, a radar, and an IMU, and I don't
+know yet how any of them behave on a drone. The first step is to find out: put
+the sensors on a simulated drone, feed them to a ROS 2 robot, and see what an
+estimator makes of them.
 
 Read the [Sensor Fusion intro](sensor-fusion/intro.md) first.
 
@@ -60,9 +60,8 @@ Read the [Control intro](control/intro.md) first.
 
 A learned model needs many flights to train on and somewhere to fail safely, and
 both come from simulation. So the learning work right now is simulation work, in
-two repos: [isaacdrones](isaacdrones.md), a small drone simulation base on
-NVIDIA Isaac Sim, and [splatsim](splatsim.md), which replays a real flight
-inside a Gaussian splat of the place it flew through.
+[splatsim](splatsim.md), which replays a real flight inside a Gaussian splat of
+the place it flew through.
 
 The problem is knowing when a simulated image can be trusted. A model trained or
 tested in simulation is only as good as the simulation, and right now nobody can

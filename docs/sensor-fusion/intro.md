@@ -167,17 +167,14 @@ of the accuracy, since it restores the density of fixes along the path.
 
 ## Running an experiment
 
-[ripple](../ripple.md) is the simulator we use for sensor fusion experiments. It
-maintains the true state of every vehicle separately from the estimated state,
-and the controller reads only the estimate, so the effect of an estimation error
-on the flown path can be measured. The starter mission runs a Kalman filter on
-noisy position measurements:
+[isaacdrones](../isaacdrones.md) is the repo we use for sensor fusion
+experiments. It is a small drone simulation base on NVIDIA Isaac Sim, and it
+currently renders one camera frame of a cube on a ground plane:
 
 ```sh
-ripple run crates/starter/missions/position-kalman.yaml --viewer
+uv run isaacdrones --headless --camera out.png
 ```
 
-ripple does not yet have the bearing and range measurements used on this page.
-Adding that sensor is the first piece of work in the sensor fusion area, and it
-makes the experiments on this page (e.g., the growth of error with speed)
-repeatable in ripple.
+It has no drone and no IMU yet. Adding them, and passing the simulated sensor
+data over ROS 2 to an estimator of the kind on this page, is the first piece of
+work in the sensor fusion area.

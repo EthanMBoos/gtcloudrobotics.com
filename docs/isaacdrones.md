@@ -19,15 +19,16 @@ requires an NVIDIA RTX GPU, which for this course means running on PACE ICE.
 uv run isaacdrones --headless --camera out.png
 ```
 
-The goal of this track is a simulated drone whose camera and other sensors are
-realistic enough to develop autonomy against. Since the physics loop and the
-camera already work, the work begins with the vehicle: a rigid body that
-receives a thrust and a torque at each physics step, without a rotor model.
+The goal of this track is a simulated drone whose sensors are realistic enough
+to develop an estimator against. Since the physics loop and the camera already
+work, the work begins with the vehicle: a rigid body that receives a thrust and
+a torque at each physics step, without a rotor model.
 
-A camera is then mounted on that body, with the near clipping distance set well
-below the 1 m default of Isaac Sim, because a drone camera operates close to
-surfaces. The steps after that depend on the demo, and include the ROS 2 bridge,
-RTX lidar or radar, and a flight stack.
+A camera and an IMU are then mounted on that body, with the camera's near
+clipping distance set well below the 1 m default of Isaac Sim, because a drone
+camera operates close to surfaces. The ROS 2 bridge follows, so that the sensor
+data feeds a robot's software as it would on a real vehicle. RTX lidar and radar
+are untried, and we add them when an estimator needs them.
 
 !!! note "Docs"
 
