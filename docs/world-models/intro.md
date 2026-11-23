@@ -116,10 +116,8 @@ true trajectory closely. As the test flight moves away, the rollout diverges,
 even though the model and the actions are the same. Adding the test flight to
 the training data restores the accuracy in that region.
 
-The same effect was observed in [splatsim](../splatsim.md) for rendering: a
-splat scored 23.0 dB on held-out frames from flights in its training set, and
-12.6 dB on a new flight along the same street. For this reason, a model should
-be evaluated on flights that were not used to train it.
+For this reason, a model should be evaluated on flights that were not used to
+train it.
 
 ## Two layers
 

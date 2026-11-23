@@ -60,7 +60,7 @@ nav = [
      ]},
      {"Learning" = [
         {"Intro" = "world-models/intro.md"},
-        {"splatsim" = "splatsim.md"}
+        {"flightwam" = "flightwam.md"}
      ]}
   ]},
   {"Demos" = "demos.md"},

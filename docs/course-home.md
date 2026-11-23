@@ -13,10 +13,10 @@ icon: lucide/house
 
 GT Cloud Robotics is a [Vertically Integrated Projects](https://vip.gatech.edu/)
 course at Georgia Tech. The projects are all on drones, and they fall into three
-focus areas: sensor fusion, control, and learning. Each area has a repo that
-already runs and one problem I want to solve with it. You pick an area, group up
-into a subteam for it, and work toward that problem. Each subteam commits to a
-demo of its progress every two weeks.
+focus areas: sensor fusion, control, and learning. Each area has a repo and one
+problem I want to solve with it. You pick an area, group up into a subteam for
+it, and work toward that problem. Each subteam commits to a demo of its progress
+every two weeks.
 
 ## Sensor fusion
 
@@ -59,15 +59,13 @@ Read the [Control intro](control/intro.md) first.
 
 ## Learning
 
-A learned model needs many flights to train on and somewhere to fail safely, and
-both come from simulation. So the learning work right now is simulation work, in
-[splatsim](splatsim.md), which replays a real flight inside a Gaussian splat of
-the place it flew through.
+The repo is [flightwam](flightwam.md). I am not sure what is best, so I am
+trying a few angles.
 
-The problem is knowing when a simulated image can be trusted. A model trained or
-tested in simulation is only as good as the simulation, and right now nobody can
-say how good that is for a given frame. I want a way to predict it before
-relying on the render.
+The problem is what a learned world model should do for a drone. A world model
+predicts what the robot will see next if it takes some action. The newest robot
+arm models (e.g., NVIDIA's GR00T 2) are built on one: they generate the next
+camera frames and the next actions together, and a language model sits on top
+and tells them what to do. Almost none of that has been tried on a drone.
 
-The [World Models intro](world-models/intro.md) covers what gets trained once
-the simulation is there.
+The [World Models intro](world-models/intro.md) covers the background.
