@@ -62,7 +62,6 @@ nav = [
         {"flightwam" = "flightwam.md"}
      ]}
   ]},
-  {"Demos" = "demos.md"},
   {"Resources" = "resources.md"},
 ]
 
