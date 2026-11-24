@@ -2,7 +2,7 @@
 icon: lucide/house
 ---
 
-# Course Home
+# Research
 
 !!! note "Instructor"
 

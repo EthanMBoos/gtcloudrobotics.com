@@ -11,6 +11,6 @@ icon: lucide/rocket
 A Georgia Tech VIP course on how drones stay reliable when<br>their model of
 the world is wrong.
 
-[Course home](course-home.md){ .md-button .md-button--primary }
+[Research](research.md){ .md-button .md-button--primary }
 
 </div>

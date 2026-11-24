@@ -48,7 +48,7 @@ nav = [
 
   {"Home" = "index.md"},
   {"Robotics Course" = [
-     "course-home.md",
+     "research.md",
      {"Sensor fusion" = [
         {"Intro" = "sensor-fusion/intro.md"},
         {"isaacdrones" = "isaacdrones.md"}
