@@ -62,7 +62,7 @@ Their page titles are just "Sensor Fusion", "Control", and "World Models"; the
 nav label for each is "Intro".
 
 The nav
-under "Robotics Course" has one group per focus area, each with a plain,
+under "Research" has one group per focus area, each with a plain,
 non-clickable heading: "Sensor fusion" (Intro, isaacdrones), "Control" (Intro, diffmpc-drones), and
 "Learning" (the world models Intro, then flightwam). There are
 no separate background pages: the intro carries the background, and each

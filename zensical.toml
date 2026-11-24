@@ -47,7 +47,7 @@ site_url = "https://gtcloudrobotics.com/"
 nav = [
 
   {"Home" = "index.md"},
-  {"Robotics Course" = [
+  {"Research" = [
      "research.md",
      {"Sensor fusion" = [
         {"Intro" = "sensor-fusion/intro.md"},
