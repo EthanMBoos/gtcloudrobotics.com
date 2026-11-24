@@ -24,6 +24,13 @@ const registry = {
   lqr: () => import('./control/lqr.js'),
   mpc: () => import('./control/mpc.js'),
   train: () => import('./control/train.js'),
+  'ros-graph': () => import('./ros/graph.js'),
+  'ros-inspect': () => import('./ros/inspect.js'),
+  'ros-drive': () => import('./ros/drive.js'),
+  'ros-node': () => import('./ros/node.js'),
+  'ros-params': () => import('./ros/params.js'),
+  'ros-frames': () => import('./ros/frames.js'),
+  'ros-bag': () => import('./ros/bag.js'),
 }
 
 const mounted = new Map() // element -> dispose

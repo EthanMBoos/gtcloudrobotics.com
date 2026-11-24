@@ -71,7 +71,7 @@ top bar. Don't name the intro `index.md`: with `navigation.indexes` on, that
 turns the group heading into a link to it.
 
 - A figure is `<figure class="fig" data-figure="NAME">` in the markdown, plus a
-  module in `docs/javascripts/figures/{fusion,control,wm}/NAME.js` that default-exports
+  module in `docs/javascripts/figures/{fusion,control,wm,ros}/NAME.js` that default-exports
   `mount(fig)`, plus an entry in the registry in `figures/index.js`.
 - `figures/lib.js` is the shared harness: `Stage` (renderer, orbit camera,
   labels, insets), `Fig` (sliders, toggles, buttons, readout, chart), meshes
@@ -91,6 +91,15 @@ turns the group heading into a link to it.
   node; check any number quoted in `control/intro.md` against it before
   changing a default.
 
+- The ROS figures (`figures/ros/`, registered as `ros-NAME`) share one toy
+  system. `ros.js` is the robot, the room, and a small ROS graph (nodes,
+  topics, timers, parameters, services, tf); `cli.js` imitates part of the
+  `ros2` command line against it; `term.js` is the terminal widget; `common.js`
+  builds the scene, and each figure module only picks options and the suggested
+  commands. `ros.js` and `cli.js` have no DOM code, so they run under node. The
+  `avoid` node in `ros.js` must match the Python source printed in `ros2.md`.
+  These figures use ROS axes (y left), so `common.js` flips y when drawing.
+
 ## Content map
 
 | Page | What it is |
@@ -101,6 +110,7 @@ turns the group heading into a link to it.
 | `control/intro.md` | Intro explainer: feedback (P and D), integral action, the thrust limit, limits on the gain, cascaded loops, LQR, MPC, trained weights. Ends at diffmpc-drones |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
 | `isaacdrones.md` | Project track page for the `isaacdrones` repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. It has a matching blurb on `research.md` |
+| `ros2.md` | ROS 2 crash course under the Resources tab, in the style of the intro pages: nodes and topics, inspecting, driving, writing a node, parameters and services, frames, bags. Every figure is a simulated robot with an in-browser `ros2` terminal, so nothing is installed |
 | `resources.md` | Top-bar tab for Ethan's opinionated robotics resources and reading, framed around "how do I get started in robotics". Currently a stub; the picks are his to write |
 | `flightwam.md` | Project track page for the `flightwam` repo, the Learning project. The repo is only a README listing research directions, and Ethan is not committing to one yet, so the page has no command, is longer than the others, and is written in the first person singular: what he has seen in manipulation (world action models such as GR00T 2 and DreamZero, a language model as an agent on top, world models used to evaluate and train policies), how little has reached drones, and the directions he is trying. He prefers world models to vision-language-action models |
 | `diffmpc.md` | Project track page for the `diffmpc-drones` repo (DiffMPC from Toyota Research Institute, on drones), in the same shape as `isaacdrones.md`. DiffMPC is CC BY-NC-ND, so the repo uses it as an unmodified submodule |
