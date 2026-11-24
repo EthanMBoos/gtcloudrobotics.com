@@ -34,10 +34,8 @@ Read the [Sensor Fusion intro](sensor-fusion/intro.md) first.
 
 ## Control
 
-There are two repos. [diffmpc-drones](diffmpc.md) tunes a drone's model
+The repo is [diffmpc-drones](diffmpc.md), which tunes a drone's model
 predictive controller by training it, using Toyota Research Institute's DiffMPC.
-[onegraph](onegraph.md) puts a drone's estimator and its model predictive
-controller in one factor graph.
 
 The problem is a controller that survives a disturbance (e.g., a gust of wind
 or heavy rain) that a hand-tuned one does not. A hand-tuned controller is
@@ -46,14 +44,6 @@ trained on thousands of cases, but you can't read a model or a constraint out
 of it. A trained MPC keeps the model and the constraints and still gets tuned
 on thousands of randomized flights. Toyota showed this on a car, and whether it
 carries over to a drone is open.
-
-onegraph tries something else. An estimator and a controller are usually built
-and tuned separately, and the controller flies as if the estimate were exact.
-Frank Dellaert, whose group at Georgia Tech maintains GTSAM, has [proposed
-putting both in one
-graph](https://gtsam.org/2026/04/21/factor-graphs-and-world-models.html): a
-smoother over the last few seconds and a model predictive controller over the
-next few. Whether that is more robust is open too.
 
 Read the [Control intro](control/intro.md) first.
 

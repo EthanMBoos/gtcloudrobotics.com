@@ -47,7 +47,7 @@ the top-level page for each focus area: long single-page explainers in the style
 https://glinscott.github.io/beam-engine/, with one `##` section per idea, an
 interactive three.js figure in each, and a short paragraph before and after it.
 
-The prose on these three pages, and on the four track pages, follows the plain, deductive
+The prose on these three pages, and on the three track pages, follows the plain, deductive
 style of the π0.5 paper (arXiv 2504.16054), not the casual voice of the older
 pages. Prefer paragraphs to bulleted lists, including for roadmaps. Each
 section opens with the general statement, motivated by the section before it,
@@ -63,7 +63,7 @@ nav label for each is "Intro".
 
 The nav
 under "Robotics Course" has one group per focus area, each with a plain,
-non-clickable heading: "Sensor fusion" (Intro, isaacdrones), "Control" (Intro, diffmpc-drones, onegraph), and
+non-clickable heading: "Sensor fusion" (Intro, isaacdrones), "Control" (Intro, diffmpc-drones), and
 "Learning" (the world models Intro, then flightwam). There are
 no separate background pages: the intro carries the background, and each
 project page explains its own approach. The project pages are in those groups, not in the
@@ -96,15 +96,15 @@ turns the group heading into a link to it.
 | Page | What it is |
 |---|---|
 | `index.md` | Hero landing (adds `home-page` body class via inline script) |
-| `course-home.md` | The premise (one multi-semester project), then three focus areas (sensor fusion with isaacdrones, control with diffmpc-drones and onegraph, learning with flightwam), each with the one problem Ethan wants solved and why, then the 2-week demo cycle. Links the three intro pages |
+| `course-home.md` | The premise (one multi-semester project), then three focus areas (sensor fusion with isaacdrones, control with diffmpc-drones, learning with flightwam), each with the one problem Ethan wants solved and why, then the 2-week demo cycle. Links the three intro pages |
 | `sensor-fusion/intro.md` | Intro explainer: noise, predict/update, drift, bearing/range, frames, latency, speed |
-| `control/intro.md` | Intro explainer: feedback (P and D), integral action, the thrust limit, limits on the gain, cascaded loops, LQR, MPC, trained weights. Ends at diffmpc-drones and onegraph |
+| `control/intro.md` | Intro explainer: feedback (P and D), integral action, the thrust limit, limits on the gain, cascaded loops, LQR, MPC, trained weights. Ends at diffmpc-drones |
 | `world-models/intro.md` | Intro explainer: latent, prediction, rollouts, planning, unseen flights, two-layer stack |
-| `onegraph.md`, `isaacdrones.md` | Project track pages, one per repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. Each has a matching blurb on `course-home.md` |
+| `isaacdrones.md` | Project track page for the `isaacdrones` repo, kept short: one paragraph on what it is, one command, two paragraphs on the goal and the work ahead (no heading), and a Docs note. The repo holds the detail. It has a matching blurb on `course-home.md` |
 | `demos.md` | Top-bar tab for student demos. Currently a one-line "coming soon" stub |
 | `resources.md` | Top-bar tab for Ethan's opinionated robotics resources and reading, framed around "how do I get started in robotics". Currently a stub; the picks are his to write |
 | `flightwam.md` | Project track page for the `flightwam` repo, the Learning project. The repo is only a README listing research directions, and Ethan is not committing to one yet, so the page has no command, is longer than the others, and is written in the first person singular: what he has seen in manipulation (world action models such as GR00T 2 and DreamZero, a language model as an agent on top, world models used to evaluate and train policies), how little has reached drones, and the directions he is trying. He prefers world models to vision-language-action models |
-| `diffmpc.md` | Project track page for the `diffmpc-drones` repo (DiffMPC from Toyota Research Institute, on drones), in the same shape as the other two. DiffMPC is CC BY-NC-ND, so the repo uses it as an unmodified submodule |
+| `diffmpc.md` | Project track page for the `diffmpc-drones` repo (DiffMPC from Toyota Research Institute, on drones), in the same shape as `isaacdrones.md`. DiffMPC is CC BY-NC-ND, so the repo uses it as an unmodified submodule |
 
 The course splits conceptually into classical sensor fusion and learned world
 models; the two intro pages follow that split and are linked from
@@ -114,5 +114,5 @@ models; the two intro pages follow that split and are linked from
 
 Assignment template repos are local siblings:
 `../satellite-temperature-monitor`, `../air-traffic-control-tracker`. Project
-repos are siblings too (`../onegraph`, `../isaacdrones`, `../diffmpc-drones`, `../flightwam`); their READMEs and
+repos are siblings too (`../isaacdrones`, `../diffmpc-drones`, `../flightwam`); their READMEs and
 `docs/` are the source for the project pages.

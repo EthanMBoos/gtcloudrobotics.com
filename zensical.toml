@@ -55,8 +55,7 @@ nav = [
      ]},
      {"Control" = [
         {"Intro" = "control/intro.md"},
-        {"diffmpc-drones" = "diffmpc.md"},
-        {"onegraph" = "onegraph.md"}
+        {"diffmpc-drones" = "diffmpc.md"}
      ]},
      {"Learning" = [
         {"Intro" = "world-models/intro.md"},

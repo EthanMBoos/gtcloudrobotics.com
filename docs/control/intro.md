@@ -252,14 +252,6 @@ with, so nothing in the training resembles the gusts, lag, and thrust limit on
 this page. Adding a separate simulator that has them is the first piece of work
 in the control area.
 
-[onegraph](../onegraph.md) is the second repo in the control area. It places the
-model predictive controller of this page and the estimator that feeds it in a
-single factor graph, and it currently flies a point mass:
-
-```sh
-uv run onegraph
-```
-
 [^faessler]: Faessler, Franchi, and Scaramuzza, [Differential flatness of quadrotor dynamics subject to rotor drag](https://arxiv.org/abs/1712.02402), 2018.
 [^px4]: [PX4 controller diagrams](https://docs.px4.io/main/en/flight_stack/controller_diagrams.html) and parameter reference.
 [^sun]: Sun et al., [A comparative study of nonlinear MPC and differential-flatness-based control for quadrotor agile flight](https://arxiv.org/abs/2109.01365), 2022.
