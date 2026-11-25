@@ -62,10 +62,6 @@ nav = [
         {"flightwam" = "flightwam.md"}
      ]}
   ]},
-  {"Resources" = [
-     "resources.md",
-     {"ROS 2" = "ros2.md"}
-  ]},
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
